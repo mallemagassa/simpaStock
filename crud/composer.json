@@ -1,0 +1,20 @@
+{
+    "name": "kizza/crud",
+    "description": "A generic CRUD package for CodeIgniter 4",
+    "type": "library",
+    "version": "1.0.0",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Kizza\\Crud\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Kizza",
+            "email": "magassamalle82@gmail.com"
+        }
+    ],
+    "minimum-stability": "stable",
+    "require": {}
+}

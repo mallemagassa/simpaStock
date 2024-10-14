@@ -1,0 +1,29 @@
+{
+  "name": "simpaStock",
+  "version": "1.0.0",
+  "description": "Mon projet CodeIgniter avec Tailwind CSS",
+  "main": "index.js",
+  "scripts": {
+    "build:css": "npx tailwindcss -i ./public/assets/css/tailwind.css -o ./public/assets/css/style.css --watch",
+    "build": "webpack --mode=production",
+    "watch": "webpack --mode=development --watch"
+  },
+  "devDependencies": {
+    "autoprefixer": "^10.4.20",
+    "css-minimizer-webpack-plugin": "^7.0.0",
+    "flowbite": "^2.5.2",
+    "mini-css-extract-plugin": "^2.9.1",
+    "postcss": "^8.4.47",
+    "postcss-loader": "^8.1.1",
+    "tailwindcss": "^3.4.13",
+    "webpack": "^5.95.0",
+    "webpack-bundle-analyzer": "^4.10.2",
+    "webpack-cli": "^5.1.4"
+  },
+  "author": "Kizza",
+  "license": "ISC",
+  "dependencies": {
+    "apexcharts": "^3.54.0",
+    "css-loader": "^7.1.2"
+  }
+}

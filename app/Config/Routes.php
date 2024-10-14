@@ -62,6 +62,15 @@ $routes->group('', ['namespace' => 'App\Controllers'], function($routes) {
     });
     
 
+    $routes->group('shop', function($routes) {
+        $routes->get('/', 'ShopController::index');
+        $routes->post('store', 'ShopController::store');
+        $routes->post('update', 'ShopController::update');
+        $routes->get('delete/(:num)', 'ShopController::delete/$1');
+
+    });
+
+
     $routes->group('unit', function($routes) {
         $routes->get('/', 'UnitController::index');
         $routes->post('store', 'UnitController::store');

@@ -145,21 +145,24 @@
                                 </div>
                             </td>
                             <td class="flex items-center p-4 mr-12 space-x-6 whitespace-nowrap">
-                                <img class="w-10 h-10 rounded-full" src="/images/users/{{ .avatar }}" alt="{{ .name }} avatar">
+                            <img class="w-10 h-10 rounded-full" 
+     src="<?= isset($value['logo_shop']) && $value['logo_shop'] ? base_url(esc($value['logo_shop'])) : base_url('assets/images/boutique/shop.png') ?>" 
+     alt="<?= esc($value['logo_shop']) ? esc($value['logo_shop']) : 'Image par défaut' ?>">
+
                                 <div class="text-sm font-normal text-gray-500 dark:text-gray-400">
-                                    <div class="text-base font-semibold text-gray-900 dark:text-white">{{ .name }}</div>
-                                    <div class="text-sm font-normal text-gray-500 dark:text-gray-400">{{ .email }}</div>
+                                    <div class="text-base font-semibold text-gray-900 dark:text-white"><?=esc($value['respon']) ?></div>
+                                    <div class="text-sm font-normal text-gray-500 dark:text-gray-400"><?=esc($value['address']) ?></div>
                                 </div>
                             </td>
                             <td class="p-4 text-sm font-normal text-gray-500 whitespace-nowrap dark:text-gray-400">
                                 <div class="text-base font-semibold text-gray-900 dark:text-white"><?=$value['name'] ?></div>
                             </td>
-                            <td class="p-4 text-base font-medium text-gray-900 whitespace-nowrap dark:text-white"><?=esc($value['purchase_price'])?></td>
-                            <td class="p-4 text-base font-medium text-gray-900 whitespace-nowrap dark:text-white"><?=esc( $value['sale_price']) ?></td>
+                            <td class="p-4 text-base font-medium text-gray-900 whitespace-nowrap dark:text-white"><?=esc($value['respon'])?></td>
+                            <td class="p-4 text-base font-medium text-gray-900 whitespace-nowrap dark:text-white"><?=esc( $value['address']) ?></td>
                             
                            
                             <td class="p-4 space-x-2 whitespace-nowrap">
-                              <button type="button" id="updateshopButton" data-id="<?=esc($value['id'])?>" data-name="<?=esc($value['name'])?>" data-purchase_price="<?=esc($value['purchase_price'])?>" data-sale_price="<?=esc($value['sale_price'])?>" data-description="<?=esc($value['description'])?>" data-code="<?=esc($value['code'])?>" data-unit_id="<?=esc($value['unit_id'])?>" 
+                              <button type="button" id="updateshopButton" data-id="<?=esc($value['id'])?>" data-name="<?=esc($value['name'])?>" data-respon="<?=esc($value['respon'])?>" data-address="<?=esc($value['address'])?>" data-logo_shop="<?=esc($value['logo_shop'])?>"
                                         data-drawer-target="drawer-update-shop-default" data-drawer-show="drawer-update-shop-default" aria-controls="drawer-update-shop-default" data-drawer-placement="right" 
                                         class="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white rounded-lg bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">
                                     <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M17.414 2.586a2 2 0 00-2.828 0L7 10.172V13h2.828l7.586-7.586a2 2 0 000-2.828z"></path><path fill-rule="evenodd" d="M2 6a2 2 0 012-2h4a1 1 0 010 2H4v10h10v-4a1 1 0 112 0v4a2 2 0 01-2 2H4a2 2 0 01-2-2V6z" clip-rule="evenodd"></path></svg>
@@ -221,7 +224,7 @@
 
         <div class="space-y-4">
             <div>
-                <label for="name" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Nom du produit:</label>
+                <label for="name" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Nom de la Boutique:</label>
                 <input type="text" name="name" value="<?= old('name') ?>" id="name" class="bg-gray-50 border <?= session('errors.name') ? 'border-red-500' : 'border-gray-300' ?> text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="Nom du produit" required>
                 <?php if (session('errors.name')): ?>
                     <span class="text-red-500 text-xs"><?= session('errors.name') ?></span>
@@ -229,46 +232,26 @@
             </div>
 
             <div>
-                <label for="purchase_price" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Prix d'achat:</label>
-                <input type="number" name="purchase_price" value="<?= old('purchase_price') ?>" id="purchase_price" class="bg-gray-50 border <?= session('errors.purchase_price') ? 'border-red-500' : 'border-gray-300' ?> text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="$2999" required>
-                <?php if (session('errors.purchase_price')): ?>
-                    <span class="text-red-500 text-xs"><?= session('errors.purchase_price') ?></span>
+                <label for="respon" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Résponsable de la Boutique:</label>
+                <input type="text" name="respon" value="<?= old('respon') ?>" id="respon" class="bg-gray-50 border <?= session('errors.respon') ? 'border-red-500' : 'border-gray-300' ?> text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="$2999" required>
+                <?php if (session('errors.respon')): ?>
+                    <span class="text-red-500 text-xs"><?= session('errors.respon') ?></span>
                 <?php endif ?>
             </div>
 
             <div>
-                <label for="sale_price" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Prix de vente:</label>
-                <input type="number" name="sale_price" value="<?= old('sale_price') ?>" id="sale_price" class="bg-gray-50 border <?= session('errors.sale_price') ? 'border-red-500' : 'border-gray-300' ?> text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="$2999" required>
-                <?php if (session('errors.sale_price')): ?>
-                    <span class="text-red-500 text-xs"><?= session('errors.sale_price') ?></span>
+                <label for="address" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Adresse de la Boutique:</label>
+                <input type="text" name="address" value="<?= old('address') ?>" id="address" class="bg-gray-50 border <?= session('errors.address') ? 'border-red-500' : 'border-gray-300' ?> text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="$2999" required>
+                <?php if (session('errors.address')): ?>
+                    <span class="text-red-500 text-xs"><?= session('errors.address') ?></span>
                 <?php endif ?>
             </div>
 
             <div>
-                <label for="code" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Code produit:</label>
-                <input type="text" name="code" value="<?= old('code') ?>" id="code" class="bg-gray-50 border <?= session('errors.code') ? 'border-red-500' : 'border-gray-300' ?> text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="Enter shop code" required>
-                <?php if (session('errors.code')): ?>
-                    <span class="text-red-500 text-xs"><?= session('errors.code') ?></span>
-                <?php endif ?>
-            </div>
-
-            <div>
-                <label for="unit_id" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Unité:</label>
-                <select id="unit_id" name="unit_id" class="bg-gray-50 border <?= session('errors.unit_id') ? 'border-red-500' : 'border-gray-300' ?> text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
-                    <?php foreach ($units as $unit): ?>
-                        <option value="<?= esc($unit['id']) ?>" <?= old('unit_id') == esc($unit['id']) ? 'selected' : '' ?>> <?= esc($unit['name'])?> </option>
-                    <?php endforeach ?>
-                </select>
-                <?php if (session('errors.unit_id')): ?>
-                    <span class="text-red-500 text-xs"><?= session('errors.unit_id') ?></span>
-                <?php endif ?>
-            </div>
-
-            <div>
-                <label for="description" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Description:</label>
-                <textarea id="description" name="description" rows="4" class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border <?= session('errors.description') ? 'border-red-500' : 'border-gray-300' ?> focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="Enter shop description"><?= old('description') ?></textarea>
-                <?php if (session('errors.description')): ?>
-                    <span class="text-red-500 text-xs"><?= session('errors.description') ?></span>
+                <label for="logo_shop" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Image de la Boutique:</label>
+                <input type="text" name="logo_shop" value="<?= old('logo_shop') ?>" id="logo_shop" class="bg-gray-50 border <?= session('errors.logo_shop') ? 'border-red-500' : 'border-gray-300' ?> text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="Enter shop logo_shop" required>
+                <?php if (session('errors.logo_shop')): ?>
+                    <span class="text-red-500 text-xs"><?= session('errors.logo_shop') ?></span>
                 <?php endif ?>
             </div>
         </div>
@@ -315,7 +298,7 @@
         <span class="sr-only">Fermer menu</span>
     </button>
     
-    <form action="<?= base_url('shop/store') ?>" method="POST">
+    <form action="<?= base_url('shop/store') ?>" method="POST" enctype="multipart/form-data">
         <?= csrf_field() ?>
         <input type="hidden" name="<?= csrf_token() ?>" value="<?= csrf_hash() ?>">
 
@@ -329,54 +312,31 @@
             </div>
             
             <div>
-                <label for="purchase_price" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Prix d'achat:</label>
-                <input type="number" name="purchase_price" value="<?= old('purchase_price') ?>" id="purchase_price" class="bg-gray-50 border <?= session('errors.purchase_price') ? 'border-red-500' : 'border-gray-300' ?> text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="$2999" required>
-                <?php if (session('errors.purchase_price')): ?>
-                    <span class="text-red-500 text-xs"><?= session('errors.purchase_price') ?></span>
+                <label for="respon" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Résponsable de la Boutique:</label>
+                <input type="text" name="respon" value="<?= old('respon') ?>" id="respon" class="bg-gray-50 border <?= session('errors.respon') ? 'border-red-500' : 'border-gray-300' ?> text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="$2999" required>
+                <?php if (session('errors.respon')): ?>
+                    <span class="text-red-500 text-xs"><?= session('errors.respon') ?></span>
                 <?php endif ?>
             </div>
             
             <div>
-                <label for="sale_price" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Prix de vente:</label>
-                <input type="number" name="sale_price" value="<?= old('sale_price') ?>" id="sale_price" class="bg-gray-50 border <?= session('errors.sale_price') ? 'border-red-500' : 'border-gray-300' ?> text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="$2999" required>
-                <?php if (session('errors.sale_price')): ?>
-                    <span class="text-red-500 text-xs"><?= session('errors.sale_price') ?></span>
+                <label for="address" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Adresse de la Boutique:</label>
+                <input type="text" name="address" value="<?= old('address') ?>" id="address" class="bg-gray-50 border <?= session('errors.address') ? 'border-red-500' : 'border-gray-300' ?> text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="$2999" required>
+                <?php if (session('errors.address')): ?>
+                    <span class="text-red-500 text-xs"><?= session('errors.address') ?></span>
                 <?php endif ?>
             </div>
             
             <div>
-                <label for="code" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Code produit:</label>
-                <input type="text" name="code" value="<?= old('code') ?>" id="code" class="bg-gray-50 border <?= session('errors.code') ? 'border-red-500' : 'border-gray-300' ?> text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="Enter shop code" required>
-                <?php if (session('errors.code')): ?>
-                    <span class="text-red-500 text-xs"><?= session('errors.code') ?></span>
+                <input type="file" class="" name="logo_shop" class="filepond" accept="image/*">
+                <?php if (session('errors.logo_shop')): ?>
+                    <span class="text-red-500 text-xs"><?= session('errors.logo_shop') ?></span>
                 <?php endif ?>
             </div>
             
-            <div>
-                <label for="unit-create" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Unité:</label>
-                <select id="unit-create" name="unit_id" class="bg-gray-50 border <?= session('errors.unit_id') ? 'border-red-500' : 'border-gray-300' ?> text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
-                    <?php $first = true;?>
-                    <?php foreach ($units as $unit): ?>
-                        <option value="<?= $unit['id'] ?>" <?= $first ? 'selected' : '' ?>><?= $unit['name'] ?></option>
-                        <?php $first = false; ?>
-                    <?php endforeach ?>
-
-                </select>
-                <?php if (session('errors.unit_id')): ?>
-                    <span class="text-red-500 text-xs"><?= session('errors.unit_id') ?></span>
-                <?php endif ?>
-            </div>
-
-            <div>
-                <label for="description" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Description:</label>
-                <textarea id="description" name="description" rows="4" class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border <?= session('errors.description') ? 'border-red-500' : 'border-gray-300' ?> focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="Enter shop description"><?= old('description') ?></textarea>
-                <?php if (session('errors.description')): ?>
-                    <span class="text-red-500 text-xs"><?= session('errors.description') ?></span>
-                <?php endif ?>
-            </div>
             
             <div class="bottom-0 left-0 flex justify-center w-full pb-4 space-x-4 md:px-4 md:absolute">
-                <button type="submit" class="text-white w-full justify-center bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">Créer</button>
+                <button id="confirm-button" type="submit" class="text-white w-full justify-center bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">Créer</button>
                 <button type="button" data-drawer-dismiss="drawer-create-shop-default" aria-controls="drawer-create-shop-default" class="inline-flex w-full justify-center text-gray-500 items-center bg-white hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-primary-300 rounded-lg border border-gray-200 text-sm font-medium px-5 py-2.5 hover:text-gray-900 focus:z-10 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-500 dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-gray-600">
                     <svg aria-hidden="true" class="w-5 h-5 -ml-1 sm:mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
                     Annuler
@@ -393,23 +353,24 @@ document.addEventListener('DOMContentLoaded', function () {
         button.addEventListener('click', function () {
             const shopId = button.getAttribute('data-id');
             const shopName = button.getAttribute('data-name');
-            const shopPurchasePrice = button.getAttribute('data-purchase_price');
-            const shopSalePrice = button.getAttribute('data-sale_price');
+            const shopPurchasePrice = button.getAttribute('data-respon');
+            const shopSalePrice = button.getAttribute('data-address');
             const shopDescription = button.getAttribute('data-description');
-            const shopCode = button.getAttribute('data-code');
+            const shoplogo_shop = button.getAttribute('data-logo_shop');
             const shopUnitId = button.getAttribute('data-unit_id');
             
             // Set values in the form
             document.getElementById('shop_id').value = shopId;
             document.getElementById('name').value = shopName;
-            document.getElementById('purchase_price').value = shopPurchasePrice;
-            document.getElementById('sale_price').value = shopSalePrice;
+            document.getElementById('respon').value = shopPurchasePrice;
+            document.getElementById('address').value = shopSalePrice;
             document.getElementById('description').value = shopDescription;
-            document.getElementById('code').value = shopCode;
+            document.getElementById('logo_shop').value = shoplogo_shop;
             document.getElementById('unit_id').value = shopUnitId;
         });
     });
 });
+
 
 
 document.addEventListener('DOMContentLoaded', function () {
@@ -424,6 +385,15 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 });
+
+// document.getElementById('confirm-button').addEventListener('click', function() {
+//         const fileInput = document.querySelector('input[type="file"]');
+//         if (fileInput) {
+//             fileInput.setAttribute('name', 'logo_shop');
+//         } else {
+//             console.log('Le champ de fichier n\'a pas été trouvé.');
+//         }
+//     });
 
 </script>
 

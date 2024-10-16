@@ -67,6 +67,7 @@ $routes->group('', ['namespace' => 'App\Controllers'], function($routes) {
         $routes->post('store', 'ShopController::store');
         $routes->post('update', 'ShopController::update');
         $routes->get('delete/(:num)', 'ShopController::delete/$1');
+        $routes->post('tmpUpload', 'ShopController::tmpUpload');
 
     });
 

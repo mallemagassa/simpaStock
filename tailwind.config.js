@@ -4,7 +4,11 @@ module.exports = {
     './app/Views/content/**/*.md',
     './app/Views/content/**/*.php',
     './public/assets/js/*.js',
-    './node_modules/flowbite/**/*.js'
+    './node_modules/flowbite/**/*.js',
+    './node_modules/flowbite/**/*.js',
+    './node_modules/filepond/dist/*.js',
+    './node_modules/filepond-plugin-file-validate-type/dist/*.js',
+    './node_modules/filepond-plugin-image-preview/dist/*.js' 
   ],
   safelist: [
     'w-64',

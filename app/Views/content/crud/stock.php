@@ -220,7 +220,7 @@
 
             <div>
                 <label for="quantity" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Prix d'achat:</label>
-                <input type="number" name="quantity" value="<?= old('quantity') ?>" id="quantity" class="bg-gray-50 border <?= session('errors.quantity') ? 'border-red-500' : 'border-gray-300' ?> text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="$2999" required>
+                <input type="number" name="quantity" value="<?= old('quantity') ?>" id="quantity" class="bg-gray-50 border <?= session('errors.quantity') ? 'border-red-500' : 'border-gray-300' ?> text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="2999" required>
                 <?php if (session('errors.quantity')): ?>
                     <span class="text-red-500 text-xs"><?= session('errors.quantity') ?></span>
                 <?php endif ?>
@@ -228,7 +228,7 @@
 
             <div>
                 <label for="critique" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Prix de vente:</label>
-                <input type="number" name="critique" value="<?= old('critique') ?>" id="critique" class="bg-gray-50 border <?= session('errors.critique') ? 'border-red-500' : 'border-gray-300' ?> text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="$2999" required>
+                <input type="number" name="critique" value="<?= old('critique') ?>" id="critique" class="bg-gray-50 border <?= session('errors.critique') ? 'border-red-500' : 'border-gray-300' ?> text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="2999" required>
                 <?php if (session('errors.critique')): ?>
                     <span class="text-red-500 text-xs"><?= session('errors.critique') ?></span>
                 <?php endif ?>
@@ -296,7 +296,7 @@
         <div class="space-y-4">
             <div>
                 <label for="quantity" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Quantité:</label>
-                <input type="number" name="quantity" value="<?= old('quantity') ?>" id="quantity" class="bg-gray-50 border <?= session('errors.quantity') ? 'border-red-500' : 'border-gray-300' ?> text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="$2999" required>
+                <input type="number" name="quantity" value="<?= old('quantity') ?>" id="quantity" class="bg-gray-50 border <?= session('errors.quantity') ? 'border-red-500' : 'border-gray-300' ?> text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="2999" required>
                 <?php if (session('errors.quantity')): ?>
                     <span class="text-red-500 text-xs"><?= session('errors.quantity') ?></span>
                 <?php endif ?>
@@ -304,7 +304,7 @@
             
             <div>
                 <label for="critique" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Niveau Critique:</label>
-                <input type="number" name="critique" value="<?= old('critique') ?>" id="critique" class="bg-gray-50 border <?= session('errors.critique') ? 'border-red-500' : 'border-gray-300' ?> text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="$2999" required>
+                <input type="number" name="critique" value="<?= old('critique') ?>" id="critique" class="bg-gray-50 border <?= session('errors.critique') ? 'border-red-500' : 'border-gray-300' ?> text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="2999" required>
                 <?php if (session('errors.critique')): ?>
                     <span class="text-red-500 text-xs"><?= session('errors.critique') ?></span>
                 <?php endif ?>
@@ -401,6 +401,21 @@
                 <input type="number" name="quantity" value="<?= old('quantity') ?>" id="quantity" class="bg-gray-50 border <?= session('errors.quantity') ? 'border-red-500' : 'border-gray-300' ?> text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="2999" required>
                 <?php if (session('errors.quantity')): ?>
                     <span class="text-red-500 text-xs"><?= session('errors.quantity') ?></span>
+                <?php endif ?>
+            </div>
+
+            <div class="my-2">
+                <label for="shop-create" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Boutique:</label>
+                <select id="shop-create" name="shop_id" class="bg-gray-50 border <?= session('errors.shop_id') ? 'border-red-500' : 'border-gray-300' ?> text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
+                    <?php $first = true;?>
+                    <?php foreach ($shops as $shop): ?>
+                        <option value="<?= $shop['id'] ?>" <?= $first ? 'selected' : '' ?>><?= $shop['name'] ?></option>
+                        <?php $first = false; ?>
+                    <?php endforeach ?>
+
+                </select>
+                <?php if (session('errors.shop_id')): ?>
+                    <span class="text-red-500 text-xs"><?= session('errors.shop_id') ?></span>
                 <?php endif ?>
             </div>
 

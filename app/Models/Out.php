@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use CodeIgniter\Model;
+use DateTime;
 
 class Out extends Model
 {
@@ -22,7 +23,7 @@ class Out extends Model
     protected bool $allowEmptyInserts = false;
 
     // Dates
-    protected $useTimestamps = false;
+    protected $useTimestamps = true;
     protected $dateFormat    = 'datetime';
     protected $createdField  = 'created_at';
     protected $updatedField  = 'updated_at';
@@ -66,4 +67,34 @@ class Out extends Model
     protected $afterFind      = [];
     protected $beforeDelete   = [];
     protected $afterDelete    = [];
+
+    public function getFilteredProducts($period, $startDate)
+    {
+        $query = $this->db->table($this->table);
+
+        $startDateObj = new DateTime($startDate);
+
+        switch ($period) {
+            case 'today':
+                $query->where('DATE(created_at)', $startDateObj->format('Y-m-d'));
+                break;
+            case 'this_week':
+                $endDateObj = clone $startDateObj;
+                $endDateObj->modify('+6 days');
+                $query->where('created_at >=', $startDateObj->format('Y-m-d'))
+                      ->where('created_at <=', $endDateObj->format('Y-m-d'));
+                break;
+            case 'this_month':
+                $query->where('MONTH(created_at)', $startDateObj->format('m'))
+                      ->where('YEAR(created_at)', $startDateObj->format('Y'));
+                break;
+            case 'this_year':
+                $query->where('YEAR(created_at)', $startDateObj->format('Y'));
+                break;
+            default:
+                break;
+        }
+
+        return $query->get()->getResultArray();
+    }
 }

@@ -52,8 +52,7 @@ $routes->group('', ['namespace' => 'App\Controllers'], function($routes) {
         $routes->get('edit/(:num)', 'StockController::edit/$1');
         $routes->post('update', 'StockController::update');
         $routes->get('delete/(:num)', 'StockController::delete/$1');
-        
-        // Ajouter le GET et POST pour 'in' et 'out'
+
         $routes->get('in/(:num)', 'StockController::in/$1');
         $routes->post('in/(:num)', 'StockController::in/$1');
         
@@ -65,7 +64,8 @@ $routes->group('', ['namespace' => 'App\Controllers'], function($routes) {
     $routes->group('shop', function($routes) {
         $routes->get('/', 'ShopController::index');
         $routes->post('store', 'ShopController::store');
-        $routes->post('update', 'ShopController::update');
+        $routes->post('update/(:num)', 'ShopController::update/$1');
+        $routes->get('show/(:num)', 'ShopController::show/$1');
         $routes->get('delete/(:num)', 'ShopController::delete/$1');
         $routes->post('tmpUpload', 'ShopController::tmpUpload');
 
@@ -77,8 +77,28 @@ $routes->group('', ['namespace' => 'App\Controllers'], function($routes) {
         $routes->post('store', 'UnitController::store');
         $routes->post('update', 'UnitController::update');
         $routes->get('delete/(:num)', 'UnitController::delete/$1');
-
     });
+
+    $routes->group('roles', function($routes) {
+        $routes->get('/', 'RoleController::index');
+        $routes->get('create', 'RoleController::create');
+        $routes->post('store', 'RoleController::store');
+        $routes->get('edit/(:segment)', 'RoleController::edit/$1');
+        $routes->post('update/(:segment)', 'RoleController::update/$1');
+        $routes->get('delete/(:segment)', 'RoleController::delete/$1');
+    });
+    
+    $routes->group('permissions', function($routes) {
+        $routes->get('/', 'PermissionController::index');
+        $routes->get('create', 'PermissionController::create');
+        $routes->post('store', 'PermissionController::store');
+        $routes->get('edit/(:segment)', 'PermissionController::edit/$1');
+        $routes->post('update/(:segment)', 'PermissionController::update/$1');
+        $routes->get('delete/(:segment)', 'PermissionController::delete/$1');
+    });
+    
+
+    $routes->get('/filterOut', 'StockController::filterByDate');
 });
 
 

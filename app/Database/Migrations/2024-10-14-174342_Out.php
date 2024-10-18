@@ -51,11 +51,7 @@ class Out extends Migration
 
         $this->forge->addForeignKey('shop_id', 'shops', 'id', 'CASCADE', 'CASCADE');
 
-        $this->forge->addUniqueKey('shop_id');
-
         $this->forge->addForeignKey('product_id', 'products', 'id', 'CASCADE', 'CASCADE');
-
-        $this->forge->addUniqueKey('product_id');
         
         $this->forge->createTable('outs');
     }

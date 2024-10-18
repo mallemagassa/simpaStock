@@ -30,6 +30,7 @@ class Shop extends Migration
             'logo_shop' => [
                 'type' => 'VARCHAR',
                 'constraint' => '255',
+                'null' => true,
             ],
             'created_at' => [
                 'type' => 'DATETIME',

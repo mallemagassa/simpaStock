@@ -2,6 +2,8 @@
 
 namespace App\Controllers;
 
+use App\Models\Out;
+use App\Models\Shop;
 use App\Models\Stock;
 use App\Models\Product;
 use App\Models\Notification;
@@ -13,9 +15,11 @@ class StockController extends BaseController
     {
         $model = new Stock();
         $modelProduct = new Product();
+        $modelShop = new Shop();
 
         $data['stocks'] = $model->getAllStocksWithProducts();
         $data['products'] = $modelProduct->findAll();
+        $data['shops'] = $modelShop->findAll();
 
         return view('content/crud/stock', $data);
     }
@@ -158,7 +162,11 @@ class StockController extends BaseController
     public function out($id)
     {
         $model = new Stock();
+        $shopModel = new Shop();
+        $outModel = new Out();
+        
         $stock = $model->find($id);
+        $shop = $shopModel->find( $this->request->getPost('shop_id'));
     
         if (!$stock) {
             return redirect()->to('/stock')->with('error', 'Stock introuvable.');
@@ -167,7 +175,8 @@ class StockController extends BaseController
         if ($this->request->getMethod() === 'post') {
             // Règles de validation
             $rules = [
-                'quantity' => 'required|integer|greater_than[0]'
+                'quantity' => 'required|integer|greater_than[0]',
+                'shop_id' => 'required|integer|greater_than[0]'
             ];
     
             if (!$this->validate($rules)) {
@@ -178,6 +187,8 @@ class StockController extends BaseController
                     'modal' => 'out-stock-modal'  // Variable pour garder la modal ouverte
                 ]);
             }
+
+
     
             $quantityToRemove = $this->request->getPost('quantity');
     
@@ -185,6 +196,13 @@ class StockController extends BaseController
             if ($quantityToRemove <= $stock['quantity']) {
                 $newQuantity = $stock['quantity'] - $quantityToRemove;
                 $model->update($id, ['quantity' => $newQuantity]);
+
+                $outModel->insert([
+                    'profit' => 0,
+                    'amount_total' => 0,
+                    'product_id' => $stock['product_id'],
+                    'shop_id' => $shop['id'],
+                ]);
     
                 // Déclencher un événement si le stock atteint un niveau critique
                 if ($newQuantity <= $stock['critique']) {
@@ -195,6 +213,8 @@ class StockController extends BaseController
     
                     \CodeIgniter\Events\Events::trigger('stockUpdated', $eventData);
                 }
+
+
     
                 return redirect()->to('/stock')->with('success', 'Stock mis à jour avec succès. Quantité retirée.');
             } else {
@@ -209,6 +229,24 @@ class StockController extends BaseController
         }
     
         return redirect()->to('/stock')->with('error', 'Stock introuvable.');
+    }
+
+
+    public function filterByDate()
+    {
+        $request = service('request');
+
+        // Récupérer les paramètres envoyés via AJAX
+        $period = $request->getPost('period');
+        $startDate = $request->getPost('start_date');
+    
+        // Obtenir les produits filtrés
+        $produitModel = new Out();
+        $filteredOuts = $produitModel->getFilteredProducts($period, $startDate);
+    
+        // Retourner les données filtrées au format JSON
+        return $this->response->setJSON($filteredOuts);
+    
     }
     
 

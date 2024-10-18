@@ -8,38 +8,58 @@
   <script src="<?= base_url('node_modules/filepond-plugin-file-rename/dist/filepond-plugin-file-rename.js') ?>"></script>
   <script src="<?= base_url('node_modules/filepond-plugin-file-validate-type/dist/filepond-plugin-file-validate-type.js') ?>"></script>
   <script src="<?= base_url('node_modules/filepond-plugin-file-validate-size/dist/filepond-plugin-file-validate-size.js') ?>"></script>
-
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <script>
-
-  FilePond.registerPlugin(FilePondPluginFileValidateSize);
-  FilePond.registerPlugin(FilePondPluginFileValidateType);
-  FilePond.registerPlugin(FilePondPluginImagePreview);
-
-    const inputElement = document.querySelector('input[type="file"]');
+ 
+FilePond.registerPlugin(FilePondPluginFileValidateSize);
+FilePond.registerPlugin(FilePondPluginFileValidateType);
+FilePond.registerPlugin(FilePondPluginImagePreview);
 
 
-    const pond = FilePond.create(inputElement, {
-      acceptedFileTypes: ['image/png', 'image/jpeg', 'image/jpg'], // Types acceptés
-      maxFileSize: '2MB', // Taille maximale des fichiers
-      labelFileTypeNotAllowed: 'Format non autorisé',
-      labelMaxFileSizeExceeded: 'Le fichier est trop volumineux',
-      labelMaxFileSize: 'La taille maximale est de 2 Mo',
-      labelIdle: 'Choisir une image pour votre Boutique',
-      allowImagePreview: true,
-      // instantUpload: false
-      // allowProcess:true
-      dropOnPage:true,
-      dropValidation:true
-    });
+const inputElements = document.querySelectorAll('input[type="file"]');
 
-    FilePond.setOptions({
-      server: {
-        process: '/shop/tmpUpload',
-        revert: '/revert',
-        header:{
-          'X-CSRF-TOKEN': '<?= csrf_field() ?>'
-        }
+inputElements.forEach(inputElement => {
+  const pond = FilePond.create(inputElement, {
+    acceptedFileTypes: ['image/png', 'image/jpeg', 'image/jpg'],
+    maxFileSize: '2MB',
+    labelFileTypeNotAllowed: 'Format non autorisé',
+    labelMaxFileSizeExceeded: 'Le fichier est trop volumineux',
+    labelMaxFileSize: 'La taille maximale est de 2 Mo',
+    labelIdle: 'Choisir une image pour votre Boutique',
+    allowImagePreview: true,
+    dropOnPage: true,
+    dropValidation: true
+  });
+
+  FilePond.setOptions({
+    server: {
+      process: '/shop/tmpUpload',
+      revert: '/shop/revert',
+      headers: {
+        'X-CSRF-TOKEN': '<?= csrf_token() ?>'
+      }
+    }
+  });
+
+  document.querySelectorAll('#updateshopButton').forEach(button => {
+    button.addEventListener('click', function() {
+      const shopLogo = this.getAttribute('data-logo_shop'); 
+      pond.removeFiles();
+
+      if (shopLogo) {
+        pond.addFile(shopLogo, {
+          type: 'local',
+          file: {
+            name: shopLogo.split('/').pop(),
+            size: 1234, 
+            type: 'image/jpeg'
+          }
+        });
       }
     });
+  });
+});
+
+
     
   </script>

@@ -102,6 +102,7 @@
         </div>
     </div>
 </div>
+
 <div class="flex flex-col">
     <div class="overflow-x-auto">
         <div class="inline-block min-w-full align-middle">
@@ -151,8 +152,8 @@
                             <td class="p-4 text-sm font-normal text-gray-500 whitespace-nowrap dark:text-gray-400">
                                 <div class="text-base font-semibold text-gray-900 dark:text-white"><?=$value['name'] ?></div>
                             </td>
-                            <td class="p-4 text-base font-medium text-gray-900 whitespace-nowrap dark:text-white"><?=esc($value['purchase_price'])?></td>
-                            <td class="p-4 text-base font-medium text-gray-900 whitespace-nowrap dark:text-white"><?=esc( $value['sale_price']) ?></td>
+                            <td class="p-4 text-base font-medium text-gray-900 whitespace-nowrap dark:text-white"><?=number_format(esc($value['purchase_price']), 0, '.', ' ') ?> F CFA</td>
+                            <td class="p-4 text-base font-medium text-gray-900 whitespace-nowrap dark:text-white"><?=number_format(esc($value['sale_price']), 0, '.', ' ') ?> F CFA </td>
                             <td class="p-4 text-base font-medium text-gray-900 whitespace-nowrap dark:text-white"><?=esc($value['unit_name']) ?></td>
                             <td class="p-4 text-base font-medium text-gray-900 whitespace-nowrap dark:text-white"><?=esc($value['code']) ?></td>
                             <td class="max-w-sm p-4 overflow-hidden text-base font-normal text-gray-500 truncate xl:max-w-xs dark:text-gray-400"><?= esc($value['description'])?></td>
@@ -229,7 +230,10 @@
 
             <div>
                 <label for="purchase_price" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Prix d'achat:</label>
-                <input type="number" name="purchase_price" value="<?= old('purchase_price') ?>" id="purchase_price" class="bg-gray-50 border <?= session('errors.purchase_price') ? 'border-red-500' : 'border-gray-300' ?> text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="$2999" required>
+                <input type="number" name="purchase_price" value="<?= old('purchase_price') ?>" id="purchase_price" 
+                class="bg-gray-50 border <?= session('errors.purchase_price') ? 'border-red-500' : 'border-gray-300' ?> text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" 
+                placeholder="<?= number_format(2999, 0, '.', ' ') ?> FCFA" required
+                oninput="formatPrice(this)" onblur="removeFormatting(this)">
                 <?php if (session('errors.purchase_price')): ?>
                     <span class="text-red-500 text-xs"><?= session('errors.purchase_price') ?></span>
                 <?php endif ?>
@@ -237,7 +241,11 @@
 
             <div>
                 <label for="sale_price" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Prix de vente:</label>
-                <input type="number" name="sale_price" value="<?= old('sale_price') ?>" id="sale_price" class="bg-gray-50 border <?= session('errors.sale_price') ? 'border-red-500' : 'border-gray-300' ?> text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="$2999" required>
+                <input type="text" name="sale_price" value="<?= old('sale_price') ?>" id="sale_price" 
+    class="bg-gray-50 border <?= session('errors.sale_price') ? 'border-red-500' : 'border-gray-300' ?> text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" 
+    placeholder="<?= number_format(2999, 0, '.', ' ') ?> FCFA" 
+    required oninput="formatPrice(this)" onblur="removeFormatting(this)">
+
                 <?php if (session('errors.sale_price')): ?>
                     <span class="text-red-500 text-xs"><?= session('errors.sale_price') ?></span>
                 <?php endif ?>
@@ -329,7 +337,10 @@
             
             <div>
                 <label for="purchase_price" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Prix d'achat:</label>
-                <input type="number" name="purchase_price" value="<?= old('purchase_price') ?>" id="purchase_price" class="bg-gray-50 border <?= session('errors.purchase_price') ? 'border-red-500' : 'border-gray-300' ?> text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="$2999" required>
+                <input type="text" name="purchase_price" value="<?= old('purchase_price') ?>" id="purchase_price" 
+                    class="bg-gray-50 border <?= session('errors.purchase_price') ? 'border-red-500' : 'border-gray-300' ?> text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" 
+                    placeholder="<?= number_format(2999, 0, '.', ' ') ?> FCFA" 
+                    required oninput="formatPrice(this)" onblur="removeFormatting(this)">
                 <?php if (session('errors.purchase_price')): ?>
                     <span class="text-red-500 text-xs"><?= session('errors.purchase_price') ?></span>
                 <?php endif ?>
@@ -337,7 +348,11 @@
             
             <div>
                 <label for="sale_price" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Prix de vente:</label>
-                <input type="number" name="sale_price" value="<?= old('sale_price') ?>" id="sale_price" class="bg-gray-50 border <?= session('errors.sale_price') ? 'border-red-500' : 'border-gray-300' ?> text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="$2999" required>
+                <input type="text" name="sale_price" value="<?= old('sale_price') ?>" id="sale_price" 
+                    class="bg-gray-50 border <?= session('errors.sale_price') ? 'border-red-500' : 'border-gray-300' ?> text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" 
+                    placeholder="2 999 FCFA" 
+                    required oninput="formatPrice(this)">
+
                 <?php if (session('errors.sale_price')): ?>
                     <span class="text-red-500 text-xs"><?= session('errors.sale_price') ?></span>
                 <?php endif ?>
@@ -409,6 +424,19 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 });
+
+function formatPrice(input) {
+    // Retire tous les caractères qui ne sont pas des chiffres
+    let value = input.value.replace(/\D/g, '');
+
+    // Formater le nombre avec des séparateurs de milliers
+    if (value) {
+        value = Number(value).toLocaleString('fr-FR', { minimumFractionDigits: 0 });
+    }
+
+    // Met à jour la valeur de l'input
+    input.value = value;
+}
 
 
 document.addEventListener('DOMContentLoaded', function () {

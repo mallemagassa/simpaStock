@@ -76,7 +76,7 @@
 <div class="px-4 pt-6 pb-6">
 <div class="grid w-full grid-cols-1 gap-4 mt-4 xl:grid-cols-2 2xl:grid-cols-3">
   <?php foreach ($shops as $value) : ?>
-    <a href="#" class="flex items-center justify-center p-4 bg-white border border-gray-200 rounded-lg shadow-sm dark:border-gray-700 dark:bg-gray-800 transition-transform transform hover:scale-105">
+    <a href="<?= base_url('shop/show/'.esc($value['id'])) ?>" class="flex items-center justify-center p-4 bg-white border border-gray-200 rounded-lg shadow-sm dark:border-gray-700 dark:bg-gray-800 transition-transform transform hover:scale-105">
       <div class="text-center">
         <h3 class="text-2xl font-bold leading-none text-gray-900 sm:text-3xl dark:text-white"><?=esc($value['name'])?></h3>
         <img class="" 

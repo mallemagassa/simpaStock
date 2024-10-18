@@ -1,6 +1,8 @@
 <?php
 namespace App\Controllers;
 
+use App\Models\Out;
+use App\Models\Product;
 use App\Models\Unit;
 use App\Models\Shop;
 use CodeIgniter\Controller;
@@ -222,45 +224,48 @@ class ShopController extends BaseController
     // }
 
    public function tmpUpload()
-{
-    $file = $this->request->getFile('logo_shop');
+    {
+        $file = $this->request->getFile('logo_shop');
 
-    if ($file && $file->isValid()) {
-        // Générer un nom temporaire pour le fichier
-        $newName = $file->getRandomName();
+        if ($file && $file->isValid()) {
+            $newName = $file->getRandomName();
 
-        // Vérifier le chemin et les permissions
-        if (!is_writable(FCPATH . 'assets/images/tmp')) {
-            return $this->response->setStatusCode(400, 'Le répertoire temporaire n\'est pas accessible en écriture.');
+            if (!is_writable(FCPATH . 'assets/images/tmp')) {
+                return $this->response->setStatusCode(400, 'Le répertoire temporaire n\'est pas accessible en écriture.');
+            }
+
+            if ($file->move(FCPATH . 'assets/images/tmp', $newName)) {
+                return $this->response->setJSON([
+                    'id' => $newName,
+                    'name' => $file->getClientName(),
+                ]);
+            } else {
+                return $this->response->setStatusCode(400, 'Erreur lors du déplacement du fichier vers le répertoire temporaire.');
+            }
         }
 
-        // Déplacer le fichier vers un dossier temporaire
-        if ($file->move(FCPATH . 'assets/images/tmp', $newName)) {
-            // Retourner le nom temporaire du fichier comme réponse à FilePond
-            return $this->response->setJSON([
-                'id' => $newName,
-                'name' => $file->getClientName(),
-            ]);
-        } else {
-            return $this->response->setStatusCode(400, 'Erreur lors du déplacement du fichier vers le répertoire temporaire.');
-        }
+        return $this->response->setStatusCode(400, 'Erreur lors du téléchargement du fichier.');
     }
-
-    return $this->response->setStatusCode(400, 'Erreur lors du téléchargement du fichier.');
-}
 
     
     public function show($id)
     {
-        $model = new Shop();
-        $data['shop'] = $model->find($id);
-
+        $shopModel = new Shop(); 
+        $outModel = new Out(); 
+        $productModel = new Product(); 
+    
+        $data['shop'] = $shopModel->find($id);
+        $data['products'] = $productModel->findAll();
+    
         if (!$data['shop']) {
-            throw new \CodeIgniter\Exceptions\PageNotFoundException('Produit non trouvé');
+            throw new \CodeIgniter\Exceptions\PageNotFoundException('Boutique non trouvée');
         }
 
-        return view('shop/show', $data);
+        $data['outs'] = $outModel->where('shop_id', $id)->findAll();
+    
+        return view('content/crud/shop/shop_detail', $data);
     }
+    
 
     public function edit($id)
     {
@@ -303,74 +308,71 @@ class ShopController extends BaseController
     public function update($id)
     {
         $model = new Shop();
-
-        // Trouver l'entrée existante par son ID
+    
         $existingShop = $model->find($id);
-
+    
         if (!$existingShop) {
             return redirect()->back()->with('error', 'Boutique non trouvée.');
         }
 
-        // Validation des autres champs
         if ($this->request->getMethod() === 'post' && $this->validate($model->validationRules, $model->validationMessages)) {
             
-            // Collecter les données du formulaire
             $data = [
                 'name'    => $this->request->getPost('name'),
                 'respon'  => $this->request->getPost('respon'),
                 'address' => $this->request->getPost('address'),
             ];
 
-            // Récupérer le contenu JSON du champ 'logo_shop'
             $logoShopData = $this->request->getPost('logo_shop');
 
-            // Vérifier si 'logo_shop' contient des données et décoder la chaîne JSON
             if ($logoShopData) {
-                $logoShopArray = json_decode($logoShopData, true);
+    
+                if ($this->isJson($logoShopData)) {
+                    $logoShopArray = json_decode($logoShopData, true);
+    
+                    if (json_last_error() === JSON_ERROR_NONE) {
+                        $tempFileId = $logoShopArray['id'];
+    
+                        $tempPath = FCPATH . 'assets/images/tmp/' . $tempFileId;
+    
+                        if (file_exists($tempPath)) {
+                            $newName = uniqid() . '_' . $tempFileId;
+    
+                            $finalPath = FCPATH . 'assets/images/boutique/' . $newName;
+    
+                            rename($tempPath, $finalPath);
 
-                if (json_last_error() === JSON_ERROR_NONE) {
-                    // Récupérer l'ID du fichier temporaire
-                    $tempFileId = $logoShopArray['id'];
-
-                    // Chemin complet vers le fichier temporaire
-                    $tempPath = FCPATH . 'assets/images/tmp/' . $tempFileId;
-
-                    // Vérification si le fichier temporaire existe
-                    if (file_exists($tempPath)) {
-                        // Générer un nouveau nom pour le fichier
-                        $newName = uniqid() . '_' . $tempFileId;
-
-                        // Définir le chemin final pour le fichier
-                        $finalPath = FCPATH . 'assets/images/boutique/' . $newName;
-
-                        // Déplacer le fichier temporaire vers le répertoire final
-                        rename($tempPath, $finalPath);
-
-                        // Supprimer l'ancien logo s'il existe
-                        if (!empty($existingShop['logo_shop']) && file_exists(FCPATH . $existingShop['logo_shop'])) {
-                            unlink(FCPATH . $existingShop['logo_shop']);
+                            if (!empty($existingShop['logo_shop']) && file_exists(FCPATH . $existingShop['logo_shop'])) {
+                                unlink(FCPATH . $existingShop['logo_shop']);
+                            }
+    
+                            $data['logo_shop'] = 'assets/images/boutique/' . $newName;
+                        } else {
+                            return redirect()->back()->with('error', 'Fichier temporaire introuvable.');
                         }
-
-                        // Ajouter le chemin du nouveau fichier dans les données à sauvegarder
-                        $data['logo_shop'] = 'assets/images/boutique/' . $newName;
                     } else {
-                        return redirect()->back()->with('error', 'Fichier temporaire introuvable.');
+                        return redirect()->back()->with('error', 'Erreur lors du décodage des données JSON.');
                     }
                 } else {
-                    return redirect()->back()->with('error', 'Erreur lors du décodage des données JSON.');
+                    $data['logo_shop'] = $logoShopData;
                 }
             }
-
-            // Mettre à jour les données dans la base de données
+    
             $model->update($id, $data);
-
-            // Rediriger vers la page des boutiques avec un message de succès
+    
             return redirect()->to('/shop')->with('success', 'Boutique mise à jour avec succès');
         }
-
-        // Si la validation échoue, retourner en arrière avec les erreurs
+    
         return redirect()->back()->withInput()->with('errors', $this->validator->getErrors());
     }
+    
+    // Fonction utilitaire pour vérifier si une chaîne est un JSON valide
+    private function isJson($string)
+    {
+        json_decode($string);
+        return (json_last_error() === JSON_ERROR_NONE);
+    }
+    
 
     
     

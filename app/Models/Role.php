@@ -23,9 +23,25 @@ class Role extends Model
     protected $updatedField  = 'updated_at';
     protected $deletedField  = 'deleted_at';
 
-    // Validation
-    protected $validationRules      = [];
-    protected $validationMessages   = [];
+    protected $validationRules      = [
+        'name'        => 'required|string|max_length[100]',
+        'title'       => 'permit_empty|string|max_length[100]',
+        'description' => 'permit_empty|string|max_length[255]',
+    ];
+    
+    protected $validationMessages   = [
+        'name' => [
+            'required' => 'Le nom du groupe est obligatoire.',
+            'max_length' => 'Le nom du groupe ne doit pas dépasser 100 caractères.'
+        ],
+        'title' => [
+            'max_length' => 'Le titre du groupe ne doit pas dépasser 100 caractères.'
+        ],
+        'description' => [
+            'max_length' => 'La description ne doit pas dépasser 255 caractères.'
+        ],
+    ];
+    
     protected $skipValidation       = false;
     protected $cleanValidationRules = true;
 
@@ -45,4 +61,11 @@ class Role extends Model
         return $this->findAll();
     }
 
+    public function getRolesWithPermissions()
+    {
+        return $this->select('groups.*, permissions.name as permission_name')
+                    ->join('group_permissions', 'groups.id = group_permissions.group_id', 'left')
+                    ->join('permissions', 'group_permissions.permission_id = permissions.id', 'left')
+                    ->findAll();
+    }
 }

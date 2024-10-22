@@ -37,32 +37,32 @@ class AuthGroups extends ShieldAuthGroups
 
     protected function loadMatrix()
     {
-        // Chargement de la matrice des permissions à partir de la base de données
-        // Par exemple, vous pouvez définir cette matrice selon vos besoins
-        $this->matrix = [
-            'superadmin' => [
-                'admin.*',
-                'users.*',
-                'beta.*',
-            ],
-            'admin' => [
-                'admin.access',
-                'users.create',
-                'users.edit',
-                'users.delete',
-                'beta.access',
-            ],
-            'developer' => [
-                'admin.access',
-                'admin.settings',
-                'users.create',
-                'users.edit',
-                'beta.access',
-            ],
-            'user' => [],
-            'beta' => [
-                'beta.access',
-            ],
-        ];
+        $groupPermissionModel = new \App\Models\GroupPermission();
+        $permissionModel = new \App\Models\Permission();
+        $groupModel = new \App\Models\Role();
+    
+        // Récupérez tous les groupes
+        $groups = $groupModel->findAll();
+        
+        // Initialisez la matrice
+        $this->matrix = [];
+    
+        foreach ($groups as $group) {
+            // Récupérez les permissions associées à chaque groupe
+            $groupPermissions = $groupPermissionModel->where('group_id', $group['id'])->findAll();
+            
+            // Récupérez les noms des permissions
+            $permissions = [];
+            foreach ($groupPermissions as $groupPermission) {
+                $permission = $permissionModel->find($groupPermission['permission_id']);
+                if ($permission) {
+                    $permissions[] = $permission['name'];
+                }
+            }
+    
+            // Assignez les permissions à la matrice
+            $this->matrix[$group['name']] = $permissions;
+        }
     }
+    
 }

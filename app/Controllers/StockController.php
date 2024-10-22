@@ -173,38 +173,43 @@ class StockController extends BaseController
         }
     
         if ($this->request->getMethod() === 'post') {
-            // Règles de validation
             $rules = [
                 'quantity' => 'required|integer|greater_than[0]',
                 'shop_id' => 'required|integer|greater_than[0]'
             ];
     
             if (!$this->validate($rules)) {
-                // Retourner à la vue avec les erreurs de validation et garder la modal ouverte
                 return view('stock/out', [
                     'stock' => $stock,
                     'validation' => $this->validator,
-                    'modal' => 'out-stock-modal'  // Variable pour garder la modal ouverte
+                    'modal' => 'out-stock-modal'
                 ]);
             }
 
-
-    
             $quantityToRemove = $this->request->getPost('quantity');
-    
-            // Vérifier si la quantité demandée est disponible
+            
             if ($quantityToRemove <= $stock['quantity']) {
                 $newQuantity = $stock['quantity'] - $quantityToRemove;
                 $model->update($id, ['quantity' => $newQuantity]);
-
-                $outModel->insert([
-                    'profit' => 0,
-                    'amount_total' => 0,
+                
+                $productModel = new Product();
+                $product = $productModel->find($stock['product_id']);
+                //dd(abs($product['sale_price']),  abs($product['purchase_price']), abs($quantityToRemove));
+                
+                $insertResult = $outModel->insert([
+                    'profit' => intval((abs($product['sale_price']) - abs($product['purchase_price'])) * abs($quantityToRemove)),
+                    'amount_total' => intval(($product['sale_price'] * $quantityToRemove )),
+                    'quantity' => $quantityToRemove,
                     'product_id' => $stock['product_id'],
                     'shop_id' => $shop['id'],
                 ]);
-    
-                // Déclencher un événement si le stock atteint un niveau critique
+                
+                
+                if (!$insertResult) {
+                    return redirect()->back()->withInput()->with('error', 'Erreur lors de l\'insertion: '); //. json_encode($dbError)
+                }
+                
+            
                 if ($newQuantity <= $stock['critique']) {
                     $eventData = [
                         'user_id' => auth()->id(),
@@ -218,11 +223,11 @@ class StockController extends BaseController
     
                 return redirect()->to('/stock')->with('success', 'Stock mis à jour avec succès. Quantité retirée.');
             } else {
-                // Quantité insuffisante, rester sur la même page et afficher l'erreur dans la modal
+              
                 return view('stock/out', [
                     'stock' => $stock,
                     'validation' => $this->validator,
-                    'modal' => 'out-stock-modal',  // Garder la modal ouverte
+                    'modal' => 'out-stock-modal', 
                     'error' => 'Quantité insuffisante en stock.'
                 ]);
             }

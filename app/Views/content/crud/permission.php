@@ -21,19 +21,19 @@
                   <li>
                     <div class="flex items-center">
                       <svg class="w-6 h-6 text-gray-400" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"></path></svg>
-                      <span class="ml-1 text-gray-400 md:ml-2 dark:text-gray-500" aria-current="page">permissions</span>
+                      <span class="ml-1 text-gray-400 md:ml-2 dark:text-gray-500" aria-current="page">Permissions</span>
                     </div>
                   </li>
                 </ol>
             </nav>
-            <h1 class="text-xl font-semibold text-gray-900 sm:text-2xl dark:text-white">Toutes les permissions</h1>
+            <h1 class="text-xl font-semibold text-gray-900 sm:text-2xl dark:text-white">Toutes les Permissions</h1>
         </div>
         <div class="items-end justify-end block sm:flex md:divide-x md:divide-gray-100 dark:divide-gray-700">
             <!--<div class="flex items-center mb-4 sm:mb-0">
                 <form class="sm:pr-3" action="#" method="GET">
-                    <label for="permissions-search" class="sr-only">Recherche</label>
+                    <label for="roles-search" class="sr-only">Recherche</label>
                     <div class="relative w-48 mt-1 sm:w-64 xl:w-96">
-                        <input type="text" name="email" id="permissions-search" class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="Search for permissions">
+                        <input type="text" name="email" id="roles-search" class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="Search for roles">
                     </div>
                 </form>
                 <div class="flex items-center w-full sm:justify-end">
@@ -101,6 +101,7 @@
         </div>
     </div>
 </div>
+
 <div class="flex flex-col">
     <div class="overflow-x-auto">
         <div class="inline-block min-w-full align-middle">
@@ -143,12 +144,24 @@
                             </td>
 
                             <td class="p-4 space-x-2 whitespace-nowrap">
-                              <button type="button" id="updatepermissionButton" data-id="<?=$value['id']?>" data-name="<?=$value['name']?>" 
-                                        data-drawer-target="drawer-update-permission-default" data-drawer-show="drawer-update-permission-default" aria-controls="drawer-update-permission-default" data-drawer-placement="right" 
-                                        class="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white rounded-lg bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">
-                                    <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M17.414 2.586a2 2 0 00-2.828 0L7 10.172V13h2.828l7.586-7.586a2 2 0 000-2.828z"></path><path fill-rule="evenodd" d="M2 6a2 2 0 012-2h4a1 1 0 010 2H4v10h10v-4a1 1 0 112 0v4a2 2 0 01-2 2H4a2 2 0 01-2-2V6z" clip-rule="evenodd"></path></svg>
-                                    Modifier
-                                </button>
+                    
+                                <button type="button" id="updatepermissionButton" 
+                                data-id="<?=$value['id']?>" 
+                                data-name="<?= htmlspecialchars($value['name'], ENT_QUOTES) ?>" 
+                                data-description="<?= htmlspecialchars($value['description'], ENT_QUOTES) ?>" 
+                                data-roles="<?= isset($value['roles']) && is_array($value['roles']) ? implode(',', $value['roles']) : '' ?>"
+                                data-drawer-target="drawer-update-permission-default" 
+                                data-drawer-show="drawer-update-permission-default" 
+                                aria-controls="drawer-update-permission-default" 
+                                data-drawer-placement="right" 
+                                class="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white rounded-lg bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">
+                                
+                                <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M17.414 2.586a2 2 0 00-2.828 0L7 10.172V13h2.828l7.586-7.586a2 2 0 000-2.828z"></path>
+                                    <path fill-rule="evenodd" d="M2 6a2 2 0 012-2h4a1 1 0 010 2H4v10h10v-4a1 1 0 112 0v4a2 2 0 01-2 2H4a2 2 0 01-2-2V6z" clip-rule="evenodd"></path>
+                                </svg>
+                                Modifier
+                            </button>
 
                                 <button type="button" id="deletepermissionButton" data-drawer-target="drawer-delete-permission-default" data-drawer-show="drawer-delete-permission-default" aria-controls="drawer-delete-permission-default" data-id="<?= $value['id'] ?>" data-drawer-placement="right" class="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-red-700 rounded-lg hover:bg-red-800 focus:ring-4 focus:ring-red-300 dark:focus:ring-red-900">
                                     <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
@@ -221,6 +234,26 @@
             <?php endif ?>
         </div>
 
+        <div>
+            <label for="roles" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">roles</label>
+            <div id="multi-select2" class="relative inline-block w-full">
+                <div id="selected-items2" class="flex flex-wrap gap-1 border border-gray-300 bg-gray-50 p-2 rounded-lg cursor-pointer dark:bg-gray-800 dark:border-gray-600">
+                    <span id="placeholder2" class="text-gray-400 dark:text-gray-400">Sélectionnez des options...</span>
+                </div>
+                
+                <ul id="dropdown2" class="absolute w-full bg-white border border-gray-300 mt-2 rounded-lg max-h-40 overflow-y-auto hidden dark:bg-gray-800 dark:border-gray-600">
+                    <?php foreach ($roles as $role): ?>
+                        <li class="px-4 py-2 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-white" data-value="<?= esc($role['id']) ?>"><?= esc($role['name']) ?></li>
+                    <?php endforeach ?>
+                </ul>
+            </div>
+
+            <input type="hidden" name="roles" id="rolesInput2" value="">
+            
+            <?php if (session('errors.roles')): ?>
+                <span class="text-red-500 text-xs"><?= session('errors.roles') ?></span>
+            <?php endif ?>
+        </div>
         
         <div class="bottom-0 left-0 flex justify-center w-full pb-4 space-x-4 md:px-4 md:absolute">
             <button type="submit" class="text-white w-full justify-center bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">Mettre à jour</button>
@@ -282,7 +315,27 @@
                     <span class="text-red-500 text-xs"><?= session('errors.description') ?></span>
                 <?php endif ?>
             </div>
-            
+            <div>
+                <label for="roles" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">roles</label>
+                <div id="multi-select1" class="relative inline-block w-full">
+                    <div id="selected-items1" class="flex flex-wrap gap-1 border border-gray-300 bg-gray-50 p-2 rounded-lg cursor-pointer dark:bg-gray-800 dark:border-gray-600">
+                        <span id="placeholder1" class="text-gray-400 dark:text-gray-400">Sélectionnez des options...</span>
+                    </div>
+                    
+                    <ul id="dropdown1" class="absolute w-full bg-white border border-gray-300 mt-2 rounded-lg max-h-40 overflow-y-auto hidden dark:bg-gray-800 dark:border-gray-600">
+                        <?php foreach ($roles as $role): ?>
+                            <li class="px-4 py-2 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-white" data-value="<?= esc($role['id']) ?>"><?= esc($role['name']) ?></li>
+                        <?php endforeach ?>
+                    </ul>
+                </div>
+
+                <input type="hidden" name="roles" id="rolesInput1" value="">
+                
+                <?php if (session('errors.roles')): ?>
+                    <span class="text-red-500 text-xs"><?= session('errors.roles') ?></span>
+                <?php endif ?>
+            </div>
+                        
             
             <div class="bottom-0 left-0 flex justify-center w-full pb-4 space-x-4 md:px-4 md:absolute">
                 <button type="submit" class="text-white w-full justify-center bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">Créer</button>
@@ -297,24 +350,90 @@
 </div>
 
 <script>
+// document.addEventListener('DOMContentLoaded', function () {
+//     document.querySelectorAll('#updatepermissionButton').forEach(button => {
+//         button.addEventListener('click', function () {
+//             const permissionId = button.getAttribute('data-id');
+//             const permissionName = button.getAttribute('data-name');
+
+//             const form = document.getElementById('edit-name-form');
+            
+            
+//             const RoleId = button.getAttribute('data-id');
+//             form.action = `<?=base_url('permissions/update/')?>${permissionId}`;
+            
+//             document.getElementById('permission').value = permissionName;
+//             document.getElementById('permission_id').value = permissionId;
+//         });
+//     });
+// });
+
+
 document.addEventListener('DOMContentLoaded', function () {
     document.querySelectorAll('#updatepermissionButton').forEach(button => {
         button.addEventListener('click', function () {
-            const permissionId = button.getAttribute('data-id');
-            const permissionName = button.getAttribute('data-name');
-
             const form = document.getElementById('edit-name-form');
-            
-            
-            const RoleId = button.getAttribute('data-id');
+            const permissionId = button.getAttribute('data-id');
             form.action = `<?=base_url('permissions/update/')?>${permissionId}`;
             
-            document.getElementById('permission').value = permissionName;
+            // Récupération des attributs du bouton
+            const permissionName = button.getAttribute('data-name');
+            const permissionDescription = button.getAttribute('data-description');
+            const roles = button.getAttribute('data-roles');
+            
+            // Affecter les valeurs récupérées aux champs
+            document.getElementById('name').value = permissionName;
+            document.getElementById('description').value = permissionDescription;
             document.getElementById('permission_id').value = permissionId;
+
+            const rolesArray = roles.split(','); // Diviser la chaîne de rôles en tableau
+            updateSelectedroles(rolesArray);  // Mettre à jour la liste des rôles sélectionnés
+         
         });
     });
 });
 
+// Fonction pour mettre à jour les éléments sélectionnés
+function updateSelectedroles(rolesArray) {
+    const selectedItems = document.getElementById('selected-items2');
+    const rolesInput = document.getElementById('rolesInput2');
+    const placeholder = document.getElementById('placeholder2');
+    
+    // Réinitialiser les éléments sélectionnés
+    selectedItems.innerHTML = '';
+    let selectedRoles = []; // Tableau pour les rôles sélectionnés
+
+    rolesArray.forEach(role => {
+        selectedRoles.push(role);
+        
+        // Créer un conteneur pour le rôle et un bouton de suppression
+        const item = document.createElement('span');
+        item.className = 'bg-blue-500 text-white px-2 py-1 rounded flex items-center space-x-1';
+        
+        const itemText = document.createElement('span');
+        itemText.innerText = role; // Afficher le nom du rôle
+
+        const removeButton = document.createElement('button');
+        removeButton.innerHTML = '&times;';
+        removeButton.className = 'ml-2 bg-red-500 text-white rounded px-1';
+        
+        // Ajouter un gestionnaire d'événement pour supprimer le rôle sélectionné
+        removeButton.addEventListener('click', () => {
+            selectedRoles = selectedRoles.filter(selected => selected !== role);
+            updateSelectedroles(selectedRoles);  // Réafficher les rôles mis à jour
+        });
+
+        item.appendChild(itemText);
+        item.appendChild(removeButton);
+        selectedItems.appendChild(item);
+    });
+
+    // Mettre à jour l'input caché avec les rôles sélectionnés
+    rolesInput.value = selectedRoles.join(',');
+    
+    // Afficher ou masquer le placeholder
+    placeholder.style.display = selectedRoles.length > 0 ? 'none' : 'block';
+}
 
 document.addEventListener('DOMContentLoaded', function () {
     const deleteButtons = document.querySelectorAll('#deletepermissionButton');
@@ -328,6 +447,90 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 });
+
+
+document.addEventListener('DOMContentLoaded', () => {
+    const setupDropdown = (dropdownId, selectedItemsId, permissionsInputId, placeholderId) => {
+        const dropdown = document.getElementById(dropdownId);
+        const selectedItems = document.getElementById(selectedItemsId);
+        const permissionsInput = document.getElementById(permissionsInputId);
+        const placeholder = document.getElementById(placeholderId);
+
+        let selectedPermissions = [];
+
+        // Afficher/Masquer le dropdown quand on clique sur la zone sélectionnée
+        selectedItems.addEventListener('click', () => {
+            dropdown.classList.toggle('hidden');
+        });
+
+        // Ajouter un événement pour chaque élément du dropdown
+        dropdown.querySelectorAll('li').forEach(option => {
+            option.addEventListener('click', () => {
+                const value = option.getAttribute('data-value');
+                const name = option.innerText;
+
+                if (!selectedPermissions.includes(value)) {
+                    // Ajouter l'élément sélectionné au tableau
+                    selectedPermissions.push(value);
+
+                    // Créer un conteneur pour l'élément et le bouton "remove"
+                    const item = document.createElement('span');
+                    item.className = 'bg-blue-500 text-white px-2 py-1 rounded flex items-center space-x-1';
+                    
+                    // Ajouter le texte de la permission (nom)
+                    const itemText = document.createElement('span');
+                    itemText.innerText = name;
+
+                    // Ajouter le bouton "remove"
+                    const removeButton = document.createElement('button');
+                    removeButton.innerHTML = '&times;'; // Symbole × pour "remove"
+                    removeButton.className = 'ml-2 bg-red-500 text-white rounded px-1';
+                    removeButton.addEventListener('click', () => {
+                        // Supprimer la permission de la liste
+                        selectedPermissions = selectedPermissions.filter(permission => permission !== value);
+                        
+                        // Mettre à jour l'input caché
+                        permissionsInput.value = selectedPermissions.join(',');
+
+                        // Supprimer visuellement l'élément
+                        selectedItems.removeChild(item);
+
+                        // Afficher le placeholder si plus aucune permission n'est sélectionnée
+                        if (selectedPermissions.length === 0) {
+                            placeholder.classList.remove('hidden');
+                        }
+                    });
+
+                    // Ajouter le texte et le bouton à l'élément sélectionné
+                    item.appendChild(itemText);
+                    item.appendChild(removeButton);
+
+                    // Ajouter l'élément dans la zone de sélection
+                    selectedItems.appendChild(item);
+                }
+
+                // Mettre à jour l'input caché avec les valeurs (IDs) sélectionnées
+                permissionsInput.value = selectedPermissions.join(',');
+
+                // Cacher le placeholder
+                placeholder.classList.add('hidden');
+            });
+        });
+
+        // Cacher le dropdown si on clique à l'extérieur
+        document.addEventListener('click', (e) => {
+            if (!selectedItems.contains(e.target) && !dropdown.contains(e.target)) {
+                dropdown.classList.add('hidden');
+            }
+        });
+    };
+
+    // Initialiser les deux dropdowns
+    setupDropdown('dropdown1', 'selected-items1', 'permissionsInput1', 'placeholder1');
+    setupDropdown('dropdown2', 'selected-items2', 'permissionsInput2', 'placeholder2');
+});
+
+
 
 </script>
 

@@ -16,6 +16,7 @@ class Out extends Model
     protected $allowedFields    = [
         'profit',
         'amount_total',
+        'quantity',
         'product_id',
         'shop_id',
     ];

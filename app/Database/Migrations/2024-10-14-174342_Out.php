@@ -23,6 +23,11 @@ class Out extends Migration
                 'type' => 'INT',
                 'constraint' => 11,
             ],
+            'quantity' => [
+                'type' => 'INT',
+                'constraint' => 11,
+                'unsigned' => true,
+            ],
             'product_id' => [
                 'type' => 'INT',
                 'constraint' => 11,

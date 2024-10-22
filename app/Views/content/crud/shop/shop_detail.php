@@ -113,6 +113,9 @@
                             Prix Vente
                         </th>
                         <th scope="col" class="p-4 text-xs font-medium text-left text-gray-500 uppercase dark:text-gray-400">
+                            Quantité
+                        </th>
+                        <th scope="col" class="p-4 text-xs font-medium text-left text-gray-500 uppercase dark:text-gray-400">
                             Montant total
                         </th>
                         <th scope="col" class="p-4 text-xs font-medium text-left text-gray-500 uppercase dark:text-gray-400">
@@ -163,8 +166,9 @@
                             </td>
                             <td class="p-4 text-base font-medium text-gray-900 whitespace-nowrap dark:text-white"><?= number_format(esc($filteredProducts[0]['purchase_price']), 0, '.', ' ') ?> F CFA</td>
                             <td class="p-4 text-base font-medium text-gray-900 whitespace-nowrap dark:text-white"><?= number_format(esc($filteredProducts[0]['sale_price']), 0, '.', ' ') ?> F CFA</td>
-                            <td class="p-4 text-base font-medium text-gray-900 whitespace-nowrap dark:text-white"><?= number_format(esc($filteredProducts[0]['sale_price']) + esc($filteredProducts[0]['purchase_price']), 0, '.', ' ') ?> F CFA</td>
-                            <td class="p-4 text-base font-medium text-gray-900 whitespace-nowrap dark:text-white"><?= number_format(esc($filteredProducts[0]['sale_price']) - esc($filteredProducts[0]['purchase_price']), 0, '.', ' ') ?> F CFA</td>
+                            <td class="p-4 text-base font-medium text-gray-900 whitespace-nowrap dark:text-white"><?= esc($value['quantity']) ?></td>
+                            <td class="p-4 text-base font-medium text-gray-900 whitespace-nowrap dark:text-white"><?= number_format(esc($value['amount_total']), 0, '.', ' ') ?> F CFA</td>
+                            <td class="p-4 text-base font-medium text-gray-900 whitespace-nowrap dark:text-white"><?= number_format(esc($value['profit']), 0, '.', ' ') ?> F CFA</td>
                         </tr>
                     <?php endforeach ?>               
                 </tbody>

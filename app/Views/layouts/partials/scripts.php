@@ -9,9 +9,8 @@
   <script src="<?= base_url('node_modules/filepond-plugin-file-validate-type/dist/filepond-plugin-file-validate-type.js') ?>"></script>
   <script src="<?= base_url('node_modules/filepond-plugin-file-validate-size/dist/filepond-plugin-file-validate-size.js') ?>"></script>
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-
-    <!-- Inclure Select2 JS -->
-   <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+  <script src="https://code.jquery.com/jquery-3.5.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/js/select2.min.js"></script>
   <script>
  
 FilePond.registerPlugin(FilePondPluginFileValidateSize);
@@ -65,3 +64,9 @@ inputElements.forEach(inputElement => {
 
     
   </script>
+
+<script type="text/javascript">
+    $(document).ready(function() {
+        $('.js-example-basic-multiple').select2();
+    });
+</script>

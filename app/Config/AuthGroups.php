@@ -6,7 +6,7 @@ namespace Config;
 
 use CodeIgniter\Shield\Config\AuthGroups as ShieldAuthGroups;
 
-class AuthGroups extends ShieldAuthGroups
+class AuthGroups extends ShieldAuthGroups 
 {
     public string $defaultGroup = 'user';
 
@@ -26,7 +26,15 @@ class AuthGroups extends ShieldAuthGroups
     protected function loadGroups()
     {
         $groupModel = new \App\Models\Role();
-        $this->groups = $groupModel->getGroups();
+        $groupData = $groupModel->findAll();
+
+        // Parcourez chaque groupe et structurez les données
+        foreach ($groupData as $group) {
+            $this->groups[$group['name']] = [
+                'title'       => $group['title'],       // Récupérer le titre depuis la base de données
+                'description' => $group['description'], // Récupérer la description depuis la base de données
+            ];
+        }
     }
 
     protected function loadPermissions()
@@ -64,5 +72,4 @@ class AuthGroups extends ShieldAuthGroups
             $this->matrix[$group['name']] = $permissions;
         }
     }
-    
 }

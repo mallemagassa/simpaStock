@@ -232,26 +232,25 @@
            
         </div>
 
-        <div>
-    <label for="permissions" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Permissions 2</label>
-    <div id="multi-select2" class="relative inline-block w-full">
-        <div id="selected-items2" class="flex flex-wrap gap-1 border border-gray-300 bg-gray-50 p-2 rounded-lg cursor-pointer dark:bg-gray-800 dark:border-gray-600">
-            <span id="placeholder2" class="text-gray-400 dark:text-gray-400">Sélectionnez des options...</span>
-        </div>
-        
-        <ul id="dropdown2" class="absolute w-full bg-white border border-gray-300 mt-2 rounded-lg max-h-40 overflow-y-auto hidden dark:bg-gray-800 dark:border-gray-600">
-            <?php foreach ($permissions as $permission): ?>
-                <li class="px-4 py-2 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-white" data-value="<?= esc($permission['id']) ?>"><?= esc($permission['name']) ?></li>
-            <?php endforeach ?>
-        </ul>
-    </div>
 
-    <input type="hidden" name="permissions" id="permissionsInput2" value="">
-    
-    <?php if (session('errors.permissions')): ?>
-        <span class="text-red-500 text-xs"><?= session('errors.permissions') ?></span>
-    <?php endif ?>
-</div>
+        <div>
+            <label class="block text-gray-700 dark:text-gray-400 text-md font-bold mb-2" for="pair">
+            Permissions:
+            </label>
+            <select
+                id="selectPermissionUpdate"
+                name="permissions[]"
+                class="js-example-basic-multiple bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"  
+                data-placeholder="électionnez des options..."
+                data-allow-clear="false"
+                multiple="multiple"
+                title="Sélectionnez Permissions..." 
+                style="width: 100%;">
+                <?php foreach ($permissions as $permission): ?>
+                    <option value="<?= esc($permission['id']) ?>"><?= esc($permission['name']) ?></option>
+                <?php endforeach ?>
+            </select>
+        </div>
 
         
         <div class="bottom-0 left-0 flex justify-center w-full pb-4 space-x-4 md:px-4 md:absolute">
@@ -316,25 +315,22 @@
         </div>
 
         <div>
-    <label for="permissions" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Permissions</label>
-    <div id="multi-select1" class="relative inline-block w-full">
-        <div id="selected-items1" class="flex flex-wrap gap-1 border border-gray-300 bg-gray-50 p-2 rounded-lg cursor-pointer dark:bg-gray-800 dark:border-gray-600">
-            <span id="placeholder1" class="text-gray-400 dark:text-gray-400">Sélectionnez des options...</span>
+            <label class="block text-gray-700 dark:text-gray-400 text-md font-bold mb-2" for="pair">
+            Permissions:
+            </label>
+            <select
+                name="permissions[]"
+                class="js-example-basic-multiple bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"  
+                data-placeholder="électionnez des options..."
+                data-allow-clear="false"
+                multiple="multiple"
+                title="Sélectionnez Permissions..." 
+                style="width: 100%;">
+                <?php foreach ($permissions as $permission): ?>
+                    <option value="<?= esc($permission['id']) ?>"><?= esc($permission['name']) ?></option>
+                <?php endforeach ?>
+            </select>
         </div>
-        
-        <ul id="dropdown1" class="absolute w-full bg-white border border-gray-300 mt-2 rounded-lg max-h-40 overflow-y-auto hidden dark:bg-gray-800 dark:border-gray-600">
-            <?php foreach ($permissions as $permission): ?>
-                <li class="px-4 py-2 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-white" data-value="<?= esc($permission['id']) ?>"><?= esc($permission['name']) ?></li>
-            <?php endforeach ?>
-        </ul>
-    </div>
-
-    <input type="hidden" name="permissions" id="permissionsInput1" value="">
-    
-    <?php if (session('errors.permissions')): ?>
-        <span class="text-red-500 text-xs"><?= session('errors.permissions') ?></span>
-    <?php endif ?>
-</div>
 
         <div class="bottom-0 left-0 flex justify-center w-full pb-4 space-x-4 md:px-4 md:absolute">
             <button type="submit" class="text-white w-full justify-center bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">Créer</button>
@@ -350,27 +346,6 @@
 </div>
 
 <script>
-// document.addEventListener('DOMContentLoaded', function () {
-//     document.querySelectorAll('#updateRoleButton').forEach(button => {
-//         button.addEventListener('click', function () {
-
-//             const form = document.getElementById('edit-role-form');
-            
-            
-//             const RoleId = button.getAttribute('data-id');
-//             form.action = `<?=base_url('roles/update/')?>${RoleId}`;
-//             const Rolename = button.getAttribute('data-name');
-//             const Roledescription = button.getAttribute('data-description');
-//             const Rolepermissions = button.getAttribute('data-permissions');
-            
-//             document.getElementById('name').value = Rolename;
-//             document.getElementById('description').value = Roledescription;
-//             document.getElementById('Role_id').value = RoleId;
-//             document.getElementById('permissions').value = Rolepermissions;
-//         });
-//     });
-// });
-
 
 document.addEventListener('DOMContentLoaded', function () {
     document.querySelectorAll('#updateRoleButton').forEach(button => {
@@ -388,52 +363,24 @@ document.addEventListener('DOMContentLoaded', function () {
 
             // Mettez à jour les permissions
             const permissionsArray = Rolepermissions.split(','); // Assurez-vous que les permissions sont une chaîne séparée par des virgules
-            updateSelectedPermissions(permissionsArray);
 
-            
+            var s2 = $("#selectPermissionUpdate").select2({
+            });
+
+            permissionsArray.forEach(function(e){
+                
+            if(!s2.find('option:contains(' + e + ')').length)
+                console.log(e);
+                s2.append($('<option>').text(e));
+            });
+
+            s2.val(permissionsArray).trigger("change"); 
+
+                
+            modal.classList.remove('hidden');
         });
     });
 });
-
-// Fonction pour mettre à jour les éléments sélectionnés
-function updateSelectedPermissions(permissionsArray) {
-    const selectedItems = document.getElementById('selected-items2');
-    const permissionsInput = document.getElementById('permissionsInput2');
-    const placeholder = document.getElementById('placeholder2');
-    
-    selectedItems.innerHTML = ''; // Réinitialisez les éléments sélectionnés
-    let selectedPermissions = []; // Réinitialisez le tableau des permissions sélectionnées
-
-    permissionsArray.forEach(permission => {
-        selectedPermissions.push(permission);
-        
-        // Créez un conteneur pour l'élément et le bouton "remove"
-        const item = document.createElement('span');
-        item.className = 'bg-blue-500 text-white px-2 py-1 rounded flex items-center space-x-1';
-        
-        // Ajoutez le texte de la permission (nom)
-        const itemText = document.createElement('span');
-        itemText.innerText = permission; // Vous pourriez vouloir récupérer le nom de permission depuis votre tableau
-
-        // Ajouter le bouton "remove"
-        const removeButton = document.createElement('button');
-        removeButton.innerHTML = '&times;'; // Symbole × pour "remove"
-        removeButton.className = 'ml-2 bg-red-500 text-white rounded px-1';
-        removeButton.addEventListener('click', () => {
-            // Supprimez la permission de la liste
-            selectedPermissions = selectedPermissions.filter(selected => selected !== permission);
-            updateSelectedPermissions(selectedPermissions); // Réafficher les permissions sélectionnées
-        });
-
-        item.appendChild(itemText);
-        item.appendChild(removeButton);
-        selectedItems.appendChild(item);
-    });
-
-    // Mettez à jour l'input caché pour les permissions
-    permissionsInput.value = selectedPermissions
-    placeholder.style.display = selectedPermissions.length > 0 ? 'none' : 'block'; // Affichez le placeholder si aucune permission n'est sélectionnée
-}
 
 
 document.addEventListener('DOMContentLoaded', function () {
@@ -449,92 +396,6 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 });
 
-
-
-
-document.addEventListener('DOMContentLoaded', () => {
-    const setupDropdown = (dropdownId, selectedItemsId, permissionsInputId, placeholderId) => {
-        const dropdown = document.getElementById(dropdownId);
-        const selectedItems = document.getElementById(selectedItemsId);
-        const permissionsInput = document.getElementById(permissionsInputId);
-        const placeholder = document.getElementById(placeholderId);
-
-        let selectedPermissions = [];
-
-        // Afficher/Masquer le dropdown quand on clique sur la zone sélectionnée
-        selectedItems.addEventListener('click', () => {
-            dropdown.classList.toggle('hidden');
-        });
-
-        // Ajouter un événement pour chaque élément du dropdown
-        dropdown.querySelectorAll('li').forEach(option => {
-            option.addEventListener('click', () => {
-                const value = option.getAttribute('data-value');
-                const name = option.innerText;
-
-                if (!selectedPermissions.includes(value)) {
-                    // Ajouter l'élément sélectionné au tableau
-                    selectedPermissions.push(value);
-
-                    // Créer un conteneur pour l'élément et le bouton "remove"
-                    const item = document.createElement('span');
-                    item.className = 'bg-blue-500 text-white px-2 py-1 rounded flex items-center space-x-1';
-                    
-                    // Ajouter le texte de la permission (nom)
-                    const itemText = document.createElement('span');
-                    itemText.innerText = name;
-
-                    // Ajouter le bouton "remove"
-                    const removeButton = document.createElement('button');
-                    removeButton.innerHTML = '&times;'; // Symbole × pour "remove"
-                    removeButton.className = 'ml-2 bg-red-500 text-white rounded px-1';
-                    removeButton.addEventListener('click', () => {
-                        // Supprimer la permission de la liste
-                        selectedPermissions = selectedPermissions.filter(permission => permission !== value);
-                        
-                        // Mettre à jour l'input caché
-                        permissionsInput.value = selectedPermissions.join(',');
-
-                        // Supprimer visuellement l'élément
-                        selectedItems.removeChild(item);
-
-                        // Afficher le placeholder si plus aucune permission n'est sélectionnée
-                        if (selectedPermissions.length === 0) {
-                            placeholder.classList.remove('hidden');
-                        }
-                    });
-
-                    // Ajouter le texte et le bouton à l'élément sélectionné
-                    item.appendChild(itemText);
-                    item.appendChild(removeButton);
-
-                    // Ajouter l'élément dans la zone de sélection
-                    selectedItems.appendChild(item);
-                }
-
-                // Mettre à jour l'input caché avec les valeurs (IDs) sélectionnées
-                permissionsInput.value = selectedPermissions.join(',');
-
-                // Cacher le placeholder
-                placeholder.classList.add('hidden');
-            });
-        });
-
-        // Cacher le dropdown si on clique à l'extérieur
-        document.addEventListener('click', (e) => {
-            if (!selectedItems.contains(e.target) && !dropdown.contains(e.target)) {
-                dropdown.classList.add('hidden');
-            }
-        });
-    };
-
-    // Initialiser les deux dropdowns
-    setupDropdown('dropdown1', 'selected-items1', 'permissionsInput1', 'placeholder1');
-    setupDropdown('dropdown2', 'selected-items2', 'permissionsInput2', 'placeholder2');
-});
-
-
-      
 </script>
 
 

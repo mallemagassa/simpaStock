@@ -18,4 +18,12 @@ class UserModel extends ShieldUserModel
             'phone',
         ]);
     }
+
+    public function getUserRoles($userId)
+    {
+        return $this->select('auth_groups_users.group')
+                    ->join('auth_groups_users', 'auth_groups_users.user_id = users.id')
+                    ->where('users.id', $userId)
+                    ->findAll();
+    }
 }

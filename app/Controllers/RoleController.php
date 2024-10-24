@@ -36,7 +36,7 @@ class RoleController extends Controller
             }
 
             if ($role['permission_name']) {
-                $data['roles'][$role['id']]['permissions'][] = $role['permission_name'];
+                $data['roles'][$role['id']]['permissions'][] = $role['id'];
             }
         }
     

@@ -1,3 +1,4 @@
+
 <?= $this->extend('layouts/_default/dashboard') ?> 
 
 <?= $this->section('content') ?>
@@ -167,7 +168,9 @@
                                     data-email="<?= $value->email ?>"
                                     data-firstname="<?= $value->firstname ?>"
                                     data-lastname="<?= $value->lastname ?>"
-                                    data-phone="<?= $value->phone ?>">
+                                    data-phone="<?= $value->phone ?>"
+                                     data-roles="<?= isset($value->roles) && is_array($value->roles) ? implode(',', array_column($value->roles, 'group')) : '' ?>">
+
                                 <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
                                     <path d="M17.414 2.586a2 2 0 00-2.828 0L7 10.172V13h2.828l7.586-7.586a2 2 0 000-2.828z"></path>
                                     <path fill-rule="evenodd" d="M2 6a2 2 0 012-2h4a1 1 0 010 2H4v10h10v-4a1 1 0 112 0v4a2 2 0 01-2 2H4a2 2 0 01-2-2V6z" clip-rule="evenodd"></path>
@@ -277,6 +280,45 @@
                         </div>
                     </div>
 
+                    <!--<div  class="col-span-6 sm:col-span-3">
+                        <label for="roles" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Role</label>
+                        <div id="multi-select2" class="relative inline-block w-full">
+                            <div id="selected-items2" class="flex flex-wrap gap-1 border border-gray-300 bg-gray-50 p-2 rounded-lg cursor-pointer dark:bg-gray-800 dark:border-gray-600">
+                                <span id="placeholder2" class="text-gray-400 dark:text-gray-400">Sélectionnez des options...</span>
+                            </div>
+                            
+                            <ul id="dropdown2" class="absolute w-full bg-white border border-gray-300 mt-2 rounded-lg max-h-40 overflow-y-auto hidden dark:bg-gray-800 dark:border-gray-600">
+                                <?php foreach ($roles as $role): ?>
+                                    <li class="px-4 py-2 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-white" data-value="<?= esc($role['name']) ?>"><?= esc($role['name']) ?></li>
+                                <?php endforeach ?>
+                            </ul>
+                        </div>
+
+                        <input type="hidden" name="roles" id="usersInput2" value="">
+                        
+                        <?php if (session('errors.roles')): ?>
+                            <span class="text-red-500 text-xs"><?= session('errors.roles') ?></span>
+                        <?php endif ?>
+                    </div> -->
+
+
+                    <div class="col-span-6 sm:col-span-3">
+                            <label class="block text-gray-700 dark:text-gray-400 text-md font-bold mb-2" for="pair">
+                               Role:
+                            </label>
+                            <select id="selectUserUpdate"
+                                name="roles[]"
+                                class="js-example-basic-multiple bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"  
+                                data-placeholder="Select one or more cities..."
+                                data-allow-clear="false"
+                                multiple="multiple"
+                                title="Select city..." style="width: 100%;">
+                                <?php foreach ($roles as $role): ?>
+                                    <option value="<?= esc($role['name']) ?>"><?= esc($role['name']) ?></option>
+                                <?php endforeach ?>
+                            </select>
+                        </div>
+
                     <!-- Modal footer -->
                     <div class="items-center p-6 border-t border-gray-200 rounded-b dark:border-gray-700">
                         <button type="submit" class="text-white bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">Save all</button>
@@ -349,7 +391,23 @@
                                 <p class="mt-2 text-sm text-red-600"><?= session('errors.password') ?></p>
                             <?php endif ?>
                         </div>
-                    </div> 
+
+                        <div class="col-span-6 sm:col-span-3">
+                            <label class="block text-gray-700 dark:text-gray-400 text-md font-bold mb-2" for="pair">
+                               Role:
+                            </label>
+                            <select
+                                name="roles[]"
+                                class="js-example-basic-multiple bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"  
+                                data-placeholder="Select one or more cities..."
+                                data-allow-clear="false"
+                                multiple="multiple"
+                                title="Select city..." style="width: 100%;">
+                                <?php foreach ($roles as $role): ?>
+                                    <option value="<?= esc($role['name']) ?>"><?= esc($role['name']) ?></option>
+                                <?php endforeach ?>
+                            </select>
+                        </div>
                 </div>
                 <!-- Modal footer -->
                 <div class="items-center p-6 border-t border-gray-200 rounded-b dark:border-gray-700">
@@ -413,11 +471,27 @@
             form.querySelector('input[name="firstname"]').value = this.dataset.firstname;
             form.querySelector('input[name="lastname"]').value = this.dataset.lastname;
             form.querySelector('input[name="phone"]').value = this.dataset.phone;
+            const roles = button.getAttribute('data-roles');
 
-            // Show the modal
-            modal.classList.remove('hidden');
+            const rolesArray = roles.split(',');
+
+            var s2 = $("#selectUserUpdate").select2({
+            });
+
+            rolesArray.forEach(function(e){
+            if(!s2.find('option:contains(' + e + ')').length) 
+            s2.append($('<option>').text(e));
+            });
+
+            s2.val(rolesArray).trigger("change"); 
+
+                
+             modal.classList.remove('hidden');
+            });
         });
-    });
+
+
+
 
  document.addEventListener('DOMContentLoaded', function () {
     const deleteButtons = document.querySelectorAll('#deleteunitButton');
@@ -431,7 +505,6 @@
         });
     });
 });
-
 
 </script>
 

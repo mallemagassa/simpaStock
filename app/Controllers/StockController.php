@@ -2,6 +2,7 @@
 
 namespace App\Controllers;
 
+use DateTime;
 use App\Models\Out;
 use App\Models\Shop;
 use App\Models\Stock;
@@ -36,11 +37,15 @@ class StockController extends BaseController
     {
         $model = new Stock();
 
+
         if ($this->request->getMethod() === 'post' && $this->validate($model->validationRulesAdd, $model->validationMessagesAdd)) {
             $data = [
+                'purchase_price' => $this->request->getPost('purchase_price'),
+                'sale_price'     => $this->request->getPost('sale_price'),
                 'quantity' => $this->request->getPost('quantity'),
                 'critique' => $this->request->getPost('critique'),
-                'product_id' => $this->request->getPost('product_id')
+                'product_id' => $this->request->getPost('product_id'),
+                'created_at'     => $this->request->getPost('created_at')
             ];
 
             $model->save($data);
@@ -84,9 +89,12 @@ class StockController extends BaseController
         if ($this->request->getMethod() === 'post') {
             // Récupérer les données
             $data = [
+                'purchase_price' => $this->request->getPost('purchase_price'),
+                'sale_price'     => $this->request->getPost('sale_price'),
                 'quantity'   => $this->request->getPost('quantity'),
                 'critique'   => $this->request->getPost('critique'),
-                'product_id' => $this->request->getPost('product_id')
+                'product_id' => $this->request->getPost('product_id'),
+                'created_at' => $this->request->getPost('created_at')
             ];
     
             // Valider les données
@@ -192,13 +200,11 @@ class StockController extends BaseController
                 $newQuantity = $stock['quantity'] - $quantityToRemove;
                 $model->update($id, ['quantity' => $newQuantity]);
                 
-                $productModel = new Product();
-                $product = $productModel->find($stock['product_id']);
                 //dd(abs($product['sale_price']),  abs($product['purchase_price']), abs($quantityToRemove));
                 
                 $insertResult = $outModel->insert([
-                    'profit' => intval((abs($product['sale_price']) - abs($product['purchase_price'])) * abs($quantityToRemove)),
-                    'amount_total' => intval(($product['sale_price'] * $quantityToRemove )),
+                    'profit' => intval((abs($stock['sale_price']) - abs($stock['purchase_price'])) * abs($quantityToRemove)),
+                    'amount_total' => intval(($stock['sale_price'] * $quantityToRemove )),
                     'quantity' => $quantityToRemove,
                     'product_id' => $stock['product_id'],
                     'shop_id' => $shop['id'],
@@ -240,20 +246,99 @@ class StockController extends BaseController
     public function filterByDate()
     {
         $request = service('request');
-
-        // Récupérer les paramètres envoyés via AJAX
-        $period = $request->getPost('period');
         $startDate = $request->getPost('start_date');
-    
-        // Obtenir les produits filtrés
+        
         $produitModel = new Out();
-        $filteredOuts = $produitModel->getFilteredProducts($period, $startDate);
+        $productModel = new Product(); // Ajoutez votre modèle de produits
+        $stockModel = new Stock(); // Ajoutez votre modèle de stocks
+
+        // Récupérez tous les produits et stocks
+        $outs = $produitModel->findAll();
+        $products = $productModel->findAll();
+        $stocks = $stockModel->findAll();
+
+        if ($startDate) {
+            $startDate = new DateTime($startDate);
+            $filteredOuts = array_filter($outs, function($out) use ($startDate) {
+                $createdAt = new DateTime($out['created_at']);
+                return $createdAt->format('Y-m-d') === $startDate->format('Y-m-d');
+            });
+        } else {
+            $filteredOuts = $outs;
+        }
+
+        // Ajoutez les informations de produit et de stock à chaque `out`
+        $response = [];
+        foreach ($filteredOuts as $out) {
+            $product = current(array_filter($products, fn($prod) => $prod['id'] === $out['product_id']));
+            $stock = current(array_filter($stocks, fn($stk) => $stk['id'] === $out['product_id']));
+
+            if ($product && $stock) {
+                $out['name'] = $product['name'];
+                $out['purchase_price'] = $stock['purchase_price'];
+                $out['sale_price'] = $stock['sale_price'];
+            }
+            
+            $response[] = $out;
+        }
+
+        return $this->response->setJSON($response);
+    }
+
     
-        // Retourner les données filtrées au format JSON
-        return $this->response->setJSON($filteredOuts);
+    public function filterOuts() {
+        $filterType = $this->request->getPost('filter');
     
+        $outModel = new Out();
+        $productModel = new Product();
+        $stockModel = new Stock();
+    
+        // Appliquer les filtres en fonction de la date
+        switch ($filterType) {
+            case 'today':
+                $dateFilter = date('Y-m-d');
+                $outs = $outModel->where('DATE(created_at)', $dateFilter)->findAll();
+                break;
+            case 'week':
+                $startDate = date('Y-m-d', strtotime('-1 week'));
+                $outs = $outModel->where('created_at >=', $startDate)->findAll();
+                break;
+            case 'month':
+                $startDate = date('Y-m-d', strtotime('-1 month'));
+                $outs = $outModel->where('created_at >=', $startDate)->findAll();
+                break;
+            case 'year':
+                $startDate = date('Y-m-d', strtotime('-1 year'));
+                $outs = $outModel->where('created_at >=', $startDate)->findAll();
+                break;
+            default:
+                $outs = [];
+        }
+    
+        $products = $productModel->findAll();
+        $stocks = $stockModel->findAll();
+    
+        // Récupération des informations complètes pour chaque `out`
+        $data = array_map(function($out) use ($products, $stocks) {
+            $product = current(array_filter($products, fn($prod) => $prod['id'] === $out['product_id']));
+            $stock = current(array_filter($stocks, fn($stk) => $stk['id'] === $out['product_id']));
+    
+            return [
+                'id' => $out['id'],
+                'product_name' => $product['name'] ?? '',
+                'purchase_price' => number_format($stock['purchase_price'] ?? 0, 0, '.', ' '),
+                'sale_price' => number_format($stock['sale_price'] ?? 0, 0, '.', ' '),
+                'quantity' => $out['quantity'],
+                'amount_total' => number_format($out['amount_total'], 0, '.', ' '),
+                'profit' => number_format($out['profit'], 0, '.', ' ')
+            ];
+        }, $outs);
+    
+        return $this->response->setJSON($data);
     }
     
+    
+
 
     
 }

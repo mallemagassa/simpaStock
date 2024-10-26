@@ -145,30 +145,44 @@
 
                             <td class="p-4 space-x-2 whitespace-nowrap">
                     
-                                <button type="button" id="updatepermissionButton" 
-                                data-id="<?=$value['id']?>" 
-                                data-name="<?= htmlspecialchars($value['name'], ENT_QUOTES) ?>" 
-                                data-description="<?= htmlspecialchars($value['description'], ENT_QUOTES) ?>" 
-                                data-roles="<?= isset($value['roles']) && is_array($value['roles']) ? implode(',', $value['roles']) : '' ?>"
-                                data-drawer-target="drawer-update-permission-default" 
-                                data-drawer-show="drawer-update-permission-default" 
-                                aria-controls="drawer-update-permission-default" 
-                                data-drawer-placement="right" 
-                                class="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white rounded-lg bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">
-                                
-                                <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M17.414 2.586a2 2 0 00-2.828 0L7 10.172V13h2.828l7.586-7.586a2 2 0 000-2.828z"></path>
-                                    <path fill-rule="evenodd" d="M2 6a2 2 0 012-2h4a1 1 0 010 2H4v10h10v-4a1 1 0 112 0v4a2 2 0 01-2 2H4a2 2 0 01-2-2V6z" clip-rule="evenodd"></path>
-                                </svg>
-                                Modifier
-                            </button>
-
-                                <button type="button" id="deletepermissionButton" data-drawer-target="drawer-delete-permission-default" data-drawer-show="drawer-delete-permission-default" aria-controls="drawer-delete-permission-default" data-id="<?= $value['id'] ?>" data-drawer-placement="right" class="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-red-700 rounded-lg hover:bg-red-800 focus:ring-4 focus:ring-red-300 dark:focus:ring-red-900">
-                                    <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                                        <path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd"></path>
+                                <button id="<?= esc($value['id']) ?>dropdownMenuIconButton" data-dropdown-toggle="<?= esc($value['id']) ?>dropdownDots" class="inline-flex items-center p-2 text-sm font-medium text-center text-gray-900 bg-white rounded-lg hover:bg-gray-100 focus:ring-4 focus:outline-none dark:text-white focus:ring-gray-50 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-600" type="button">
+                                    <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 4 15">
+                                    <path d="M3.5 1.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0Zm0 6.041a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0Zm0 5.959a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0Z"/>
                                     </svg>
-                                    Supprimer
                                 </button>
+
+                                 <!-- Dropdown menu -->
+                                 <div id="<?= esc($value['id']) ?>dropdownDots" class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700 dark:divide-gray-600">
+                                    <ul class="flex flex-col items-center gap-4 py-2 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="<?= esc($value['id']) ?>dropdownMenuIconButton">
+                                    <li> 
+                                        <button type="button" id="updatepermissionButton" 
+                                            data-id="<?=$value['id']?>" 
+                                            data-name="<?= htmlspecialchars($value['name'], ENT_QUOTES) ?>" 
+                                            data-description="<?= htmlspecialchars($value['description'], ENT_QUOTES) ?>" 
+                                            data-roles='<?= json_encode($value['roles'], JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP) ?>'
+                                            data-drawer-target="drawer-update-permission-default" 
+                                            data-drawer-show="drawer-update-permission-default" 
+                                            aria-controls="drawer-update-permission-default" 
+                                            data-drawer-placement="right" 
+                                            class="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white rounded-lg bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">
+                                            
+                                            <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                                <path d="M17.414 2.586a2 2 0 00-2.828 0L7 10.172V13h2.828l7.586-7.586a2 2 0 000-2.828z"></path>
+                                                <path fill-rule="evenodd" d="M2 6a2 2 0 012-2h4a1 1 0 010 2H4v10h10v-4a1 1 0 112 0v4a2 2 0 01-2 2H4a2 2 0 01-2-2V6z" clip-rule="evenodd"></path>
+                                            </svg>
+                                            Modifier
+                                        </button>
+                                    </li>
+                                    <li>
+                                        <button type="button" id="deletepermissionButton" data-drawer-target="drawer-delete-permission-default" data-drawer-show="drawer-delete-permission-default" aria-controls="drawer-delete-permission-default" data-id="<?= $value['id'] ?>" data-drawer-placement="right" class="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-red-700 rounded-lg hover:bg-red-800 focus:ring-4 focus:ring-red-300 dark:focus:ring-red-900">
+                                            <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                                <path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd"></path>
+                                            </svg>
+                                            Supprimer
+                                        </button>
+
+                                    </li>
+                                </div>
 
                             </td>
                         </tr>
@@ -235,24 +249,22 @@
         </div>
 
         <div>
-            <label for="roles" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">roles</label>
-            <div id="multi-select2" class="relative inline-block w-full">
-                <div id="selected-items2" class="flex flex-wrap gap-1 border border-gray-300 bg-gray-50 p-2 rounded-lg cursor-pointer dark:bg-gray-800 dark:border-gray-600">
-                    <span id="placeholder2" class="text-gray-400 dark:text-gray-400">Sélectionnez des options...</span>
-                </div>
-                
-                <ul id="dropdown2" class="absolute w-full bg-white border border-gray-300 mt-2 rounded-lg max-h-40 overflow-y-auto hidden dark:bg-gray-800 dark:border-gray-600">
-                    <?php foreach ($roles as $role): ?>
-                        <li class="px-4 py-2 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-white" data-value="<?= esc($role['id']) ?>"><?= esc($role['name']) ?></li>
-                    <?php endforeach ?>
-                </ul>
-            </div>
-
-            <input type="hidden" name="roles" id="rolesInput2" value="">
-            
-            <?php if (session('errors.roles')): ?>
-                <span class="text-red-500 text-xs"><?= session('errors.roles') ?></span>
-            <?php endif ?>
+            <label class="block text-gray-700 dark:text-gray-400 text-md font-bold mb-2" for="pair">
+            Roles :
+            </label>
+            <select
+                id="selectRoleUpdate"
+                name="roles[]"
+                class="js-example-basic-multiple bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"  
+                data-placeholder="électionnez des options..."
+                data-allow-clear="false"
+                multiple="multiple"
+                title="Sélectionnez roles..." 
+                style="width: 100%;">
+                <?php foreach ($roles as $role): ?>
+                    <option value="<?= esc($role['id']) ?>"><?= esc($role['name']) ?></option>
+                <?php endforeach ?>
+            </select>
         </div>
         
         <div class="bottom-0 left-0 flex justify-center w-full pb-4 space-x-4 md:px-4 md:absolute">
@@ -315,25 +327,23 @@
                     <span class="text-red-500 text-xs"><?= session('errors.description') ?></span>
                 <?php endif ?>
             </div>
+        
             <div>
-                <label for="roles" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">roles</label>
-                <div id="multi-select1" class="relative inline-block w-full">
-                    <div id="selected-items1" class="flex flex-wrap gap-1 border border-gray-300 bg-gray-50 p-2 rounded-lg cursor-pointer dark:bg-gray-800 dark:border-gray-600">
-                        <span id="placeholder1" class="text-gray-400 dark:text-gray-400">Sélectionnez des options...</span>
-                    </div>
-                    
-                    <ul id="dropdown1" class="absolute w-full bg-white border border-gray-300 mt-2 rounded-lg max-h-40 overflow-y-auto hidden dark:bg-gray-800 dark:border-gray-600">
-                        <?php foreach ($roles as $role): ?>
-                            <li class="px-4 py-2 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-white" data-value="<?= esc($role['id']) ?>"><?= esc($role['name']) ?></li>
-                        <?php endforeach ?>
-                    </ul>
-                </div>
-
-                <input type="hidden" name="roles" id="rolesInput1" value="">
-                
-                <?php if (session('errors.roles')): ?>
-                    <span class="text-red-500 text-xs"><?= session('errors.roles') ?></span>
-                <?php endif ?>
+                <label class="block text-gray-700 dark:text-gray-400 text-md font-bold mb-2" for="pair">
+                Roles:
+                </label>
+                <select
+                    name="roles[]"
+                    class="js-example-basic-multiple bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"  
+                    data-placeholder="Sélectionnez des options..."
+                    data-allow-clear="false"
+                    multiple="multiple"
+                    title="Sélectionnez Roles..." 
+                    style="width: 100%;">
+                    <?php foreach ($roles as $role): ?>
+                        <option value="<?= esc($role['id']) ?>"><?= esc($role['name']) ?></option>
+                    <?php endforeach ?>
+                </select>
             </div>
                         
             
@@ -379,60 +389,35 @@ document.addEventListener('DOMContentLoaded', function () {
             // Récupération des attributs du bouton
             const permissionName = button.getAttribute('data-name');
             const permissionDescription = button.getAttribute('data-description');
-            const roles = button.getAttribute('data-roles');
+            const roles = JSON.parse(button.getAttribute('data-roles')); // Parse les rôles en tant que tableau d'objets
             
             // Affecter les valeurs récupérées aux champs
             document.getElementById('name').value = permissionName;
             document.getElementById('description').value = permissionDescription;
             document.getElementById('permission_id').value = permissionId;
 
-            const rolesArray = roles.split(','); // Diviser la chaîne de rôles en tableau
-            updateSelectedroles(rolesArray);  // Mettre à jour la liste des rôles sélectionnés
-         
+            // Mettre à jour la sélection des rôles
+            updateSelectedroles(roles);  // Transmettre directement les rôles
         });
     });
 });
 
-// Fonction pour mettre à jour les éléments sélectionnés
 function updateSelectedroles(rolesArray) {
-    const selectedItems = document.getElementById('selected-items2');
-    const rolesInput = document.getElementById('rolesInput2');
-    const placeholder = document.getElementById('placeholder2');
-    
-    // Réinitialiser les éléments sélectionnés
-    selectedItems.innerHTML = '';
-    let selectedRoles = []; // Tableau pour les rôles sélectionnés
+    const s2 = $("#selectRoleUpdate").select2();
 
-    rolesArray.forEach(role => {
-        selectedRoles.push(role);
-        
-        // Créer un conteneur pour le rôle et un bouton de suppression
-        const item = document.createElement('span');
-        item.className = 'bg-blue-500 text-white px-2 py-1 rounded flex items-center space-x-1';
-        
-        const itemText = document.createElement('span');
-        itemText.innerText = role; // Afficher le nom du rôle
+    rolesArray.forEach(function(role) {
+        const roleId = role.id;
+        const roleName = role.name;
 
-        const removeButton = document.createElement('button');
-        removeButton.innerHTML = '&times;';
-        removeButton.className = 'ml-2 bg-red-500 text-white rounded px-1';
-        
-        // Ajouter un gestionnaire d'événement pour supprimer le rôle sélectionné
-        removeButton.addEventListener('click', () => {
-            selectedRoles = selectedRoles.filter(selected => selected !== role);
-            updateSelectedroles(selectedRoles);  // Réafficher les rôles mis à jour
-        });
-
-        item.appendChild(itemText);
-        item.appendChild(removeButton);
-        selectedItems.appendChild(item);
+        // Vérifiez si l'option avec cet ID existe déjà, sinon ajoutez-la
+        if (!s2.find('option[value="' + roleId + '"]').length) {
+            s2.append($('<option>').val(roleId).text(roleName));
+        }
     });
 
-    // Mettre à jour l'input caché avec les rôles sélectionnés
-    rolesInput.value = selectedRoles.join(',');
-    
-    // Afficher ou masquer le placeholder
-    placeholder.style.display = selectedRoles.length > 0 ? 'none' : 'block';
+    // Sélectionner les rôles par leur ID
+    const roleIds = rolesArray.map(role => role.id);
+    s2.val(roleIds).trigger("change"); 
 }
 
 document.addEventListener('DOMContentLoaded', function () {

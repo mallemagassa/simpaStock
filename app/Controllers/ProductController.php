@@ -32,8 +32,6 @@ class ProductController extends BaseController
         if ($this->request->getMethod() === 'post' && $this->validate($model->validationRules, $model->validationMessages)) {
             $data = [
                 'name'           => $this->request->getPost('name'),
-                'purchase_price' => $this->request->getPost('purchase_price'),
-                'sale_price'     => $this->request->getPost('sale_price'),
                 'description'    => $this->request->getPost('description'),
                 'code'           => $this->request->getPost('code'),
                 'unit_id'        => $this->request->getPost('unit_id')

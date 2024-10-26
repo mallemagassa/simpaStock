@@ -40,9 +40,12 @@ class AuthGroups extends ShieldAuthGroups
     protected function loadPermissions()
     {
         $permissionModel = new \App\Models\Permission();
-        $this->permissions = $permissionModel->getPermissions();
+        $permissionsData = $permissionModel->findAll(); 
+        foreach ($permissionsData as $permission) {
+            $this->permissions[$permission['name']] = $permission['description'];
+        }
     }
-
+    
     protected function loadMatrix()
     {
         $groupPermissionModel = new \App\Models\GroupPermission();

@@ -8,8 +8,7 @@
   <script src="<?= base_url('node_modules/filepond-plugin-file-rename/dist/filepond-plugin-file-rename.js') ?>"></script>
   <script src="<?= base_url('node_modules/filepond-plugin-file-validate-type/dist/filepond-plugin-file-validate-type.js') ?>"></script>
   <script src="<?= base_url('node_modules/filepond-plugin-file-validate-size/dist/filepond-plugin-file-validate-size.js') ?>"></script>
-  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-  <script src="https://code.jquery.com/jquery-3.5.0.min.js"></script>
+
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/js/select2.min.js"></script>
   <script>
  

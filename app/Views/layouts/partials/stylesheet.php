@@ -5,3 +5,4 @@
  <!-- FilePond CSS -->
 <link href="<?= base_url('node_modules/filepond/dist/filepond.min.css') ?>" rel="stylesheet">
 <link href="<?= base_url('node_modules/filepond-plugin-image-preview/dist/filepond-plugin-image-preview.min.css')?>" rel="stylesheet">
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>

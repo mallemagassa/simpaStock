@@ -20,28 +20,33 @@ class RoleController extends Controller
     {
         $permissions = new Permission();
         $data['permissions'] = $permissions->findAll();
+
         $roles = $this->role->getRolesWithPermissions();
 
         $data['roles'] = [];
-    
+
         foreach ($roles as $role) {
             if (!isset($data['roles'][$role['id']])) {
                 $data['roles'][$role['id']] = [
                     'id' => $role['id'],
                     'name' => $role['name'],
-                    'title' => $role['title'],
                     'description' => $role['description'],
                     'permissions' => [],
                 ];
             }
 
-            if ($role['permission_name']) {
-                $data['roles'][$role['id']]['permissions'][] = $role['id'];
+        
+            foreach ($role['permissions'] as $permission) {
+                $data['roles'][$role['id']]['permissions'][] = [
+                    'id' => $permission['id'],
+                    'name' => $permission['name'],
+                ];
             }
         }
-    
+
         return view('content/crud/role', $data);
     }
+
 
     public function create()
     {

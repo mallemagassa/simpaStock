@@ -19,10 +19,6 @@ class Shop extends Migration
                 'type' => 'VARCHAR',
                 'constraint' => '255',
             ],
-            'respon' => [
-                'type' => 'VARCHAR',
-                'constraint' => '255',
-            ],
             'address' => [
                 'type' => 'VARCHAR',
                 'constraint' => '255',
@@ -31,6 +27,11 @@ class Shop extends Migration
                 'type' => 'VARCHAR',
                 'constraint' => '255',
                 'null' => true,
+            ],
+            'user_id' => [
+                'type' => 'INT',
+                'constraint' => 11,
+                'unsigned' => true,
             ],
             'created_at' => [
                 'type' => 'DATETIME',
@@ -47,6 +48,8 @@ class Shop extends Migration
         ]);
 
         $this->forge->addKey('id', true);
+
+        $this->forge->addForeignKey('user_id', 'users', 'id', 'CASCADE', 'CASCADE');
 
         $this->forge->createTable('shops');
     }

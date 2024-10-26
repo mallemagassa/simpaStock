@@ -15,6 +15,14 @@ class Stocks extends Migration
                 'unsigned' => true,
                 'auto_increment' => true,
             ],
+            'purchase_price' => [
+                'type' => 'DECIMAL',
+                'constraint' => '10,2',
+            ],
+            'sale_price' => [
+                'type' => 'DECIMAL',
+                'constraint' => '10,2',
+            ],
             'quantity' => [
                 'type' => 'INT',
                 'constraint' => 11,
@@ -29,7 +37,7 @@ class Stocks extends Migration
                 'unsigned' => true,
             ],
             'created_at' => [
-                'type' => 'DATETIME',
+                'type' => 'DATE',
                 'null' => true,
             ],
             'updated_at' => [

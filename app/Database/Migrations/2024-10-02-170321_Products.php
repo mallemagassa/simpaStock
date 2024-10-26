@@ -19,14 +19,6 @@ class Products extends Migration
                 'type' => 'VARCHAR',
                 'constraint' => '255',
             ],
-            'purchase_price' => [
-                'type' => 'DECIMAL',
-                'constraint' => '10,2',
-            ],
-            'sale_price' => [
-                'type' => 'DECIMAL',
-                'constraint' => '10,2',
-            ],
             'description' => [
                 'type' => 'TEXT',
                 'null' => true,

@@ -14,9 +14,9 @@ class Shop extends Model
     protected $protectFields    = true;
     protected $allowedFields    = [
         'name',
-        'respon',
         'address',
         'logo_shop',
+        'user_id',
     ];
 
     protected bool $allowEmptyInserts = false;
@@ -31,8 +31,8 @@ class Shop extends Model
     // Validation
     protected $validationRules = [
         'name'      => 'required|min_length[3]',
-        'respon'    => 'required|min_length[3]',
         'address'   => 'required|min_length[3]',
+        'user_id'    => 'required|integer',
         // 'logo_shop' => 'uploaded[logo_shop]|is_image[logo_shop]|max_size[logo_shop,2048]|mime_in[logo_shop,image/jpg,image/jpeg,image/png]'
     ];
     
@@ -41,20 +41,15 @@ class Shop extends Model
             'required'   => 'Le nom du boutique est requis',
             'min_length' => 'Le nom doit comporter au moins 3 caractères'
         ],
-        'respon' => [
-            'required'   => 'Le responsable de la boutique est requis',
-            'min_length' => 'Le nom doit comporter au moins 3 caractères'
-        ],
         'address' => [
             'required'   => 'Le nom de la boutique est requis',
             'min_length' => 'L\'adresse doit comporter au moins 3 caractères'
         ],
-        // 'logo_shop' => [
-        //     'uploaded'  => 'Vous devez télécharger une image.',
-        //     'is_image'  => 'Le fichier téléchargé doit être une image.',
-        //     'max_size'  => 'L\'image doit avoir une taille maximale de 2 Mo.',
-        //     'mime_in'   => 'L\'image doit être au format jpg, jpeg ou png.'
-        // ]
+        'user_id' => [
+            'required' => 'L\'Utilisateur associé est requis',
+            'integer'  => 'L\'ID d\' utilisateur doit être un entier valide',
+        ]
+       
     ];
     
     protected $skipValidation       = false;
@@ -71,4 +66,19 @@ class Shop extends Model
     protected $beforeDelete   = [];
     protected $afterDelete    = [];
 
+    public function getShopsWithUsers()
+    {
+        return $this->select('shops.*, users.firstname, users.lastname')
+                    ->join('users', 'users.id = shops.user_id')
+                    ->findAll();
+    }
+
+
+    public function getShopWithUserById($id)
+    {
+        return $this->select('shops.*, users.firstname, users.lastname')
+                    ->join('users', 'users.id = shops.user_id')
+                    ->where('shops.id', $id)
+                    ->first();
+    }
 }

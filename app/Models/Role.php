@@ -63,9 +63,38 @@ class Role extends Model
 
     public function getRolesWithPermissions()
     {
-        return $this->select('groups.*, permissions.name as permission_name')
-                    ->join('group_permissions', 'groups.id = group_permissions.group_id', 'left')
-                    ->join('permissions', 'group_permissions.permission_id = permissions.id', 'left')
-                    ->findAll();
+        $roles = $this->select('groups.*, permissions.id as permission_id, permissions.name as permission_name')
+                      ->join('group_permissions', 'groups.id = group_permissions.group_id', 'left')
+                      ->join('permissions', 'group_permissions.permission_id = permissions.id', 'left')
+                      ->findAll();
+    
+        // Tableau pour stocker les rôles avec les permissions associées
+        $rolesWithPermissions = [];
+    
+        foreach ($roles as $role) {
+            $roleId = $role['id'];
+    
+            // Si ce rôle n'existe pas encore dans le tableau, on l'ajoute avec ses détails
+            if (!isset($rolesWithPermissions[$roleId])) {
+                $rolesWithPermissions[$roleId] = [
+                    'id' => $role['id'],
+                    'name' => $role['name'],
+                    'description' => $role['description'],
+                    'permissions' => [], // Initialiser les permissions comme un tableau vide
+                ];
+            }
+    
+            // Ajouter la permission au rôle si une permission est disponible
+            if ($role['permission_id'] && $role['permission_name']) {
+                $rolesWithPermissions[$roleId]['permissions'][] = [
+                    'id' => $role['permission_id'],
+                    'name' => $role['permission_name'],
+                ];
+            }
+        }
+    
+        // Réinitialiser les clés numériques pour avoir un tableau simple d'éléments
+        return array_values($rolesWithPermissions);
     }
+    
 }

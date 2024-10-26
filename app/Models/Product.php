@@ -10,8 +10,6 @@ class Product extends Model
 
     protected $allowedFields = [
         'name', 
-        'purchase_price',
-        'sale_price',
         'description',
         'code',
         'unit_id',
@@ -21,8 +19,6 @@ class Product extends Model
 
     protected $validationRules = [
         'name'           => 'required|min_length[3]',
-        'purchase_price' => 'required|decimal',
-        'sale_price'     => 'required|decimal',
         'description'    => 'permit_empty|max_length[255]',
         'code'           => 'required|min_length[3]',
         'unit_id'        => 'required|integer'
@@ -32,14 +28,6 @@ class Product extends Model
         'name' => [
             'required' => 'Le nom du produit est requis',
             'min_length' => 'Le nom doit comporter au moins 3 caractères'
-        ],
-        'purchase_price' => [
-            'required' => 'Le prix d\'achat est requis',
-            'decimal' => 'Le prix d\'achat doit être un nombre décimal valide'
-        ],
-        'sale_price' => [
-            'required' => 'Le prix de vente est requis',
-            'decimal' => 'Le prix de vente doit être un nombre décimal valide'
         ],
         'code' => [
             'required' => 'Le code est requis',

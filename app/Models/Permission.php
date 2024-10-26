@@ -62,10 +62,35 @@ class Permission extends Model
 
     public function getPermissionsWithRoles()
     {
-        return $this->select('permissions.*, groups.name as group_name')
-                    ->join('group_permissions', 'permissions.id = group_permissions.permission_id', 'left')
-                    ->join('groups', 'group_permissions.group_id = groups.id', 'left')
-                    ->findAll();
+        $permissions = $this->select('permissions.*, groups.id as role_id, groups.name as role_name')
+                            ->join('group_permissions', 'permissions.id = group_permissions.permission_id', 'left')
+                            ->join('groups', 'group_permissions.group_id = groups.id', 'left')
+                            ->findAll();
+
+        $permissionsWithRoles = [];
+
+        foreach ($permissions as $permission) {
+            $permissionId = $permission['id'];
+
+            if (!isset($permissionsWithRoles[$permissionId])) {
+                $permissionsWithRoles[$permissionId] = [
+                    'id' => $permission['id'],
+                    'name' => $permission['name'],
+                    'description' => $permission['description'],
+                    'roles' => [],
+                ];
+            }
+
+            if ($permission['role_id'] && $permission['role_name']) {
+                $permissionsWithRoles[$permissionId]['roles'][] = [
+                    'id' => $permission['role_id'],
+                    'name' => $permission['role_name'],
+                ];
+            }
+        }
+        
+        return array_values($permissionsWithRoles);
     }
+
 }
 

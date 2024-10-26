@@ -97,8 +97,8 @@ $routes->group('', ['namespace' => 'App\Controllers'], function($routes) {
         $routes->get('delete/(:segment)', 'PermissionController::delete/$1');
     });
     
-
-    $routes->get('/filterOut', 'StockController::filterByDate');
+    $routes->post('/filterOut', 'StockController::filterByDate');
+    $routes->post('/filterOuts', 'StockController::filterOuts');
 });
 
 

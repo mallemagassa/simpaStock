@@ -69,33 +69,17 @@ class Out extends Model
     protected $beforeDelete   = [];
     protected $afterDelete    = [];
 
-    public function getFilteredProducts($period, $startDate)
+    public function getFilteredProducts($startDate)
     {
         $query = $this->db->table($this->table);
 
         $startDateObj = new DateTime($startDate);
 
-        switch ($period) {
-            case 'today':
-                $query->where('DATE(created_at)', $startDateObj->format('Y-m-d'));
-                break;
-            case 'this_week':
-                $endDateObj = clone $startDateObj;
-                $endDateObj->modify('+6 days');
-                $query->where('created_at >=', $startDateObj->format('Y-m-d'))
-                      ->where('created_at <=', $endDateObj->format('Y-m-d'));
-                break;
-            case 'this_month':
-                $query->where('MONTH(created_at)', $startDateObj->format('m'))
-                      ->where('YEAR(created_at)', $startDateObj->format('Y'));
-                break;
-            case 'this_year':
-                $query->where('YEAR(created_at)', $startDateObj->format('Y'));
-                break;
-            default:
-                break;
-        }
+        // Filtrer uniquement par date
+        $query->where('DATE(created_at)', $startDateObj->format('Y-m-d'));
 
         return $query->get()->getResultArray();
     }
+
+
 }

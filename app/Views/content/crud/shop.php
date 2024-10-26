@@ -121,8 +121,10 @@
                             <th scope="col" class="p-4 text-xs font-medium text-left text-gray-500 uppercase dark:text-gray-400">
                                 Nom
                             </th>
-                            
-                          
+                            <th scope="col" class="p-4 text-xs font-medium text-left text-gray-500 uppercase dark:text-gray-400">
+                                Le Boutiquier
+                            </th>
+
                             <th scope="col" class="p-4 text-xs font-medium text-left text-gray-500 uppercase dark:text-gray-400">
                                 Actions
                             </th>
@@ -144,16 +146,29 @@
                                         alt="<?= esc($value['logo_shop']) ? esc($value['logo_shop']) : 'Image par défaut' ?>">
 
                                     <div class="text-sm font-normal text-gray-500 dark:text-gray-400">
-                                        <div class="text-base font-semibold text-gray-900 dark:text-white"><?=esc($value['respon']) ?></div>
+                                        <div class="text-base font-semibold text-gray-900 dark:text-white"><?=esc($value['firstname']) ?></div>
                                         <div class="text-sm font-normal text-gray-500 dark:text-gray-400"><?=esc($value['address']) ?></div>
                                     </div>
                                 </td>
                                 <td onclick="window.location.href='<?= base_url('shop/show/' . esc($value['id'])) ?>'" class="p-4 text-sm font-normal text-gray-500 whitespace-nowrap dark:text-gray-400">
                                     <div class="text-base font-semibold text-gray-900 dark:text-white"><?=$value['name'] ?></div>
                                 </td>
+                                <td onclick="window.location.href='<?= base_url('shop/show/' . esc($value['id'])) ?>'" class="p-4 text-sm font-normal text-gray-500 whitespace-nowrap dark:text-gray-400">
+                                    <div class="text-base font-semibold text-gray-900 dark:text-white"><?=$value['firstname'] ?> <?=$value['lastname'] ?></div>
+                                </td>
                             
                             <td class="p-4 space-x-2 whitespace-nowrap">
-                                <button type="button" id="updateshopButton" data-id="<?=esc($value['id'])?>" data-name="<?=esc($value['name'])?>" data-respon="<?=esc($value['respon'])?>" data-address="<?=esc($value['address'])?>" data-logo_shop="<?=esc($value['logo_shop'])?>"
+                                <button id="<?= esc($value['id']) ?>dropdownMenuIconButton" data-dropdown-toggle="<?= esc($value['id']) ?>dropdownDots" class="inline-flex items-center p-2 text-sm font-medium text-center text-gray-900 bg-white rounded-lg hover:bg-gray-100 focus:ring-4 focus:outline-none dark:text-white focus:ring-gray-50 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-600" type="button">
+                                    <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 4 15">
+                                    <path d="M3.5 1.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0Zm0 6.041a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0Zm0 5.959a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0Z"/>
+                                    </svg>
+                                </button>
+
+                                 <!-- Dropdown menu -->
+                                 <div id="<?= esc($value['id']) ?>dropdownDots" class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700 dark:divide-gray-600">
+                                    <ul class="flex flex-col items-center gap-4 py-2 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="<?= esc($value['id']) ?>dropdownMenuIconButton">
+                                    <li>
+                                    <button type="button" id="updateshopButton" data-id="<?=esc($value['id'])?>" data-name="<?=esc($value['name'])?>" data-user_id="<?=esc($value['user_id'])?>" data-address="<?=esc($value['address'])?>" data-logo_shop="<?=esc($value['logo_shop'])?>"
                                         data-drawer-target="drawer-update-shop-default" data-drawer-show="drawer-update-shop-default" aria-controls="drawer-update-shop-default" data-drawer-placement="right" 
                                         class="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white rounded-lg bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">
                                     <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
@@ -162,13 +177,16 @@
                                     </svg>
                                     Modifier
                                 </button>
-
-                                <button type="button" id="deleteshopButton" data-drawer-target="drawer-delete-shop-default" data-drawer-show="drawer-delete-shop-default" aria-controls="drawer-delete-shop-default" data-id="<?= esc($value['id']) ?>" data-drawer-placement="right" class="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-red-700 rounded-lg hover:bg-red-800 focus:ring-4 focus:ring-red-300 dark:focus:ring-red-900">
+                                    </li>
+                                    <li>
+                                    <button type="button" id="deleteshopButton" data-drawer-target="drawer-delete-shop-default" data-drawer-show="drawer-delete-shop-default" aria-controls="drawer-delete-shop-default" data-id="<?= esc($value['id']) ?>" data-drawer-placement="right" class="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-red-700 rounded-lg hover:bg-red-800 focus:ring-4 focus:ring-red-300 dark:focus:ring-red-900">
                                     <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
                                         <path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd"></path>
                                     </svg>
                                     Supprimer
                                 </button>
+                                    </li>
+                                </div>
                             </td>
                         </tr>
                     <?php endforeach ?>
@@ -226,18 +244,22 @@
             </div>
 
             <div>
-                <label for="respon" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Résponsable de la Boutique:</label>
-                <input type="text" name="respon" value="<?= old('respon') ?>" id="respon" class="bg-gray-50 border <?= session('errors.respon') ? 'border-red-500' : 'border-gray-300' ?> text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="" required>
-                <?php if (session('errors.respon')): ?>
-                    <span class="text-red-500 text-xs"><?= session('errors.respon') ?></span>
-                <?php endif ?>
-            </div>
-
-            <div>
                 <label for="address" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Adresse de la Boutique:</label>
                 <input type="text" name="address" value="<?= old('address') ?>" id="address" class="bg-gray-50 border <?= session('errors.address') ? 'border-red-500' : 'border-gray-300' ?> text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="" required>
                 <?php if (session('errors.address')): ?>
                     <span class="text-red-500 text-xs"><?= session('errors.address') ?></span>
+                <?php endif ?>
+            </div>
+
+            <div>
+                <label for="user_id" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Le Boutiquier : </label>
+                <select id="user_id" name="user_id" class="bg-gray-50 border <?= session('errors.user_id') ? 'border-red-500' : 'border-gray-300' ?> text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
+                    <?php foreach ($users as $user): ?>
+                        <option value="<?= esc($user->id) ?>" <?= old('user_id') == esc($user->id) ? 'selected' : '' ?>> <?= esc($user->firstname)?> </option>
+                    <?php endforeach ?>
+                </select>
+                <?php if (session('errors.user_id')): ?>
+                    <span class="text-red-500 text-xs"><?= session('errors.user_id') ?></span>
                 <?php endif ?>
             </div>
 
@@ -307,20 +329,28 @@
             </div>
             
             <div>
-                <label for="respon" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Résponsable de la Boutique:</label>
-                <input type="text" name="respon" value="<?= old('respon') ?>" id="respon" class="bg-gray-50 border <?= session('errors.respon') ? 'border-red-500' : 'border-gray-300' ?> text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="" required>
-                <?php if (session('errors.respon')): ?>
-                    <span class="text-red-500 text-xs"><?= session('errors.respon') ?></span>
-                <?php endif ?>
-            </div>
-            
-            <div>
                 <label for="address" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Adresse de la Boutique:</label>
                 <input type="text" name="address" value="<?= old('address') ?>" id="address" class="bg-gray-50 border <?= session('errors.address') ? 'border-red-500' : 'border-gray-300' ?> text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="" required>
                 <?php if (session('errors.address')): ?>
                     <span class="text-red-500 text-xs"><?= session('errors.address') ?></span>
                 <?php endif ?>
             </div>
+
+            <div>
+                <label for="user-create" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Le Boutiquier:</label>
+                <select id="user-create" name="user_id" class="bg-gray-50 border <?= session('errors.user_id') ? 'border-red-500' : 'border-gray-300' ?> text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
+                    <?php $first = true;?>
+                    <?php foreach ($users as $user): ?>
+                        <option value="<?= $user->id ?>" <?= $first ? 'selected' : '' ?>><?= $user->firstname ?></option>
+                        <?php $first = false; ?>
+                    <?php endforeach ?>
+
+                </select>
+                <?php if (session('errors.user_id')): ?>
+                    <span class="text-red-500 text-xs"><?= session('errors.user_id') ?></span>
+                <?php endif ?>
+            </div>
+
             
             <div>
                 <input type="file" name="logo_shop" class="filepond" accept="image/*">
@@ -364,13 +394,13 @@ document.addEventListener("DOMContentLoaded", function() {
             button.addEventListener('click', function() {
                 const shopId = this.getAttribute('data-id');
                 const shopName = this.getAttribute('data-name');
-                const shopRespon = this.getAttribute('data-respon');
+                const shopUser = this.getAttribute('data-user_id');
                 const shopAddress = this.getAttribute('data-address');
                 const shopLogo = this.getAttribute('data-logo_shop');
 
                 document.getElementById('shop_id').value = shopId;
                 document.getElementById('name').value = shopName;
-                document.getElementById('respon').value = shopRespon;
+                document.getElementById('user_id').value = shopUser;
                 document.getElementById('address').value = shopAddress;
                 document.getElementById('logo_shop').value = shopLogo;
 

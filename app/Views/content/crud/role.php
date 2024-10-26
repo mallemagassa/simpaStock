@@ -143,30 +143,43 @@
                             </td>
 
                             <td class="p-4 space-x-2 whitespace-nowrap">
-                            <button type="button" id="updateRoleButton" 
-                                data-id="<?=$value['id']?>" 
-                                data-name="<?= htmlspecialchars($value['name'], ENT_QUOTES) ?>" 
-                                data-description="<?= htmlspecialchars($value['description'], ENT_QUOTES) ?>" 
-                                data-permissions="<?= isset($value['permissions']) && is_array($value['permissions']) ? implode(',', $value['permissions']) : '' ?>"
-                                data-drawer-target="drawer-update-Role-default" 
-                                data-drawer-show="drawer-update-Role-default" 
-                                aria-controls="drawer-update-Role-default" 
-                                data-drawer-placement="right" 
-                                class="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white rounded-lg bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">
-                                
-                                <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M17.414 2.586a2 2 0 00-2.828 0L7 10.172V13h2.828l7.586-7.586a2 2 0 000-2.828z"></path>
-                                    <path fill-rule="evenodd" d="M2 6a2 2 0 012-2h4a1 1 0 010 2H4v10h10v-4a1 1 0 112 0v4a2 2 0 01-2 2H4a2 2 0 01-2-2V6z" clip-rule="evenodd"></path>
-                                </svg>
-                                Modifier
-                            </button>
-
-                                <button type="button" id="deleteRoleButton" data-drawer-target="drawer-delete-Role-default" data-drawer-show="drawer-delete-Role-default" aria-controls="drawer-delete-Role-default" data-id="<?= $value['id'] ?>" data-drawer-placement="right" class="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-red-700 rounded-lg hover:bg-red-800 focus:ring-4 focus:ring-red-300 dark:focus:ring-red-900">
-                                    <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                                        <path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd"></path>
+                                <button id="<?= esc($value['id']) ?>dropdownMenuIconButton" data-dropdown-toggle="<?= esc($value['id']) ?>dropdownDots" class="inline-flex items-center p-2 text-sm font-medium text-center text-gray-900 bg-white rounded-lg hover:bg-gray-100 focus:ring-4 focus:outline-none dark:text-white focus:ring-gray-50 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-600" type="button">
+                                    <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 4 15">
+                                    <path d="M3.5 1.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0Zm0 6.041a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0Zm0 5.959a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0Z"/>
                                     </svg>
-                                    Supprimer
                                 </button>
+
+                                 <!-- Dropdown menu -->
+                                 <div id="<?= esc($value['id']) ?>dropdownDots" class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700 dark:divide-gray-600">
+                                    <ul class="flex flex-col items-center gap-4 py-2 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="<?= esc($value['id']) ?>dropdownMenuIconButton">
+                                    <li>
+                                        <button type="button" id="updateRoleButton" 
+                                            data-id="<?=$value['id']?>" 
+                                            data-name="<?= htmlspecialchars($value['name'], ENT_QUOTES) ?>" 
+                                            data-description="<?= htmlspecialchars($value['description'], ENT_QUOTES) ?>" 
+                                            data-permissions='<?= json_encode($value['permissions'], JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP) ?>'
+                                            data-drawer-target="drawer-update-Role-default" 
+                                            data-drawer-show="drawer-update-Role-default" 
+                                            aria-controls="drawer-update-Role-default" 
+                                            data-drawer-placement="right" 
+                                            class="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white rounded-lg bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">
+                                            
+                                            <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                                <path d="M17.414 2.586a2 2 0 00-2.828 0L7 10.172V13h2.828l7.586-7.586a2 2 0 000-2.828z"></path>
+                                                <path fill-rule="evenodd" d="M2 6a2 2 0 012-2h4a1 1 0 010 2H4v10h10v-4a1 1 0 112 0v4a2 2 0 01-2 2H4a2 2 0 01-2-2V6z" clip-rule="evenodd"></path>
+                                            </svg>
+                                            Modifier
+                                        </button>
+                                    </li>
+                                    <li>
+                                        <button type="button" id="deleteRoleButton" data-drawer-target="drawer-delete-Role-default" data-drawer-show="drawer-delete-Role-default" aria-controls="drawer-delete-Role-default" data-id="<?= $value['id'] ?>" data-drawer-placement="right" class="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-red-700 rounded-lg hover:bg-red-800 focus:ring-4 focus:ring-red-300 dark:focus:ring-red-900">
+                                            <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                                <path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd"></path>
+                                            </svg>
+                                            Supprimer
+                                        </button>
+                                    </li>
+                                </div>
 
                             </td>
                         </tr>
@@ -355,32 +368,37 @@ document.addEventListener('DOMContentLoaded', function () {
             form.action = `<?=base_url('roles/update/')?>${RoleId}`;
             const Rolename = button.getAttribute('data-name');
             const Roledescription = button.getAttribute('data-description');
-            const Rolepermissions = button.getAttribute('data-permissions');
+            const Rolepermissions = JSON.parse(button.getAttribute('data-permissions')); // Parse as JSON
 
             document.getElementById('name').value = Rolename;
             document.getElementById('description').value = Roledescription;
             document.getElementById('Role_id').value = RoleId;
 
             // Mettez à jour les permissions
-            const permissionsArray = Rolepermissions.split(','); // Assurez-vous que les permissions sont une chaîne séparée par des virgules
+            const permissionsArray = Rolepermissions; // Already an array of objects
+            console.log(permissionsArray);
 
-            var s2 = $("#selectPermissionUpdate").select2({
+            var s2 = $("#selectPermissionUpdate").select2();
+
+            permissionsArray.forEach(function(permission){
+                const permissionId = permission.id;
+                const permissionName = permission.name;
+
+                // Vérifiez si l'option avec cet ID existe déjà, sinon ajoutez-la
+                if (!s2.find('option[value="' + permissionId + '"]').length) {
+                    console.log(permission);
+                    s2.append($('<option>').val(permissionId).text(permissionName));
+                }
             });
 
-            permissionsArray.forEach(function(e){
-                
-            if(!s2.find('option:contains(' + e + ')').length)
-                console.log(e);
-                s2.append($('<option>').text(e));
-            });
+            // Sélectionnez les permissions par leur ID
+            s2.val(permissionsArray.map(p => p.id)).trigger("change"); 
 
-            s2.val(permissionsArray).trigger("change"); 
-
-                
             modal.classList.remove('hidden');
         });
     });
 });
+
 
 
 document.addEventListener('DOMContentLoaded', function () {

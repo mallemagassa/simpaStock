@@ -115,13 +115,28 @@
                                 </div>
                             </th>
                             <th scope="col" class="p-4 text-xs font-medium text-left text-gray-500 uppercase dark:text-gray-400">
-                                Quantité
-                            </th>
-                            <th scope="col" class="p-4 text-xs font-medium text-left text-gray-500 uppercase dark:text-gray-400">
                                 Produit
                             </th>
                             <th scope="col" class="p-4 text-xs font-medium text-left text-gray-500 uppercase dark:text-gray-400">
+                                Prix Achat
+                            </th>
+                            <th scope="col" class="p-4 text-xs font-medium text-left text-gray-500 uppercase dark:text-gray-400">
+                                Montant Inv
+                            </th>
+                            <th scope="col" class="p-4 text-xs font-medium text-left text-gray-500 uppercase dark:text-gray-400">
+                                Prix Vente
+                            </th>
+                            <th scope="col" class="p-4 text-xs font-medium text-left text-gray-500 uppercase dark:text-gray-400">
+                                Montant Vte
+                            </th>
+                            <th scope="col" class="p-4 text-xs font-medium text-left text-gray-500 uppercase dark:text-gray-400">
+                                Quantité
+                            </th>
+                            <th scope="col" class="p-4 text-xs font-medium text-left text-gray-500 uppercase dark:text-gray-400">
                                 Niveau Critique
+                            </th>
+                            <th scope="col" class="p-4 text-xs font-medium text-left text-gray-500 uppercase dark:text-gray-400">
+                                Date Creation
                             </th>
                             <th scope="col" class="p-4 text-xs font-medium text-left text-gray-500 uppercase dark:text-gray-400">
                                 Actions
@@ -138,37 +153,61 @@
                                     <label for="checkbox-<?=esc($value['id']) ?>" class="sr-only">checkbox</label>
                                 </div>
                             </td>
+                            <td class="p-4 text-base font-medium text-gray-900 whitespace-nowrap dark:text-white"><?=esc( $value['product_name']) ?></td>
+                            <td class="p-4 text-base font-medium text-gray-900 whitespace-nowrap dark:text-white"><?=number_format(esc($value['purchase_price']), 0, '.', ' ') ?> F CFA</td>
+                            <td class="p-4 text-base font-medium text-gray-900 whitespace-nowrap dark:text-white"><?=number_format(abs(esc($value['purchase_price'])) * abs(esc($value['quantity'])), 0, '.', ' ') ?> F CFA</td>
+                            <td class="p-4 text-base font-medium text-gray-900 whitespace-nowrap dark:text-white"><?=number_format(esc($value['sale_price']), 0, '.', ' ') ?> F CFA </td>
+                            <td class="p-4 text-base font-medium text-gray-900 whitespace-nowrap dark:text-white"><?=number_format(abs(esc($value['sale_price'])) * abs(esc($value['quantity'])), 0, '.', ' ') ?> F CFA</td>
                             <td class="p-4 text-sm font-normal text-gray-500 whitespace-nowrap dark:text-gray-400">
                                 <div class="text-base font-semibold text-gray-900 dark:text-white"><?=esc($value['quantity'])?></div>
                             </td>
-                            <td class="p-4 text-base font-medium text-gray-900 whitespace-nowrap dark:text-white"><?=esc( $value['product_name']) ?></td>
                             <td class="p-4 text-base font-medium text-gray-900 whitespace-nowrap dark:text-white"><?=esc($value['critique']) ?></td>
+                            <td class="p-4 text-base font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                <?= esc(date('d/m/Y', strtotime($value['created_at']))) ?>
+                            </td>
+
                             <td class="p-4 space-x-2 whitespace-nowrap">
-                              <button type="button" id="updatestockButton" data-id="<?=esc($value['id'])?>" data-quantity="<?=esc($value['quantity'])?>" data-critique="<?=esc($value['critique'])?>" data-product_id="<?=esc($value['product_id'])?>" 
-                                        data-drawer-target="drawer-update-stock-default" data-drawer-show="drawer-update-stock-default" aria-controls="drawer-update-stock-default" data-drawer-placement="right" 
-                                        class="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white rounded-lg bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">
-                                    <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M17.414 2.586a2 2 0 00-2.828 0L7 10.172V13h2.828l7.586-7.586a2 2 0 000-2.828z"></path><path fill-rule="evenodd" d="M2 6a2 2 0 012-2h4a1 1 0 010 2H4v10h10v-4a1 1 0 112 0v4a2 2 0 01-2 2H4a2 2 0 01-2-2V6z" clip-rule="evenodd"></path></svg>
-                                    Modifier
-                                </button>
-
-                                <button type="button" id="deletestockButton" data-drawer-target="drawer-delete-stock-default" data-drawer-show="drawer-delete-stock-default" aria-controls="drawer-delete-stock-default" data-id="<?= esc($value['id']) ?>" data-drawer-placement="right" class="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-red-700 rounded-lg hover:bg-red-800 focus:ring-4 focus:ring-red-300 dark:focus:ring-red-900">
-                                    <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                                        <path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd"></path>
+                                <button id="<?= esc($value['id']) ?>dropdownMenuIconButton" data-dropdown-toggle="<?= esc($value['id']) ?>dropdownDots" class="inline-flex items-center p-2 text-sm font-medium text-center text-gray-900 bg-white rounded-lg hover:bg-gray-100 focus:ring-4 focus:outline-none dark:text-white focus:ring-gray-50 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-600" type="button">
+                                    <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 4 15">
+                                    <path d="M3.5 1.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0Zm0 6.041a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0Zm0 5.959a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0Z"/>
                                     </svg>
-                                    Supprimer
                                 </button>
 
-                                <button type="button" data-id="<?=esc($value['id'])?>" data-modal-target="in-stock-modal" data-modal-toggle="in-stock-modal" class="inline-flex items-center justify-center w-1/2 px-3 py-2 text-sm font-medium text-center text-white rounded-lg bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 sm:w-auto dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">
-                                    <svg class="w-5 h-5 mr-2 -ml-1" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clip-rule="evenodd"></path></svg>
-                                    Entrée
-                                </button>
-                                <button type="button" data-id="<?=esc($value['id'])?>" data-modal-target="out-stock-modal" data-modal-toggle="out-stock-modal" class="inline-flex items-center justify-center w-1/2 px-3 py-2 text-sm font-medium text-center text-white rounded-lg bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 sm:w-auto dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">
-                                    <svg class="w-5 h-5 mr-2 -ml-1" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                                        <path fill-rule="evenodd" d="M5 10a1 1 0 011-1h8a1 1 0 110 2H6a1 1 0 01-1-1z" clip-rule="evenodd"></path>
-                                    </svg>
+                                <!-- Dropdown menu -->
+                                <div id="<?= esc($value['id']) ?>dropdownDots" class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700 dark:divide-gray-600">
+                                    <ul class="flex flex-col items-center gap-4 py-2 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="<?= esc($value['id']) ?>dropdownMenuIconButton">
+                                    <li>
+                                        <button type="button" data-id="<?=esc($value['id'])?>" data-modal-target="in-stock-modal" data-modal-toggle="in-stock-modal" class="inline-flex items-center justify-center w-1/2 px-3 py-2 text-sm font-medium text-center text-white rounded-lg bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 sm:w-auto dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">
+                                            <svg class="w-5 h-5 mr-2 -ml-1" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clip-rule="evenodd"></path></svg>
+                                            Entrée
+                                        </button>
+                                    </li>
+                                    <li>
+                                        <button type="button" data-id="<?=esc($value['id'])?>" data-modal-target="out-stock-modal" data-modal-toggle="out-stock-modal" class="inline-flex items-center justify-center w-1/2 px-3 py-2 text-sm font-medium text-center text-white rounded-lg bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 sm:w-auto dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">
+                                            <svg class="w-5 h-5 mr-2 -ml-1" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                                <path fill-rule="evenodd" d="M5 10a1 1 0 011-1h8a1 1 0 110 2H6a1 1 0 01-1-1z" clip-rule="evenodd"></path>
+                                            </svg>
 
-                                    Sortiée
-                                </button>
+                                            Sortiée
+                                        </button>
+                                    </li>
+                                    <li>
+                                        <button type="button" id="updatestockButton" data-id="<?=esc($value['id'])?>" data-purchase_price="<?=esc($value['purchase_price'])?>" data-sale_price="<?=esc($value['sale_price'])?>" data-quantity="<?=esc($value['quantity'])?>" data-critique="<?=esc($value['critique'])?>" data-product_id="<?=esc($value['product_id'])?>" data-created_at="<?=esc($value['created_at'])?>" 
+                                            data-drawer-target="drawer-update-stock-default" data-drawer-show="drawer-update-stock-default" aria-controls="drawer-update-stock-default" data-drawer-placement="right" 
+                                            class="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white rounded-lg bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">
+                                            <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M17.414 2.586a2 2 0 00-2.828 0L7 10.172V13h2.828l7.586-7.586a2 2 0 000-2.828z"></path><path fill-rule="evenodd" d="M2 6a2 2 0 012-2h4a1 1 0 010 2H4v10h10v-4a1 1 0 112 0v4a2 2 0 01-2 2H4a2 2 0 01-2-2V6z" clip-rule="evenodd"></path></svg>
+                                            Modifier
+                                        </button>
+                                    </li>
+                                    <li>
+                                        <button type="button" id="deletestockButton" data-drawer-target="drawer-delete-stock-default" data-drawer-show="drawer-delete-stock-default" aria-controls="drawer-delete-stock-default" data-id="<?= esc($value['id']) ?>" data-drawer-placement="right" class="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-red-700 rounded-lg hover:bg-red-800 focus:ring-4 focus:ring-red-300 dark:focus:ring-red-900">
+                                            <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                                <path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd"></path>
+                                            </svg>
+                                            Supprimer
+                                        </button>
+                                    </li>
+                                </div>
 
                             </td>
                         </tr>
@@ -202,6 +241,7 @@
     </div>
 </div>
 
+
 <!-- Edit stock Drawer -->
 <div id="drawer-update-stock-default" class="fixed top-0 right-0 z-40 w-full h-screen max-w-xs p-4 overflow-y-auto transition-transform <?= session('errors') ? 'translate-x-0' : 'translate-x-full' ?> bg-white dark:bg-gray-800" tabindex="-1" aria-labelledby="drawer-label" aria-hidden="true">
     <h5 id="drawer-label" class="inline-flex items-center mb-6 text-sm font-semibold text-gray-500 uppercase dark:text-gray-400">Update stock</h5>
@@ -218,13 +258,36 @@
 
         <div class="space-y-4">
 
-            <div>
-                <label for="quantity" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Prix d'achat:</label>
-                <input type="number" name="quantity" value="<?= old('quantity') ?>" id="quantity" class="bg-gray-50 border <?= session('errors.quantity') ? 'border-red-500' : 'border-gray-300' ?> text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="2999" required>
-                <?php if (session('errors.quantity')): ?>
-                    <span class="text-red-500 text-xs"><?= session('errors.quantity') ?></span>
-                <?php endif ?>
-            </div>
+        <div>
+            <label for="purchase_price" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Prix d'achat:</label>
+            <input type="number" name="purchase_price" value="<?= old('purchase_price') ?>" id="purchase_price" 
+            class="bg-gray-50 border <?= session('errors.purchase_price') ? 'border-red-500' : 'border-gray-300' ?> text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" 
+            placeholder="<?= number_format(2999, 0, '.', ' ') ?> FCFA" required
+            >
+            <?php if (session('errors.purchase_price')): ?>
+                <span class="text-red-500 text-xs"><?= session('errors.purchase_price') ?></span>
+            <?php endif ?>
+        </div>
+
+        <div>
+            <label for="sale_price" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Prix de vente:</label>
+            <input type="text" name="sale_price" value="<?= old('sale_price') ?>" id="sale_price" 
+            class="bg-gray-50 border <?= session('errors.sale_price') ? 'border-red-500' : 'border-gray-300' ?> text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" 
+            placeholder="<?= number_format(2999, 0, '.', ' ') ?> FCFA" 
+            required >
+
+            <?php if (session('errors.sale_price')): ?>
+                <span class="text-red-500 text-xs"><?= session('errors.sale_price') ?></span>
+            <?php endif ?>
+        </div>
+
+        <div>
+            <label for="quantity" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Prix d'achat:</label>
+            <input type="number" name="quantity" value="<?= old('quantity') ?>" id="quantity" class="bg-gray-50 border <?= session('errors.quantity') ? 'border-red-500' : 'border-gray-300' ?> text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="2999" required>
+            <?php if (session('errors.quantity')): ?>
+                <span class="text-red-500 text-xs"><?= session('errors.quantity') ?></span>
+            <?php endif ?>
+        </div>
 
             <div>
                 <label for="critique" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Prix de vente:</label>
@@ -243,6 +306,32 @@
                 </select>
                 <?php if (session('errors.product_id')): ?>
                     <span class="text-red-500 text-xs"><?= session('errors.product_id') ?></span>
+                <?php endif ?>
+            </div>
+
+            <div>
+                <label for="createdAt" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Date de la Creation:</label>
+                <div class="relative max-w-sm">
+                <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
+                    <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M20 4a2 2 0 0 0-2-2h-2V1a1 1 0 0 0-2 0v1h-3V1a1 1 0 0 0-2 0v1H6V1a1 1 0 0 0-2 0v1H2a2 2 0 0 0-2 2v2h20V4ZM0 18a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8H0v10Zm5-8h10a1 1 0 0 1 0 2H5a1 1 0 0 1 0-2Z"/>
+                    </svg>
+                </div>
+                <input 
+                    value="<?= old('created_at') ?>"
+                    name="created_at" 
+                    id="created_at" 
+                    datepicker 
+                    datepicker-format="yyyy-mm-dd" 
+                    type="text" 
+                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" 
+                    placeholder="Sélectionner la date de création"
+                    readonly
+                >
+                </div>
+
+                <?php if (session('errors.created_at')): ?>
+                    <span class="text-red-500 text-xs"><?= session('errors.created_at') ?></span>
                 <?php endif ?>
             </div>
         </div>
@@ -294,6 +383,30 @@
         <input type="hidden" name="<?= csrf_token() ?>" value="<?= csrf_hash() ?>">
 
         <div class="space-y-4">
+             
+        <div>
+                <label for="purchase_price" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Prix d'achat:</label>
+                <input type="text" name="purchase_price" value="<?= old('purchase_price') ?>" id="purchase_price" 
+                    class="bg-gray-50 border <?= session('errors.purchase_price') ? 'border-red-500' : 'border-gray-300' ?> text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" 
+                    placeholder="<?= number_format(2999, 0, '.', ' ') ?> FCFA" 
+                    required oninput="formatPrice(this)" onblur="removeFormatting(this)">
+                <?php if (session('errors.purchase_price')): ?>
+                    <span class="text-red-500 text-xs"><?= session('errors.purchase_price') ?></span>
+                <?php endif ?>
+            </div>
+            
+            <div>
+                <label for="sale_price" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Prix de vente:</label>
+                <input type="text" name="sale_price" value="<?= old('sale_price') ?>" id="sale_price" 
+                    class="bg-gray-50 border <?= session('errors.sale_price') ? 'border-red-500' : 'border-gray-300' ?> text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" 
+                    placeholder="2 999 FCFA" 
+                    required oninput="formatPrice(this)"  onblur="removeFormatting(this)">
+
+                <?php if (session('errors.sale_price')): ?>
+                    <span class="text-red-500 text-xs"><?= session('errors.sale_price') ?></span>
+                <?php endif ?>
+            </div>
+
             <div>
                 <label for="quantity" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Quantité:</label>
                 <input type="number" name="quantity" value="<?= old('quantity') ?>" id="quantity" class="bg-gray-50 border <?= session('errors.quantity') ? 'border-red-500' : 'border-gray-300' ?> text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="2999" required>
@@ -322,6 +435,32 @@
                 </select>
                 <?php if (session('errors.product_id')): ?>
                     <span class="text-red-500 text-xs"><?= session('errors.product_id') ?></span>
+                <?php endif ?>
+            </div>
+            
+            <div>
+                <label for="createdAt" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Date de la Creation:</label>
+                <div class="relative max-w-sm">
+                <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
+                    <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M20 4a2 2 0 0 0-2-2h-2V1a1 1 0 0 0-2 0v1h-3V1a1 1 0 0 0-2 0v1H6V1a1 1 0 0 0-2 0v1H2a2 2 0 0 0-2 2v2h20V4ZM0 18a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8H0v10Zm5-8h10a1 1 0 0 1 0 2H5a1 1 0 0 1 0-2Z"/>
+                    </svg>
+                </div>
+                <input 
+                    value="<?= old('created_at') ?>"
+                    name="created_at" 
+                    id="datepicker-format" 
+                    datepicker 
+                    datepicker-format="yyyy-mm-dd" 
+                    type="text" 
+                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" 
+                    placeholder="Sélectionner la date de création"
+                    readonly
+                >
+                </div>
+
+                <?php if (session('errors.created_at')): ?>
+                    <span class="text-red-500 text-xs"><?= session('errors.created_at') ?></span>
                 <?php endif ?>
             </div>
 
@@ -436,12 +575,18 @@ document.addEventListener('DOMContentLoaded', function () {
             const stockPurchasePrice = button.getAttribute('data-quantity');
             const stockSalePrice = button.getAttribute('data-critique');
             const stockproductId = button.getAttribute('data-product_id');
+            const productPurchasePrice = button.getAttribute('data-purchase_price');
+            const productSalePrice = button.getAttribute('data-sale_price');
+            const created_at = button.getAttribute('data-created_at');
             
             // Set values in the form
+            document.getElementById('purchase_price').value = productPurchasePrice;
+            document.getElementById('sale_price').value = productSalePrice;
             document.getElementById('stock_id').value = stockId;
             document.getElementById('quantity').value = stockPurchasePrice;
             document.getElementById('critique').value = stockSalePrice;
             document.getElementById('product_id').value = stockproductId;
+            document.getElementById('created_at').value = created_at;
         });
     });
 });
@@ -478,6 +623,39 @@ document.querySelectorAll('[data-modal-target="out-stock-modal"]').forEach(butto
     });
 });
 
+function formatPrice(input) {
+    // Retire tous les caractères qui ne sont pas des chiffres pour garder uniquement la valeur brute
+    let value = input.value.replace(/\D/g, '');
+
+    // Formate le nombre avec un séparateur de milliers insécable
+    if (value) {
+        value = new Intl.NumberFormat('fr-FR').format(value); // Format avec espace insécable
+    }
+
+    // Met à jour la valeur affichée de l'input avec le format désiré
+    input.value = value;
+}
+
+function removeFormatting(input) {
+    // Remet la valeur sans séparateurs de milliers
+    input.value = input.value.replace(/\s/g, '');
+}
+
+function getCurrentTime() {
+        const now = new Date();
+        const hours = String(now.getHours()).padStart(2, '0');
+        const minutes = String(now.getMinutes()).padStart(2, '0');
+        const seconds = String(now.getSeconds()).padStart(2, '0');
+        return `${hours}:${minutes}:${seconds}`;
+    }
+
+    // Ajout de l'événement pour le champ de date
+    document.getElementById('datepicker-format').addEventListener('change', function() {
+        // Récupération de la date sélectionnée
+        const selectedDate = this.value;
+        // Ajout de l'heure actuelle
+        this.value = `${selectedDate} ${getCurrentTime()}`;
+    });
 
 </script>
 

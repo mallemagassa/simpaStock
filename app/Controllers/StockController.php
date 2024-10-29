@@ -8,7 +8,11 @@ use App\Models\Shop;
 use App\Models\Stock;
 use App\Models\Product;
 use App\Models\Notification;
+use App\Models\Report;
 use CodeIgniter\Exceptions\PageNotFoundException;
+use PhpOffice\PhpSpreadsheet\Reader\Xlsx;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx as WriterXlsx;
 
 class StockController extends BaseController
 {
@@ -137,6 +141,7 @@ class StockController extends BaseController
     public function in($id)
     {
         $model = new Stock();
+        $reportModel = new Report();
         $stock = $model->find($id);
 
         if (!$stock) {
@@ -159,7 +164,24 @@ class StockController extends BaseController
 
             $quantityToAdd = $this->request->getPost('quantity');
             $newQuantity = $stock['quantity'] + $quantityToAdd;
+            $amountTotal = intval($stock['sale_price'] * $quantityToAdd);
             $model->update($id, ['quantity' => $newQuantity]);
+
+            $reportData = [
+                'quantity_before' => $stock['quantity'],
+                'quantity_after' => $newQuantity,
+                'user_id' => auth()->id(),
+                'amount_total' => $amountTotal,
+                'quantity' => $quantityToAdd,
+                'product_id' => $stock['product_id'],
+                'ops' => 'e',
+            ];
+
+            $reportResul = $reportModel->insert($reportData);
+
+            if (!$reportResul) {
+                return redirect()->back()->withInput()->with('error', 'Erreur lors de l\'insertion de l\'historique.');
+            }
 
             return redirect()->to('/stock')->with('success', 'Stock mis à jour avec succès. Quantité ajoutée.');
         }
@@ -172,21 +194,20 @@ class StockController extends BaseController
         $model = new Stock();
         $shopModel = new Shop();
         $outModel = new Out();
+        $reportModel = new Report();
         
         $stock = $model->find($id);
-        $shop = $shopModel->find( $this->request->getPost('shop_id'));
-    
+        $shop = $shopModel->find($this->request->getPost('shop_id'));
+        
         if (!$stock) {
             return redirect()->to('/stock')->with('error', 'Stock introuvable.');
         }
-    
+
         if ($this->request->getMethod() === 'post') {
-            $rules = [
+            if (!$this->validate([
                 'quantity' => 'required|integer|greater_than[0]',
                 'shop_id' => 'required|integer|greater_than[0]'
-            ];
-    
-            if (!$this->validate($rules)) {
+            ])) {
                 return view('stock/out', [
                     'stock' => $stock,
                     'validation' => $this->validator,
@@ -194,42 +215,9 @@ class StockController extends BaseController
                 ]);
             }
 
-            $quantityToRemove = $this->request->getPost('quantity');
-            
-            if ($quantityToRemove <= $stock['quantity']) {
-                $newQuantity = $stock['quantity'] - $quantityToRemove;
-                $model->update($id, ['quantity' => $newQuantity]);
-                
-                //dd(abs($product['sale_price']),  abs($product['purchase_price']), abs($quantityToRemove));
-                
-                $insertResult = $outModel->insert([
-                    'profit' => intval((abs($stock['sale_price']) - abs($stock['purchase_price'])) * abs($quantityToRemove)),
-                    'amount_total' => intval(($stock['sale_price'] * $quantityToRemove )),
-                    'quantity' => $quantityToRemove,
-                    'product_id' => $stock['product_id'],
-                    'shop_id' => $shop['id'],
-                ]);
-                
-                
-                if (!$insertResult) {
-                    return redirect()->back()->withInput()->with('error', 'Erreur lors de l\'insertion: '); //. json_encode($dbError)
-                }
-                
-            
-                if ($newQuantity <= $stock['critique']) {
-                    $eventData = [
-                        'user_id' => auth()->id(),
-                        'message' => "Attention, le niveau critique de produit est atteint.",
-                    ];
-    
-                    \CodeIgniter\Events\Events::trigger('stockUpdated', $eventData);
-                }
+            $quantityToRemove = (int)$this->request->getPost('quantity');
 
-
-    
-                return redirect()->to('/stock')->with('success', 'Stock mis à jour avec succès. Quantité retirée.');
-            } else {
-              
+            if ($quantityToRemove > $stock['quantity']) {
                 return view('stock/out', [
                     'stock' => $stock,
                     'validation' => $this->validator,
@@ -237,12 +225,99 @@ class StockController extends BaseController
                     'error' => 'Quantité insuffisante en stock.'
                 ]);
             }
+
+            $newQuantity = $stock['quantity'] - $quantityToRemove;
+            $profit = intval((abs($stock['sale_price']) - abs($stock['purchase_price'])) * abs($quantityToRemove));
+            $amountTotal = intval($stock['sale_price'] * $quantityToRemove);
+
+            $model->update($id, ['quantity' => $newQuantity]);
+
+            if (!$this->insertStockHistory($outModel, $reportModel, $stock, $shop['id'], $quantityToRemove, $profit, $amountTotal, $newQuantity)) {
+                return redirect()->back()->withInput()->with('error', 'Erreur lors de l\'insertion de l\'historique.');
+            }
+
+            if ($newQuantity <= $stock['critique']) {
+                \CodeIgniter\Events\Events::trigger('stockUpdated', [
+                    'user_id' => auth()->id(),
+                    'message' => "Attention, le niveau critique de produit est atteint."
+                ]);
+            }
+
+            return redirect()->to('/stock')->with('success', 'Stock mis à jour avec succès. Quantité retirée.');
         }
-    
-        return redirect()->to('/stock')->with('error', 'Stock introuvable.');
+
+        return redirect()->to('/stock')->with('error', 'Méthode non autorisée.');
+    }
+
+    private function insertStockHistory($outModel, $reportModel, $stock, $shopId, $quantity, $profit, $amountTotal, $newQuantity)
+    {
+        $outData = [
+            'profit' => $profit,
+            'amount_total' => $amountTotal,
+            'quantity' => $quantity,
+            'product_id' => $stock['product_id'],
+            'shop_id' => $shopId,
+        ];
+
+        $reportData = array_merge($outData, [
+            'quantity_before' => $stock['quantity'],
+            'quantity_after' => $newQuantity,
+            'user_id' => auth()->id(),
+            'ops' => 's',
+        ]);
+
+        return $outModel->insert($outData) && $reportModel->insert($reportData);
     }
 
 
+    public function exports()
+    {
+        $stock = new Stock();
+        $stocks = $stock->getAllStocksWithProducts();
+    
+        $file = 'stock.xlsx';
+    
+        $spreadSheet = new Spreadsheet();
+        $sheet = $spreadSheet->getActiveSheet();
+    
+        // Set the header for the columns
+        $sheet->setCellValue('A1', 'Produit');
+        $sheet->setCellValue('B1', 'Quantité');
+        $sheet->setCellValue('C1', 'Prix Achat');
+        $sheet->setCellValue('D1', 'Montant Inv');
+        $sheet->setCellValue('E1', 'Prix Vente');
+        $sheet->setCellValue('F1', 'Montant Vte');
+        $sheet->setCellValue('G1', 'Niveau Critique');
+        $sheet->setCellValue('H1', 'Date Creation');
+    
+        foreach ($stocks as $i => $value) {
+            $row = $i + 2; // Start from row 2 for the data
+            $sheet->setCellValue('A' . $row, $value['product_name']);
+            $sheet->setCellValue('B' . $row, $value['quantity']);
+            $sheet->setCellValue('C' . $row, $value['purchase_price']);
+            $sheet->setCellValue('D' . $row, number_format(esc($value['sale_price']), 0, '.', ' ') . ' F CFA');
+            $sheet->setCellValue('E' . $row, $value['sale_price']);
+            $sheet->setCellValue('F' . $row, number_format(abs(esc($value['sale_price'])) * abs(esc($value['quantity'])), 0, '.', ' ') . ' F CFA');
+            $sheet->setCellValue('G' . $row, $value['critique']);
+            $sheet->setCellValue('H' . $row, date('d/m/Y', strtotime($value['created_at'])));
+        }
+    
+        $writer = new WriterXlsx($spreadSheet);
+        $writer->save($file);
+    
+        header("Content-Type: application/vnd.ms-excel");
+        header("Content-Disposition: attachment; filename='" . basename($file) . "'");
+        header("Expires: 0");
+        header("Cache-Control: must-revalidate");
+        header("Pragma: public");
+        header("Content-Length: " . filesize($file));
+    
+        flush();
+        readfile($file);
+        return redirect()->to('/stock')->with('success', 'Stock est exportée.');
+    }
+    
+    
     public function filterByDate()
     {
         $request = service('request');

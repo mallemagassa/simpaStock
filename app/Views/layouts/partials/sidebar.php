@@ -64,7 +64,10 @@
                 <a href="<?= base_url('unit') ?>" class="text-base text-gray-900 rounded-lg flex items-center p-2 group hover:bg-gray-100 transition duration-75 pl-11 dark:text-gray-200 dark:hover:bg-gray-700 {{ if eq $page_slug "units" }} bg-gray-100 dark:bg-gray-700 {{ end }}">Unitées</a>
               </li>
               <li>
-                <a href="<?= base_url('shop') ?>" class="text-base text-gray-900 rounded-lg flex items-center p-2 group hover:bg-gray-100 transition duration-75 pl-11 dark:text-gray-200 dark:hover:bg-gray-700 {{ if eq $page_slug "shop" }} bg-gray-100 dark:bg-gray-700 {{ end }}">Boutique</a>
+                <a href="<?= base_url('shop') ?>" class="text-base text-gray-900 rounded-lg flex items-center p-2 group hover:bg-gray-100 transition duration-75 pl-11 dark:text-gray-200 dark:hover:bg-gray-700 {{ if eq $page_slug "shop" }} bg-gray-100 dark:bg-gray-700 {{ end }}">Boutiques</a>
+              </li>
+              <li>
+                <a href="<?= base_url('reports') ?>" class="text-base text-gray-900 rounded-lg flex items-center p-2 group hover:bg-gray-100 transition duration-75 pl-11 dark:text-gray-200 dark:hover:bg-gray-700 {{ if eq $page_slug "reports" }} bg-gray-100 dark:bg-gray-700 {{ end }}">Raports</a>
               </li>
             </ul>
           </li>

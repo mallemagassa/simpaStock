@@ -58,6 +58,7 @@ $routes->group('', ['namespace' => 'App\Controllers'], function($routes) {
         
         $routes->get('out/(:num)', 'StockController::out/$1');
         $routes->post('out/(:num)', 'StockController::out/$1');
+        $routes->get('exports', 'StockController::exports');
     });
     
 
@@ -95,6 +96,11 @@ $routes->group('', ['namespace' => 'App\Controllers'], function($routes) {
         $routes->get('edit/(:segment)', 'PermissionController::edit/$1');
         $routes->post('update/(:segment)', 'PermissionController::update/$1');
         $routes->get('delete/(:segment)', 'PermissionController::delete/$1');
+    });
+
+    $routes->group('reports', function($routes) {
+        $routes->get('/', 'ReportController::index');
+        $routes->get('delete/(:num)', 'ShopController::delete/$1');
     });
     
     $routes->post('/filterOut', 'StockController::filterByDate');

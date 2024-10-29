@@ -510,6 +510,15 @@ if (document.getElementById('week-signups-chart')) {
 		chart.updateOptions(getSignupsChartOptions());
 	});
 }
+if (document.getElementById('week-signups-chart2')) {
+	const chart = new ApexCharts(document.getElementById('week-signups-chart2'), getSignupsChartOptions());
+	chart.render();
+
+	// init again when toggling dark mode
+	document.addEventListener('dark-mode', function () {
+		chart.updateOptions(getSignupsChartOptions());
+	});
+}
 
 const getTrafficChannelsChartOptions = () => {
 

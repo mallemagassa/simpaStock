@@ -29,7 +29,7 @@
             $sum = 0;
             $sum2 = 0;
             foreach ($outs as $value) {
-              $sum += abs($value['amount_total']);
+              $sum += abs($value['amount_total_sale']);
               $sum2 += abs($value['profit']);
             }
           ?>

@@ -13,9 +13,12 @@ class ShopController extends BaseController
     {
         $model = new Shop();
         $userModel = new UserModel();
-
+        
         $data['shops'] = $model->getShopsWithUsers();
         $data['users'] = $userModel->findAll();
+        $waybills = json_decode($data['shops']['product_out'], true);
+        $data['products'] = $waybills;
+
         return view('content/crud/shop', $data);
     }
 

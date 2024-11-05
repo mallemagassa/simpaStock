@@ -57,8 +57,9 @@ $routes->group('', ['namespace' => 'App\Controllers'], function($routes) {
         $routes->post('in/(:num)', 'StockController::in/$1');
         
         $routes->get('out/(:num)', 'StockController::out/$1');
-        $routes->post('out/(:num)', 'StockController::out/$1');
+        $routes->post('out', 'StockController::out/$1');
         $routes->get('exports', 'StockController::exports');
+        $routes->get('exportToPDF', 'StockController::exportToPDF');
     });
     
 

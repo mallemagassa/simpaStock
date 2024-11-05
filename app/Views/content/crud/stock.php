@@ -53,11 +53,21 @@
                     </div>
                 </div>
             </div>-->
+            <a href="<?= base_url('stock/exportToPDF') ?>"  class="text-white bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-primary-600 dark:hover:bg-primary-700 focus:outline-none dark:focus:ring-primary-800" type="button" >
+                exports pdf
+            </a>
             <a href="<?= base_url('stock/exports') ?>"  class="text-white bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-primary-600 dark:hover:bg-primary-700 focus:outline-none dark:focus:ring-primary-800" type="button" >
-                exports
+                exports excel
             </a>
             <button id="createstockButton" class="text-white bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-primary-600 dark:hover:bg-primary-700 focus:outline-none dark:focus:ring-primary-800" type="button" data-drawer-target="drawer-create-stock-default" data-drawer-show="drawer-create-stock-default" aria-controls="drawer-create-stock-default" data-drawer-placement="right">
                 Ajouter
+            </button>
+
+            <button type="button"  data-modal-target="stock-muliple-modal" data-modal-toggle="stock-muliple-modal" class="inline-flex items-center justify-center w-1/2 px-3 py-2 text-sm font-medium text-center text-white rounded-lg bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 sm:w-auto dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">
+                <svg class="w-5 h-5 mr-2 -ml-1" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                <path fill-rule="evenodd" d="M5 10a1 1 0 011-1h8a1 1 0 110 2H6a1 1 0 01-1-1z" clip-rule="evenodd"></path>
+                </svg>
+                Sortiée
             </button>
         </div>
 
@@ -285,7 +295,7 @@
         </div>
 
         <div>
-            <label for="quantity" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Prix d'achat:</label>
+            <label for="quantity" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Quantité:</label>
             <input type="number" name="quantity" value="<?= old('quantity') ?>" id="quantity" class="bg-gray-50 border <?= session('errors.quantity') ? 'border-red-500' : 'border-gray-300' ?> text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="2999" required>
             <?php if (session('errors.quantity')): ?>
                 <span class="text-red-500 text-xs"><?= session('errors.quantity') ?></span>
@@ -293,16 +303,26 @@
         </div>
 
             <div>
-                <label for="critique" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Prix de vente:</label>
+                <label for="critique" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Niveau Critique:</label>
                 <input type="number" name="critique" value="<?= old('critique') ?>" id="critique" class="bg-gray-50 border <?= session('errors.critique') ? 'border-red-500' : 'border-gray-300' ?> text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="2999" required>
                 <?php if (session('errors.critique')): ?>
                     <span class="text-red-500 text-xs"><?= session('errors.critique') ?></span>
                 <?php endif ?>
             </div>
 
+
+
+
             <div>
-                <label for="product_id" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">producté:</label>
-                <select id="product_id" name="product_id" class="bg-gray-50 border <?= session('errors.product_id') ? 'border-red-500' : 'border-gray-300' ?> text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
+                <label class="block text-gray-700 dark:text-gray-400 text-md font-bold mb-2" for="pair">
+                    Produit:
+                </label>
+                <select 
+                   id="product-update" name="product_id"
+                    class="selectpicker2 bg-gray-50 border <?= session('errors.product_id') ? 'border-red-500' : 'border-gray-300' ?> text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" style="width: 100%" 
+                    data-placeholder="Selectionner les produits"
+                    data-allow-clear="false"
+                    title="Selectionner produit...">
                     <?php foreach ($products as $product): ?>
                         <option value="<?= esc($product['id']) ?>" <?= old('product_id') == esc($product['id']) ? 'selected' : '' ?>> <?= esc($product['name'])?> </option>
                     <?php endforeach ?>
@@ -321,7 +341,7 @@
                     </svg>
                 </div>
                 <input 
-                    value="<?= old('created_at') ?>"
+                    value="<?= old('created_at', isset($value['created_at']) ? $value['created_at'] : '') ?>"
                     name="created_at" 
                     id="created_at" 
                     datepicker 
@@ -331,6 +351,7 @@
                     placeholder="Sélectionner la date de création"
                     readonly
                 >
+
                 </div>
 
                 <?php if (session('errors.created_at')): ?>
@@ -400,7 +421,7 @@
             
             <div>
                 <label for="sale_price" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Prix de vente:</label>
-                <input type="text" name="sale_price" value="<?= old('sale_price') ?>" id="sale_price" 
+                <input type="number" name="sale_price" value="<?= old('sale_price') ?>" id="sale_price" 
                     class="bg-gray-50 border <?= session('errors.sale_price') ? 'border-red-500' : 'border-gray-300' ?> text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" 
                     placeholder="2 999 FCFA" 
                     required oninput="formatPrice(this)"  onblur="removeFormatting(this)">
@@ -425,16 +446,22 @@
                     <span class="text-red-500 text-xs"><?= session('errors.critique') ?></span>
                 <?php endif ?>
             </div>
-            
-            <div>
-                <label for="product-create" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">produit:</label>
-                <select id="product-create" name="product_id" class="bg-gray-50 border <?= session('errors.product_id') ? 'border-red-500' : 'border-gray-300' ?> text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
+
+           <div>
+                <label class="block text-gray-700 dark:text-gray-400 text-md font-bold mb-2" for="pair">
+                    Produit:
+                </label>
+                <select 
+                   id="product-create" name="product_id"
+                    class="selectpicker bg-gray-50 border <?= session('errors.product_id') ? 'border-red-500' : 'border-gray-300' ?> text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" style="width: 100%" 
+                    data-placeholder="Selectionner les produits"
+                    data-allow-clear="false"
+                    title="Selectionner produit...">
                     <?php $first = true;?>
                     <?php foreach ($products as $product): ?>
                         <option value="<?= $product['id'] ?>" <?= $first ? 'selected' : '' ?>><?= $product['name'] ?></option>
                         <?php $first = false; ?>
                     <?php endforeach ?>
-
                 </select>
                 <?php if (session('errors.product_id')): ?>
                     <span class="text-red-500 text-xs"><?= session('errors.product_id') ?></span>
@@ -521,53 +548,234 @@
 
 <!-- out Stock Modal -->
 <div class="fixed left-0 right-0 z-50 items-center justify-center hidden overflow-x-hidden overflow-y-auto top-4 md:inset-0 h-modal sm:h-full" id="out-stock-modal">
-<div class="relative w-full h-full max-w-2xl px-4 md:h-auto">
-    <!-- Modal content -->
-    <div class="relative bg-white rounded-lg shadow dark:bg-gray-800">
-        <!-- Modal header -->
-        <div class="flex items-start justify-between p-5 border-b rounded-t dark:border-gray-700">
-            <h3 class="text-xl font-semibold dark:text-white">
-                Sortiée Stock
-            </h3>
-            <button type="button" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-700 dark:hover:text-white" data-modal-toggle="out-stock-modal">
-                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>  
-            </button>
+    <div class="relative w-full h-full max-w-2xl px-4 md:h-auto">
+        <!-- Modal content -->
+        <div class="relative bg-white rounded-lg shadow dark:bg-gray-800">
+            <!-- Modal header -->
+            <div class="flex items-start justify-between p-5 border-b rounded-t dark:border-gray-700">
+                <h3 class="text-xl font-semibold dark:text-white">
+                    Sortiée Stock
+                </h3>
+                <button type="button" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-700 dark:hover:text-white" data-modal-toggle="out-stock-modal">
+                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>  
+                </button>
+            </div>
+            <!-- Modal body -->
+            <div class="p-6 space-y-6">
+                <form action="" method="POST">
+                    <?= csrf_field() ?>
+                    <input type="hidden" name="<?= csrf_token() ?>" value="<?= csrf_hash() ?>">
+                    <div>
+                        <label for="quantity" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Nombre de quantité Sortiée :</label>
+                        <input type="number" name="quantity" value="<?= old('quantity') ?>" id="quantity" class="bg-gray-50 border <?= session('errors.quantity') ? 'border-red-500' : 'border-gray-300' ?> text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="2999" required>
+                        <?php if (session('errors.quantity')): ?>
+                            <span class="text-red-500 text-xs"><?= session('errors.quantity') ?></span>
+                        <?php endif ?>
+                    </div>
+
+                    <div class="my-2">
+                        <label for="shop-create" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Boutique:</label>
+                        <select id="shop-create" name="shop_id" class="bg-gray-50 border <?= session('errors.shop_id') ? 'border-red-500' : 'border-gray-300' ?> text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
+                            <?php $first = true;?>
+                            <?php foreach ($shops as $shop): ?>
+                                <option value="<?= $shop['id'] ?>" <?= $first ? 'selected' : '' ?>><?= $shop['name'] ?></option>
+                                <?php $first = false; ?>
+                            <?php endforeach ?>
+
+                        </select>
+                        <?php if (session('errors.shop_id')): ?>
+                            <span class="text-red-500 text-xs"><?= session('errors.shop_id') ?></span>
+                        <?php endif ?>
+                    </div>
+
+
+                    <div>
+                        <label for="createdAt" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Date de la Creation:</label>
+                        <div class="relative max-w-sm">
+                        <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
+                            <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M20 4a2 2 0 0 0-2-2h-2V1a1 1 0 0 0-2 0v1h-3V1a1 1 0 0 0-2 0v1H6V1a1 1 0 0 0-2 0v1H2a2 2 0 0 0-2 2v2h20V4ZM0 18a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8H0v10Zm5-8h10a1 1 0 0 1 0 2H5a1 1 0 0 1 0-2Z"/>
+                            </svg>
+                        </div>
+                        <input 
+                            value="<?= old('created_at') ?>"
+                            name="created_at_out" 
+                            id="datepicker-format" 
+                            datepicker 
+                            datepicker-format="yyyy-mm-dd" 
+                            type="text" 
+                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" 
+                            placeholder="Sélectionner la date de création"
+                            readonly
+                        >
+                        </div>
+
+                        <?php if (session('errors.created_at')): ?>
+                            <span class="text-red-500 text-xs"><?= session('errors.created_at') ?></span>
+                        <?php endif ?>
+                    </div>
+
+                    <!-- Modal footer -->
+                    <div class="items-center p-6 border-t border-gray-200 rounded-b dark:border-gray-700">
+                        <button class="text-white bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800" type="submit">Valider Sortie</button>
+                    </div>
+                </form>
+            </div>
         </div>
-        <!-- Modal body -->
-        <div class="p-6 space-y-6">
-        <form action="" method="POST">
-            <?= csrf_field() ?>
-            <input type="hidden" name="<?= csrf_token() ?>" value="<?= csrf_hash() ?>">
-            <div>
-                <label for="quantity" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Nombre de quantité Sortiée :</label>
-                <input type="number" name="quantity" value="<?= old('quantity') ?>" id="quantity" class="bg-gray-50 border <?= session('errors.quantity') ? 'border-red-500' : 'border-gray-300' ?> text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="2999" required>
-                <?php if (session('errors.quantity')): ?>
-                    <span class="text-red-500 text-xs"><?= session('errors.quantity') ?></span>
-                <?php endif ?>
-            </div>
-
-            <div class="my-2">
-                <label for="shop-create" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Boutique:</label>
-                <select id="shop-create" name="shop_id" class="bg-gray-50 border <?= session('errors.shop_id') ? 'border-red-500' : 'border-gray-300' ?> text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
-                    <?php $first = true;?>
-                    <?php foreach ($shops as $shop): ?>
-                        <option value="<?= $shop['id'] ?>" <?= $first ? 'selected' : '' ?>><?= $shop['name'] ?></option>
-                        <?php $first = false; ?>
-                    <?php endforeach ?>
-
-                </select>
-                <?php if (session('errors.shop_id')): ?>
-                    <span class="text-red-500 text-xs"><?= session('errors.shop_id') ?></span>
-                <?php endif ?>
-            </div>
-
-            <!-- Modal footer -->
-            <div class="items-center p-6 border-t border-gray-200 rounded-b dark:border-gray-700">
-                <button class="text-white bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800" type="submit">Valider Entrée</button>
-            </div>
-        </form>
     </div>
 </div>
+
+<!-- Out Stock Multiple Modal -->
+<div class="fixed left-0 right-0 z-50 flex items-center justify-center hidden overflow-x-hidden overflow-y-auto top-4 md:inset-0 h-modal sm:h-full" id="stock-muliple-modal">
+    <div class="relative w-full h-full max-w-2xl px-4 md:h-auto">
+        <!-- Contenu du modal -->
+        <div class="relative bg-white rounded-lg shadow-lg dark:bg-gray-800">
+            <!-- En-tête du modal -->
+            <div class="flex items-start justify-between p-5 border-b rounded-t dark:border-gray-700">
+                <h3 class="text-xl font-semibold text-gray-900 dark:text-white">
+                    Sortie de Stock
+                </h3>
+                <button type="button" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-700 dark:hover:text-white" data-modal-toggle="stock-muliple-modal">
+                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
+                </button>
+            </div>
+            <!-- Corps du modal -->
+            <div class="p-6 space-y-6">
+                <form id="repeaterForm" action="<?= base_url('stock/out') ?>" method="post" class="space-y-4">
+
+                    <div class="flex gap-4 mb-4 p-4 bg-white dark:bg-gray-800 rounded-lg shadow-md">
+                        
+                            <!-- Champ Boutique -->
+                            <div class="w-1/2">
+                                <label for="shop-create" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Boutique:</label>
+                                <select id="shop-create" name="shop_id" class="bg-gray-50 border <?= session('errors.shop_id') ? 'border-red-500' : 'border-gray-300' ?> text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                                    <?php foreach ($shops as $shop): ?>
+                                        <option value="<?= $shop['id'] ?>"><?= $shop['name'] ?></option>
+                                    <?php endforeach ?>
+                                </select>
+                                <?php if (session('errors.shop_id')): ?>
+                                    <span class="text-red-500 text-xs"><?= session('errors.shop_id') ?></span>
+                                <?php endif ?>
+                            </div>
+
+                            <!-- Champ Date -->
+                            <div class="w-1/2">
+                                <label for="createdAt" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Date de la sortie:</label>
+                                <div class="relative max-w-sm">
+                                    <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
+                                        <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                                            <path d="M20 4a2 2 0 0 0-2-2h-2V1a1 1 0 0 0-2 0v1h-3V1a1 1 0 0 0-2 0v1H6V1a1 1 0 0 0-2 0v1H2a2 2 0 0 0-2 2v2h20V4ZM0 18a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8H0v10Zm5-8h10a1 1 0 0 1 0 2H5a1 1 0 0 1 0-2Z"/>
+                                        </svg>
+                                    </div>
+                                    <input 
+                                        value="<?= old('created_at') ?>"
+                                        name="created_at_out" 
+                                        id="datepicker-format-0"
+                                        datepicker 
+                                        datepicker-format="yyyy-mm-dd" 
+                                        type="text" 
+                                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" 
+                                        placeholder="Sélectionner la date de création"
+                                        readonly
+                                        required
+                                    >
+                                </div>
+                                <?php if (session('errors.created_at')): ?>
+                                    <span class="text-red-500 text-xs"><?= session('errors.created_at') ?></span>
+                                <?php endif ?>
+                            </div>
+
+                    </div>
+
+                    <div id="repeater-container">
+                        <!-- Groupe de out -->
+                        <div data-repeater-item class="member-group flex gap-4 mb-4 p-4 bg-white dark:bg-gray-800 rounded-lg shadow-md">
+                            <?= csrf_field() ?>
+
+                            <input type="hidden" name="<?= csrf_token() ?>" value="<?= csrf_hash() ?>">
+                            
+                            <div class="w-1/2">
+                                <label for="stock_id-create" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Produit:</label>
+                                <select id="stock_id-create" name="waybill[0][stock_id]" class="bg-gray-50 border <?= session('errors.stock_id') ? 'border-red-500' : 'border-gray-300' ?> text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 product-select">
+                                    <?php foreach ($stocks as $stock): ?>product_name
+                                        <option value="<?= $stock['id'] ?>" data-product_name="<?= $stock['product_name'] ?>" data-purchase_price="<?= $stock['purchase_price'] ?>"  data-sale_price="<?= $stock['sale_price'] ?>"><?= $stock['product_name'] ?></option>
+                                    <?php endforeach ?>
+                                </select>
+                                <?php if (session('errors.stock_id')): ?>
+                                    <span class="text-red-500 text-xs"><?= session('errors.stock_id') ?></span>
+                                <?php endif ?>
+                            </div>
+
+                            <!-- Champ Quantité -->
+                            <div class="w-1/2">
+                                <label for="quantity" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Quantité :</label>
+                                <input type="number" name="waybill[0][quantity]" value="<?= old('quantity') ?>" id="quantity" class="bg-gray-50 border <?= session('errors.quantity') ? 'border-red-500' : 'border-gray-300' ?> text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="2999" required>
+                                <?php if (session('errors.quantity')): ?>
+                                    <span class="text-red-500 text-xs"><?= session('errors.quantity') ?></span>
+                                <?php endif ?>
+                            </div>
+
+                            <!-- Champ  Montant -->
+                            <div class="w-1/2">
+                                <label for="amount_total" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Montant :</label>
+                                <input id="amount_total" type="number" name="waybill[0][amount_total]" disabled value="<?= old('amount_total') ?>" id="amount_total" class="bg-gray-50 border <?= session('errors.amount_total') ? 'border-red-500' : 'border-gray-300' ?> text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="2999" required>
+                                <input id="Pprofit" type="hidden" name="waybill[0][Pprofit]" value="<?= old('Pprofit') ?>" id="Pprofit" class="bg-gray-50 border <?= session('errors.Pprofit') ? 'border-red-500' : 'border-gray-300' ?> text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="2999" required>
+                                <input id="product_name" type="hidden" name="waybill[0][product_name]" value="<?= old('product_name') ?>" id="product_name" class="bg-gray-50 border <?= session('errors.product_name') ? 'border-red-500' : 'border-gray-300' ?> text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="2999" required>
+                                <?php if (session('errors.amount_total')): ?>
+                                    <span class="text-red-500 text-xs"><?= session('errors.amount_total') ?></span>
+                                <?php endif ?>
+                            </div>
+                            <!-- Bouton Supprimer -->
+                            <button type="button" class="remove-item text-red-500 hover:text-red-700 font-bold">Supprimer</button>
+                        </div>
+                    </div>
+
+
+                    <div class="flex flex-col w-full mb-4 p-4 bg-white dark:bg-gray-800 rounded-lg shadow-md">
+                        
+                        <div>
+                            <label for="amout_total_sale" class="block mb-2 w-full text-sm font-medium text-gray-900 dark:text-white">
+                                Le Montant Total du Vente :
+                            </label>
+                            <input type="text" value="" disabled name="amout_total_sale" value="<?= old('amout_total_sale') ?>" id="amout_total_sale"
+                                class="bg-gray-50 border <?= session('errors.amout_total_sale') ? 'border-red-500' : 'border-gray-300' ?> text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                placeholder="Le montant total est">
+                        </div>
+
+
+                        <div>
+                            <label for="amout_total_purchase" class="block mb-2  w-full text-sm font-medium text-gray-900 dark:text-white">
+                                Le Montant Total d'achat :
+                            </label>
+                            <input type="text" value="" disabled name="amout_total_purchase" value="<?= old('amout_total_purchase') ?>" id="amout_total_purchase"
+                                class="bg-gray-50 border <?= session('errors.amout_total_purchase') ? 'border-red-500' : 'border-gray-300' ?> text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                placeholder="Le montant total est">
+                        </div>
+
+                        <div>
+                            <label for="profit" class="block mb-2 w-full text-sm font-medium text-gray-900 dark:text-white">
+                                Le Beninfice :
+                            </label>
+                            <input type="text" value="" disabled name="profit" value="<?= old('profit') ?>" id="profit"
+                                class="bg-gray-50 border <?= session('errors.profit') ? 'border-red-500' : 'border-gray-300' ?> text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                placeholder="Le montant total est">
+                        </div>
+
+
+                    </div>
+
+                    <!-- Boutons Ajouter et Soumettre -->
+                    <div class="flex justify-between mt-4">
+                        <button  id="add-member" type="button" class="text-blue-700 hover:text-white border border-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 dark:border-blue-500 dark:text-blue-500 dark:hover:text-white dark:hover:bg-blue-500 dark:focus:ring-blue-800">Ajouter une sortie</button>
+                        <!-- <button type="button" id="add-member" class="add-member bg-blue-500 text-white font-bold py-2 px-4 rounded hover:bg-blue-600">Ajouter une entrée</button> -->
+                        <button  id="add-member" type="submit" class="text-blue-700 hover:text-white border border-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 dark:border-blue-500 dark:text-blue-500 dark:hover:text-white dark:hover:bg-blue-500 dark:focus:ring-blue-800">Valider</button>
+                         <!--<button type="submit" class="bg-green-500 text-white font-bold py-2 px-4 rounded hover:bg-green-600">Soumettre</button>-->
+                    </div>
+
+                </form>
+            </div>
+        </div>
+    </div>
 </div>
 
 <script>
@@ -581,6 +789,8 @@ document.addEventListener('DOMContentLoaded', function () {
             const productPurchasePrice = button.getAttribute('data-purchase_price');
             const productSalePrice = button.getAttribute('data-sale_price');
             const created_at = button.getAttribute('data-created_at');
+            
+            console.log(created_at);
             
             // Set values in the form
             document.getElementById('purchase_price').value = productPurchasePrice;
@@ -662,6 +872,84 @@ function getCurrentTime() {
 
 </script>
 
+<script>
 
+$('#repeaterForm').on('submit', function() {
+    $('#amout_total_sale, #amout_total_purchase, #profit, #amount_total').prop('disabled', false);
+});
+
+
+
+$(document).ready(function() {
+    let memberIndex = 1;
+
+    $('#add-member').click(function() {
+        const newMember = $('#repeater-container .member-group:first').clone();
+
+        // Réinitialiser les valeurs des nouveaux champs
+        newMember.find('input[type="number"]').val('');
+        newMember.find('select').val('');
+
+        // Mettre à jour les attributs "name" pour rendre chaque champ unique
+        newMember.find('input, select').each(function() {
+            const nameAttr = $(this).attr('name');
+            if (nameAttr) {
+                const updatedName = nameAttr.replace(/\[0\]/, `[${memberIndex}]`);
+                $(this).attr('name', updatedName);
+            }
+        });
+
+        $('#repeater-container').append(newMember);
+        memberIndex++;
+    });
+
+    // Écoute les changements sur les sélecteurs de produits et les champs de quantité
+    $(document).on('input', 'input[name^="waybill["][name$="[quantity]"], .product-select', function() {
+        calculateAmounts();
+    });
+
+    function calculateAmounts() {
+        let totalSale = 0;
+        let totalPurchase = 0;
+
+        $('#repeater-container .member-group').each(function() {
+            const quantity = $(this).find('input[name$="[quantity]"]').val();
+            const salePrice = $(this).find('.product-select option:selected').data('sale_price');
+            const purchasePrice = $(this).find('.product-select option:selected').data('purchase_price');
+            const productName = $(this).find('.product-select option:selected').data('product_name');
+
+            if (quantity && salePrice) {
+                const amountTotal = quantity * salePrice;
+                $(this).find('input[name$="[amount_total]"]').val(amountTotal);
+                $(this).find('input[name$="[Pprofit]"]').val((salePrice - purchasePrice) * quantity);
+                $(this).find('input[name$="[product_name]"]').val(productName);
+                totalSale += amountTotal;
+            }
+
+            if (quantity && purchasePrice) {
+                const amountTotalPurchase = quantity * purchasePrice;
+                totalPurchase += amountTotalPurchase;
+            }
+        });
+
+        $('#amout_total_sale').val(totalSale);
+        $('#amout_total_purchase').val(totalPurchase);
+        $('#profit').val(totalSale - totalPurchase);
+    }
+
+    $(document).on('click', '.remove-item', function() {
+        if ($('#repeater-container .member-group').length > 1) {
+            $(this).closest('.member-group').remove();
+            calculateAmounts(); // Recalculer les montants après suppression
+        } else {
+            alert("Vous devez avoir au moins un membre.");
+        }
+    });
+});
+
+</script>
 <?= $this->endSection() ?>
+
+
+
 

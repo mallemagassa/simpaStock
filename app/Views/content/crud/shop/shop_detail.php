@@ -92,7 +92,7 @@
 
 
 
-            <table class="min-w-full divide-y divide-gray-200 table-fixed dark:divide-gray-600">
+            <table  class="min-w-full divide-y divide-gray-200 table-fixed dark:divide-gray-600">
                 <thead class="bg-gray-100 dark:bg-gray-700">
                     <tr>
                         <th scope="col" class="p-4">
@@ -102,59 +102,104 @@
                             </div>
                         </th>
                         <th scope="col" class="p-4 text-xs font-medium text-left text-gray-500 uppercase dark:text-gray-400">
-                            Produit
-                        </th>
-                        <th scope="col" class="p-4 text-xs font-medium text-left text-gray-500 uppercase dark:text-gray-400">
-                            Quantité
-                        </th>
-                        <th scope="col" class="p-4 text-xs font-medium text-left text-gray-500 uppercase dark:text-gray-400">
-                            Prix Achat
-                        </th>
-                        <th scope="col" class="p-4 text-xs font-medium text-left text-gray-500 uppercase dark:text-gray-400">
-                            Prix Vente
-                        </th>
-                        <th scope="col" class="p-4 text-xs font-medium text-left text-gray-500 uppercase dark:text-gray-400">
-                            Montant total
-                        </th>
-                        <th scope="col" class="p-4 text-xs font-medium text-left text-gray-500 uppercase dark:text-gray-400">
                             Bénefice
+                        </th>
+                        <th scope="col" class="p-4 text-xs font-medium text-left text-gray-500 uppercase dark:text-gray-400">
+                            Montant total du vente
+                        </th>
+                        <th scope="col" class="p-4 text-xs font-medium text-left text-gray-500 uppercase dark:text-gray-400">
+                            Montant total d'achat
+                        </th>
+                        <th scope="col" class="p-4 text-xs font-medium text-left text-gray-500 uppercase dark:text-gray-400">
+                            Bordereaux
+                        </th>
+                        <th scope="col" class="p-4 text-xs font-medium text-left text-gray-500 uppercase dark:text-gray-400">
+                            Date de Sortie
                         </th>
                     </tr>
                 </thead>
-                <tbody id="outsBody" class="bg-white divide-y divide-gray-200 dark:bg-gray-800 dark:divide-gray-700">
-                <?php 
-                    foreach ($outs as $value) : ?>
-                        <tr class="hover:bg-gray-100 dark:hover:bg-gray-700">
-                            <td class="w-4 p-4">
-                                <div class="flex items-center">
-                                    <input id="checkbox-<?= esc($value['id']) ?>" aria-describedby="checkbox-1" type="checkbox"
-                                        class="w-4 h-4 border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-primary-300 dark:focus:ring-primary-600 dark:ring-offset-gray-800 dark:bg-gray-700 dark:border-gray-600">
-                                    <label for="checkbox-<?= esc($value['id']) ?>" class="sr-only">checkbox</label>
-                                </div>
-                            </td>
-                            <td class="p-4 text-sm font-normal text-gray-500 whitespace-nowrap dark:text-gray-400">
-                                <div class="text-base font-semibold text-gray-900 dark:text-white"><?php 
-                                    $filteredProducts = array_filter($products, fn($product) => $product['id'] === $value['product_id']);
-                                    $filteredProducts = array_values($filteredProducts);
-                                    
-                                    $filteredStocks = array_filter($stocks, fn($stock) => $stock['id'] === $value['product_id']);
-                                    $filteredStocks = array_values($filteredStocks);
-                                    
-                                    echo($filteredProducts[0]['name']);
-                                ?></div>
-                            </td>
-                            <td class="p-4 text-base font-medium text-gray-900 whitespace-nowrap dark:text-white"><?= esc($value['quantity']) ?></td>
-                            <td class="p-4 text-base font-medium text-gray-900 whitespace-nowrap dark:text-white"><?= number_format(esc($filteredStocks[0]['purchase_price']), 0, '.', ' ') ?> F CFA</td>
-                            <td class="p-4 text-base font-medium text-gray-900 whitespace-nowrap dark:text-white"><?= number_format(esc($filteredStocks[0]['sale_price']), 0, '.', ' ') ?> F CFA</td>
-                            <td class="p-4 text-base font-medium text-gray-900 whitespace-nowrap dark:text-white"><?= number_format(esc($value['amount_total']), 0, '.', ' ') ?> F CFA</td>
-                            <td class="p-4 text-base font-medium text-gray-900 whitespace-nowrap dark:text-white"><?= number_format(esc($value['profit']), 0, '.', ' ') ?> F CFA</td>
-                        </tr>
-                    <?php endforeach; 
-                ?>
-            </tbody>
+                    <tbody id="outsBody" class="bg-white divide-y divide-gray-200 dark:bg-gray-800 dark:divide-gray-700">
+                    <?php 
+                        foreach ($outs as $value) : ?>
+                            <tr class="hover:bg-gray-100 dark:hover:bg-gray-700">
+                                <td class="w-4 p-4">
+                                    <div class="flex items-center">
+                                        <input id="checkbox-<?= esc($value['id']) ?>" aria-describedby="checkbox-1" type="checkbox"
+                                            class="w-4 h-4 border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-primary-300 dark:focus:ring-primary-600 dark:ring-offset-gray-800 dark:bg-gray-700 dark:border-gray-600">
+                                        <label for="checkbox-<?= esc($value['id']) ?>" class="sr-only">checkbox</label>
+                                    </div>
+                                </td>
+                                <!--<td class="p-4 text-sm font-normal text-gray-500 whitespace-nowrap dark:text-gray-400">
+                                    <div class="text-base font-semibold text-gray-900 dark:text-white"><?php 
+                                        // $filteredProducts = array_filter($products, fn($product) => $product['id'] === $value['product_id']);
+                                        // $filteredProducts = array_values($filteredProducts);
+                                        
+                                        // $filteredStocks = array_filter($stocks, fn($stock) => $stock['product_id'] === $value['product_id']);
+                                        // $filteredStocks = array_values($filteredStocks);
+                                        
+                                        // echo($filteredProducts[0]['name']);
+                                    ?></div> -->
+                                </td>
+                                <td class="p-4 text-base font-medium text-gray-900 whitespace-nowrap dark:text-white"><?= esc($value['profit']) ?></td>
+                                <td class="p-4 text-base font-medium text-gray-900 whitespace-nowrap dark:text-white"><?= number_format(esc($value['amount_total_sale']), 0, '.', ' ') ?> F CFA</td>
+                                <td class="p-4 text-base font-medium text-gray-900 whitespace-nowrap dark:text-white"><?= number_format(esc($value['amount_total_purchase']), 0, '.', ' ') ?> F CFA</td>
+                                <td class="p-4 text-base font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                <button type="button" 
+                                    data-modal-target="stock-muliple-modal" 
+                                    data-modal-toggle="stock-muliple-modal"
+                                    data-product_out='<?= esc($value['product_out']) ?>' 
+                                    class="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white rounded-lg bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="h-6 w-6">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z" />
+                                    </svg>                        
+                                </button>
+                                </td>
+                                <td class="p-4 text-base font-medium text-gray-900 whitespace-nowrap dark:text-white"><?=esc($value['created_at']) ?></td>
+                            </tr>
+                        <?php endforeach; 
+                    ?>
+                </tbody>
 
             </table>
 
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- Out Stock Multiple Modal -->
+<div class="fixed left-0 right-0 z-50 flex items-center justify-center hidden overflow-x-hidden overflow-y-auto top-4 md:inset-0 h-modal sm:h-full" id="stock-muliple-modal">
+    <div class="relative w-full h-full max-w-2xl px-4 md:h-auto">
+        <div class="relative bg-white rounded-lg shadow-lg dark:bg-gray-800">
+            <div class="flex items-start justify-between p-5 border-b rounded-t dark:border-gray-700">
+                <h3 class="text-xl font-semibold text-gray-900 dark:text-white">
+                    Borderau
+                </h3>
+                <button type="button" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-700 dark:hover:text-white" data-modal-toggle="stock-muliple-modal">
+                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
+                </button>
+            </div>
+
+            <div class="p-6 space-y-6">
+                <form id="repeaterForm" id="invoice" action="<?= base_url('stock/out') ?>" method="post" class="space-y-4">
+                    <div id="repeater-container">
+                        
+                    </div>
+
+                    <div class="flex flex-col w-full mb-4 p-4 bg-white dark:bg-gray-800 rounded-lg shadow-md">
+                        <div>
+                            <label for="amout_total_sale" class="block mb-2 w-full text-sm font-medium text-gray-900 dark:text-white">
+                                Le Montant Total du Vente :
+                            </label>
+                            <input type="text" value="" disabled name="amout_total_sale" value="<?= old('amout_total_sale') ?>" id="amout_total_sale"
+                                class="bg-gray-50 border <?= session('errors.amout_total_sale') ? 'border-red-500' : 'border-gray-300' ?> text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                placeholder="Le montant total est">
+                        </div>
+                    </div>
+
+                </form>
+                <button onclick="printInvoice()">Imprimer Borderau</button>
             </div>
         </div>
     </div>
@@ -191,11 +236,12 @@
                                 '<td class="p-4 text-sm font-normal text-gray-500 whitespace-nowrap dark:text-gray-400">' +
                                     '<div class="text-base font-semibold text-gray-900 dark:text-white">' + out.name + '</div>' +
                                 '</td>' +
+                                '<td class="p-4 text-base font-medium text-gray-900 whitespace-nowrap dark:text-white">' + out.quantity + '</td>' +
                                 '<td class="p-4 text-base font-medium text-gray-900 whitespace-nowrap dark:text-white">' + numberFormat(out.purchase_price) + ' F CFA</td>' +
                                 '<td class="p-4 text-base font-medium text-gray-900 whitespace-nowrap dark:text-white">' + numberFormat(out.sale_price) + ' F CFA</td>' +
-                                '<td class="p-4 text-base font-medium text-gray-900 whitespace-nowrap dark:text-white">' + out.quantity + '</td>' +
                                 '<td class="p-4 text-base font-medium text-gray-900 whitespace-nowrap dark:text-white">' + numberFormat(out.amount_total) + ' F CFA</td>' +
                                 '<td class="p-4 text-base font-medium text-gray-900 whitespace-nowrap dark:text-white">' + numberFormat(out.profit) + ' F CFA</td>' +
+                                '<td class="p-4 text-base font-medium text-gray-900 whitespace-nowrap dark:text-white">' + numberFormat(out.created_at) + '</td>' +
                             '</tr>'
                         );
                     });
@@ -239,11 +285,12 @@ $(document).ready(function() {
                             <td class="p-4 text-sm font-normal text-gray-500 whitespace-nowrap dark:text-gray-400">
                                 <div class="text-base font-semibold text-gray-900 dark:text-white">${out.product_name}</div>
                             </td>
+                            <td class="p-4 text-base font-medium text-gray-900 whitespace-nowrap dark:text-white">${out.quantity}</td>
                             <td class="p-4 text-base font-medium text-gray-900 whitespace-nowrap dark:text-white">${out.purchase_price} F CFA</td>
                             <td class="p-4 text-base font-medium text-gray-900 whitespace-nowrap dark:text-white">${out.sale_price} F CFA</td>
-                            <td class="p-4 text-base font-medium text-gray-900 whitespace-nowrap dark:text-white">${out.quantity}</td>
                             <td class="p-4 text-base font-medium text-gray-900 whitespace-nowrap dark:text-white">${out.amount_total} F CFA</td>
                             <td class="p-4 text-base font-medium text-gray-900 whitespace-nowrap dark:text-white">${out.profit} F CFA</td>
+                            <td class="p-4 text-base font-medium text-gray-900 whitespace-nowrap dark:text-white">${out.created_at}</td>
                         </tr>
                     `);
                 });
@@ -256,6 +303,87 @@ $(document).ready(function() {
 });
 
 
+document.addEventListener('DOMContentLoaded', function () {
+    const modal = document.getElementById('stock-muliple-modal');
+
+    const buttons = document.querySelectorAll('[data-modal-toggle="stock-muliple-modal"]');
+    buttons.forEach(button => {
+        button.addEventListener('click', function () {
+            // Récupérer les données du produit
+            const productDataString = this.getAttribute('data-product_out').trim();
+            console.log('Valeur de data-product_out:', productDataString);
+
+            let productData;
+            try {
+                productData = JSON.parse(productDataString);
+                console.log('Parsed productData:', productData);
+            } catch (error) {
+                console.error('Erreur lors du parsing des données produit:', error);
+                return;
+            }
+
+            // Initialisation de la somme
+            let sum = 0;
+
+            if (Array.isArray(productData)) {
+                // Remplacer le contenu au lieu de l'ajouter
+                $('#repeater-container').html('');  // Vider le contenu avant de le remplir
+
+                productData.forEach((product) => {
+                    // Conversion de `amount_total` en nombre
+                    const amount = parseFloat(product.amount_total) || 0;
+                    sum += amount;
+
+                    $('#repeater-container').append(` 
+                        <div data-repeater-item class="member-group flex gap-4 mb-4 p-4 bg-white dark:bg-gray-800 rounded-lg shadow-md">
+                            <?= csrf_field() ?>
+                            <input disabled type="hidden" name="<?= csrf_token() ?>" value="<?= csrf_hash() ?>">
+                            
+                            <div class="w-1/2">
+                                <label for="stock_id-create" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Produit:</label>
+                                <select disabled id="stock_id-create" name="waybill[0][stock_id]" class="bg-gray-50 border <?= session('errors.stock_id') ? 'border-red-500' : 'border-gray-300' ?> text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 product-select">
+                                    <option value="${product.stock_id}">${product.product_name}</option>
+                                </select>
+                            </div>
+
+                            <div class="w-1/2">
+                                <label for="quantity" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Quantité :</label>
+                                <input disabled type="number" name="waybill[0][quantity]" value="${product.quantity}" id="quantity" class="bg-gray-50 border <?= session('errors.quantity') ? 'border-red-500' : 'border-gray-300' ?> text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="2999" required>
+                            </div>
+
+                            <div class="w-1/2">
+                                <label for="amount_total" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Montant :</label>
+                                <input disabled id="amount_total" type="number" name="waybill[0][amount_total]" value="${product.amount_total}" class="bg-gray-50 border <?= session('errors.amount_total') ? 'border-red-500' : 'border-gray-300' ?> text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="2999" required>
+                            </div>
+                        </div>
+                    `);
+                });
+
+                // Affichage de la somme calculée dans l'élément avec l'ID #amout_total_sale
+                $('#amout_total_sale').val(sum);
+                console.log('Somme totale:', sum); // Vérification de la somme
+            } else {
+                console.error('Les données produit ne sont pas un tableau.', productData);
+            }
+        });
+    });
+});
+
+
+function printInvoice() {
+    const printContent = document.getElementById('invoice').innerHTML;
+    const originalContent = document.body.innerHTML;
+
+    // Remplacer le contenu de la page par le contenu à imprimer
+    document.body.innerHTML = printContent;
+
+    // Afficher la boîte de dialogue d'impression
+    window.print();
+
+    // Restaurer le contenu d'origine
+    document.body.innerHTML = originalContent;
+    window.location.reload(); // Rafraîchir pour rétablir les événements et styles
+}
 
 </script>
 

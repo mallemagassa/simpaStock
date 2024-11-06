@@ -18,6 +18,8 @@ class Out extends Model
         'amount_total_sale',
         'amount_total_purchase',
         'product_out',
+        'ref',
+        'observation',
         'shop_id',
         'created_at',
     ];

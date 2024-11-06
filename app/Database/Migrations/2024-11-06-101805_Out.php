@@ -4,7 +4,7 @@ namespace App\Database\Migrations;
 
 use CodeIgniter\Database\Migration;
 
-class Waybill extends Migration
+class Out extends Migration
 {
     public function up()
     {
@@ -27,9 +27,18 @@ class Waybill extends Migration
                 'type' => 'INT',
                 'constraint' => 11,
             ],
+            'ref' => [
+               'type' => 'VARCHAR',
+                'constraint' => 30,
+            ],
+            'observation' => [
+                'type' => 'VARCHAR',
+                'constraint' => 30,
+                'null' => true,
+            ],
             'product_out' => [
                 'type' => 'TEXT',
-                'null' => true,
+                'null' => false,
             ],
             'shop_id' => [
                 'type' => 'INT',
@@ -52,11 +61,13 @@ class Waybill extends Migration
 
         $this->forge->addKey('id', true);
 
-        $this->forge->createTable('waybills');
+        $this->forge->addForeignKey('shop_id', 'shops', 'id', 'CASCADE', 'CASCADE');
+
+        $this->forge->createTable('outs');
     }
 
     public function down()
     {
-        $this->forge->dropTable('waybills');
+        $this->forge->dropTable('outs');
     }
 }

@@ -49,6 +49,7 @@
         </li>-->
     </ul>
 </div>
+
 <div id="default-styled-tab-content">
     <div class="hidden p-4 rounded-lg bg-gray-50 dark:bg-gray-800" id="styled-in" role="tabpanel" aria-labelledby="in-tab">
         <div class="flex flex-col">
@@ -151,6 +152,7 @@
             </div>
         </div>
     </div>
+    
     <div class="hidden p-4 rounded-lg bg-gray-50 dark:bg-gray-800" id="styled-out" role="tabpanel" aria-labelledby="out-tab">
     <div class="flex flex-col">
             <div class="overflow-x-auto">

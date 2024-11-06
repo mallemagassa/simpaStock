@@ -23,10 +23,12 @@ class StockController extends BaseController
         $model = new Stock();
         $modelProduct = new Product();
         $modelShop = new Shop();
+        $outModel = new Out(); 
 
         $data['stocks'] = $model->getAllStocksWithProducts();
         $data['products'] = $modelProduct->findAll();
         $data['shops'] = $modelShop->findAll();
+        $data['outs'] = $outModel->findAll();
 
         return view('content/crud/stock', $data);
     }
@@ -206,7 +208,6 @@ class StockController extends BaseController
         $model = new Stock();
         $shopModel = new Shop();
         $outModel = new Out();
-        $waybillModel = new Waybill();
         $reportModel = new Report();
     
         if ($this->request->getMethod() === 'post') {
@@ -217,23 +218,43 @@ class StockController extends BaseController
             $amount_total_sale = $this->request->getPost('amout_total_sale');
             $amount_total_purchase = $this->request->getPost('amout_total_purchase');
             $created_at = $this->request->getPost('created_at_out');
-    
-            // Vérifiez que toutes les données requises sont présentes
+            $observation = $this->request->getPost('observation');
+            
             if (empty($waybills) || empty($shopId) || empty($amount_total_sale) || empty($amount_total_purchase)) {
                 return redirect()->back()->withInput()->with('error', 'Les données requises sont manquantes.');
             }
     
-            // Préparer les données pour l'insertion dans Out
+            // Generate the unique reference number
+            $year = date('Y');
+            $month = date('m');
+    
+            // Retrieve the latest "out" entry
+            $lastOut = $outModel->orderBy('id', 'DESC')->first();
+    
+            // Calculate the incrementing number based on the last reference
+            $increment = 1;
+            if ($lastOut) {
+                // Extract the last 5 digits of the reference and increment it
+                $lastRef = intval(substr($lastOut['ref'], -5));
+                $increment = $lastRef + 1;
+            }
+    
+            // Format the reference as "BS+Year+Month+Increment"
+            $ref = sprintf('BS%s%s%05d', $year, $month, $increment);
+    
+            // Prepare data for insertion into Out
             $outData = [
                 'profit' => $profit,
                 'amount_total_sale' => $amount_total_sale,
                 'amount_total_purchase' => $amount_total_purchase,
                 'product_out' => json_encode($waybills),
+                'observation' => $observation,
+                'ref' => $ref,
                 'shop_id' => $shopId,
                 'created_at' => $created_at,
             ];
     
-            // Vérifier si l'insertion a échoué dans le modèle Out
+            // Verify if insertion failed in Out model
             if (!$outModel->insert($outData)) {
                 log_message('error', 'Échec de l\'insertion dans Out: ' . json_encode($outModel->errors()));
                 return redirect()->back()->withInput()->with('error', 'Erreur lors de la création du bon de livraison.' . json_encode($outModel->errors()));
@@ -241,7 +262,7 @@ class StockController extends BaseController
     
             foreach ($waybills as $item) {
                 $stock = $model->find($item['stock_id']);
-    
+                
                 if (!$stock) {
                     log_message('error', 'Stock ID ' . $item['stock_id'] . ' introuvable.');
                     continue;
@@ -253,7 +274,6 @@ class StockController extends BaseController
                     return redirect()->back()->withInput()->with('error', 'Quantité insuffisante en stock pour le produit ID ' . $stock['id']);
                 }
     
-                // Calculer la nouvelle quantité et la mettre à jour
                 $newQuantity = $stock['quantity'] - $quantityToRemove;
                 $model->update($stock['id'], ['quantity' => $newQuantity]);
     
@@ -345,7 +365,6 @@ class StockController extends BaseController
         unlink($file);
         exit;
     }
-    
 
     public function exportToPDF()
     {

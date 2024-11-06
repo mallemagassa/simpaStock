@@ -70,6 +70,7 @@ $routes->group('', ['namespace' => 'App\Controllers'], function($routes) {
         $routes->get('show/(:num)', 'ShopController::show/$1');
         $routes->get('delete/(:num)', 'ShopController::delete/$1');
         $routes->post('tmpUpload', 'ShopController::tmpUpload');
+        $routes->get('exports/(:num)', 'ShopController::exportToPDF/$1');
 
     });
 

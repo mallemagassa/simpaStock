@@ -12,19 +12,25 @@
   <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/js/select2.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/simple-datatables@9.0.3"></script>
   
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+   <!--<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>-->
 
   <script type="text/javascript">
-            $(document).ready(function() {
-                $('.selectpicker').select2();
-            });
-   </script>
+      $(document).ready(function() {
+          $('.selectpicker').select2();
+      });
+  </script>
 
   <script type="text/javascript">
-        $(document).ready(function() {
-            $('#product-update').select2();
-        });
-    </script>
+      $(document).ready(function() {
+        // $('.product-select').select2();
+      });
+  </script>
+
+  <script type="text/javascript">
+      $(document).ready(function() {
+          $('#product-update').select2();
+      });
+  </script>
 
 
   <script>

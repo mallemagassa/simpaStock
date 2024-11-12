@@ -215,7 +215,7 @@
 
 <!-- Edit Role Drawer -->
 <div id="drawer-update-Role-default" class="fixed top-0 right-0 z-40 w-full h-screen max-w-xs p-4 overflow-y-auto transition-transform <?= session('errors') ? 'translate-x-0' : 'translate-x-full' ?> bg-white dark:bg-gray-800" tabindex="-1" aria-labelledby="drawer-label" aria-hidden="true">
-    <h5 id="drawer-label" class="inline-flex items-center mb-6 text-sm font-semibold text-gray-500 uppercase dark:text-gray-400">Update Role</h5>
+    <h5 id="drawer-label" class="inline-flex items-center mb-6 text-sm font-semibold text-gray-500 uppercase dark:text-gray-400">Modifier le Role</h5>
     <button type="button" data-drawer-dismiss="drawer-update-Role-default" aria-controls="drawer-update-Role-default" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 absolute top-2.5 right-2.5 inline-flex items-center dark:hover:bg-gray-600 dark:hover:text-white">
         <svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
         <span class="sr-only">Fermer le menu</span>
@@ -243,27 +243,17 @@
                 <?php endif ?>
             </div>
            
+            <input type="hidden" id="selectedPermissionsEdit" name="permissions">
+    
+            <button type="button" data-modal-target="edit-permission-modal" data-modal-toggle="edit-permission-modal" class="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white rounded-lg bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">
+                <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M17.414 2.586a2 2 0 00-2.828 0L7 10.172V13h2.828l7.586-7.586a2 2 0 000-2.828z"></path>
+                    <path fill-rule="evenodd" d="M2 6a2 2 0 012-2h4a1 1 0 010 2H4v10h10v-4a1 1 0 112 0v4a2 2 0 01-2 2H4a2 2 0 01-2-2V6z" clip-rule="evenodd"></path>
+                </svg>
+                Autorisation
+            </button>
         </div>
 
-
-        <div>
-            <label class="block text-gray-700 dark:text-gray-400 text-md font-bold mb-2" for="pair">
-            Permissions:
-            </label>
-            <select
-                id="selectPermissionUpdate"
-                name="permissions[]"
-                class="js-example-basic-multiple bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"  
-                data-placeholder="électionnez des options..."
-                data-allow-clear="false"
-                multiple="multiple"
-                title="Sélectionnez Permissions..." 
-                style="width: 100%;">
-                <?php foreach ($permissions as $permission): ?>
-                    <option value="<?= esc($permission['id']) ?>"><?= esc($permission['name']) ?></option>
-                <?php endforeach ?>
-            </select>
-        </div>
 
         
         <div class="bottom-0 left-0 flex justify-center w-full pb-4 space-x-4 md:px-4 md:absolute">
@@ -308,57 +298,604 @@
     </button>
     
     <form action="<?= base_url('roles/store') ?>" method="POST" id="roleForm">
-    <input type="hidden" name="<?= csrf_token() ?>" value="<?= csrf_hash() ?>">
+        <input type="hidden" name="<?= csrf_token() ?>" value="<?= csrf_hash() ?>">
 
-    <div class="space-y-4">
-        <div>
-            <label for="name" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Nom du Role :</label>
-            <input type="text" name="name" value="<?= old('name') ?>" id="name" class="bg-gray-50 border <?= session('errors.name') ? 'border-red-500' : 'border-gray-300' ?> text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="Type Role name" required>
-            <?php if (session('errors.name')): ?>
-                <span class="text-red-500 text-xs"><?= session('errors.name') ?></span>
-            <?php endif ?>
-        </div>
+        <div class="space-y-4">
+            <div>
+                <label for="name" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Nom du Role :</label>
+                <input type="text" name="name" value="<?= old('name') ?>" id="name" class="bg-gray-50 border <?= session('errors.name') ? 'border-red-500' : 'border-gray-300' ?> text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="Type Role name" required>
+                <?php if (session('errors.name')): ?>
+                    <span class="text-red-500 text-xs"><?= session('errors.name') ?></span>
+                <?php endif ?>
+            </div>
 
-        <div>
-            <label for="description" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Description:</label>
-            <textarea id="description" name="description" rows="4" class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border <?= session('errors.description') ? 'border-red-500' : 'border-gray-300' ?> focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="Enter product description"><?= old('description') ?></textarea>
-            <?php if (session('errors.description')): ?>
-                <span class="text-red-500 text-xs"><?= session('errors.description') ?></span>
-            <?php endif ?>
-        </div>
+            <div>
+                <label for="description" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Description:</label>
+                <textarea id="description" name="description" rows="4" class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border <?= session('errors.description') ? 'border-red-500' : 'border-gray-300' ?> focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="Enter product description"><?= old('description') ?></textarea>
+                <?php if (session('errors.description')): ?>
+                    <span class="text-red-500 text-xs"><?= session('errors.description') ?></span>
+                <?php endif ?>
+            </div>
 
-        <div>
-            <label class="block text-gray-700 dark:text-gray-400 text-md font-bold mb-2" for="pair">
-            Permissions:
-            </label>
-            <select
-                name="permissions[]"
-                class="js-example-basic-multiple bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"  
-                data-placeholder="électionnez des options..."
-                data-allow-clear="false"
-                multiple="multiple"
-                title="Sélectionnez Permissions..." 
-                style="width: 100%;">
-                <?php foreach ($permissions as $permission): ?>
-                    <option value="<?= esc($permission['id']) ?>"><?= esc($permission['name']) ?></option>
-                <?php endforeach ?>
-            </select>
-        </div>
+            <!--<div>
+                <label class="block text-gray-700 dark:text-gray-400 text-md font-bold mb-2" for="pair">
+                Permissions:
+                </label>
+                <select
+                    name="permissions[]"
+                    class="js-example-basic-multiple bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"  
+                    data-placeholder="électionnez des options..."
+                    data-allow-clear="false"
+                    multiple="multiple"
+                    title="Sélectionnez Permissions..." 
+                    style="width: 100%;">
+                    <?php foreach ($permissions as $permission): ?>
+                        <option value="<?= esc($permission['id']) ?>"><?= esc($permission['name']) ?></option>
+                    <?php endforeach ?>
+                </select>
+            </div>-->
 
-        <div class="bottom-0 left-0 flex justify-center w-full pb-4 space-x-4 md:px-4 md:absolute">
-            <button type="submit" class="text-white w-full justify-center bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">Créer</button>
-            <button type="button" data-drawer-dismiss="drawer-create-Role-default" aria-controls="drawer-create-Role-default" class="inline-flex w-full justify-center text-gray-500 items-center bg-white hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-primary-300 rounded-lg border border-gray-200 text-sm font-medium px-5 py-2.5 hover:text-gray-900 focus:z-10 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-500 dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-gray-600">
-                <svg aria-hidden="true" class="w-5 h-5 -ml-1 sm:mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
-                Annuler
+            <button type="button" data-modal-target="add-permission-modal" data-modal-toggle="add-permission-modal" class="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white rounded-lg bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">
+
+                <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M17.414 2.586a2 2 0 00-2.828 0L7 10.172V13h2.828l7.586-7.586a2 2 0 000-2.828z"></path>
+                    <path fill-rule="evenodd" d="M2 6a2 2 0 012-2h4a1 1 0 010 2H4v10h10v-4a1 1 0 112 0v4a2 2 0 01-2 2H4a2 2 0 01-2-2V6z" clip-rule="evenodd"></path>
+                </svg>
+                Autorisation
             </button>
+
+            <input type="hidden" id="selectedPermissionsAdd" name="permissionsAdd">
+
+            <div class="bottom-0 left-0 flex justify-center w-full pb-4 space-x-4 md:px-4 md:absolute">
+                <button type="submit" class="text-white w-full justify-center bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">Créer</button>
+                <button type="button" data-drawer-dismiss="drawer-create-Role-default" aria-controls="drawer-create-Role-default" class="inline-flex w-full justify-center text-gray-500 items-center bg-white hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-primary-300 rounded-lg border border-gray-200 text-sm font-medium px-5 py-2.5 hover:text-gray-900 focus:z-10 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-500 dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-gray-600">
+                    <svg aria-hidden="true" class="w-5 h-5 -ml-1 sm:mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                    Annuler
+                </button>
+            </div>
         </div>
-    </div>
-</form>
-
-
+    </form>
 </div>
 
+
+
+<!-- edit-permission-modal -->
+<div class="fixed left-0 right-0 z-50 items-center justify-center hidden overflow-x-hidden overflow-y-auto top-4 md:inset-0 h-modal sm:h-full" id="edit-permission-modal">
+    <div class="relative w-full h-full max-w-2xl px-4 md:h-auto">
+        <div class="relative bg-white rounded-lg shadow dark:bg-gray-800">
+            <div class="flex items-start justify-between p-5 border-b rounded-t dark:border-gray-700">
+                <h3 class="text-xl font-semibold dark:text-white">Autorisation Utilisateur</h3>
+                <button type="button" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-700 dark:hover:text-white" data-modal-toggle="edit-permission-modal">
+                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>  
+                </button>
+            </div>
+                <div class="p-6 space-y-6">
+            <div class="relative overflow-x-auto">
+                    <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+                        <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                            <tr>
+                                <th scope="col" class="px-6 py-3">
+                                    Module Page
+                                </th>
+                                <th scope="col" class="px-6 py-3">
+                                    Afficher
+                                </th>
+                                <th scope="col" class="px-6 py-3">
+                                    Creer
+                                </th>
+                                <th scope="col" class="px-6 py-3">
+                                    Modifier
+                                </th>
+                                <th scope="col" class="px-6 py-3">
+                                    Supprimer
+                                </th>
+                                <th scope="col" class="px-6 py-3">
+                                    Sortie
+                                </th>
+                                <th scope="col" class="px-6 py-3">
+                                    Entree
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="bg-white dark:bg-gray-800">
+                                <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                    <div class="flex items-center gap-2">
+                                        <label for="green-checkbox" class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Management</label>
+                                        <input id="main-checkbox-edit" name="" type="checkbox" value="" class="child-checkbox-edit checkbox-edit w-4 h-4 text-green-600 bg-gray-100 border-gray-300 rounded focus:ring-green-500 dark:focus:ring-green-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                                    </div>
+                                </th>
+                            </tr>
+
+                            <tr>
+                                <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                    Produits
+                                </th>
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center me-4">
+                                        <input name="show_product" type="checkbox" value="show.product" class="child-checkbox-edit checkbox-edit w-4 h-4 text-green-600 bg-gray-100 border-gray-300 rounded focus:ring-green-500 dark:focus:ring-green-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center me-4">
+                                        <input name="create_product" type="checkbox" value="create.product" class="child-checkbox-edit checkbox-edit w-4 h-4 text-green-600 bg-gray-100 border-gray-300 rounded focus:ring-green-500 dark:focus:ring-green-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center me-4">
+                                        <input name="edit_product" type="checkbox" value="edit.product" class="child-checkbox-edit checkbox-edit w-4 h-4 text-green-600 bg-gray-100 border-gray-300 rounded focus:ring-green-500 dark:focus:ring-green-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center me-4">
+                                        <input name="delete_product" type="checkbox" value="delete.product" class="child-checkbox child-checkbox-edit checkbox-edit w-4 h-4 text-green-600 bg-gray-100 border-gray-300 rounded focus:ring-green-500 dark:focus:ring-green-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                                    </div>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                    Utilisateurs
+                                </th>
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center me-4">
+                                        <input name="show_user" type="checkbox" value="show.user" class="child-checkbox-edit checkbox-edit w-4 h-4 text-green-600 bg-gray-100 border-gray-300 rounded focus:ring-green-500 dark:focus:ring-green-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center me-4">
+                                        <input name="create_user" type="checkbox" value="create.user" class="child-checkbox-edit checkbox-edit w-4 h-4 text-green-600 bg-gray-100 border-gray-300 rounded focus:ring-green-500 dark:focus:ring-green-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center me-4">
+                                        <input name="edit_user" type="checkbox" value="edit.user" class="child-checkbox-edit checkbox-edit w-4 h-4 text-green-600 bg-gray-100 border-gray-300 rounded focus:ring-green-500 dark:focus:ring-green-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center me-4">
+                                        <input name="delete_user" type="checkbox" value="delete.user" class="child-checkbox child-checkbox-edit checkbox-edit w-4 h-4 text-green-600 bg-gray-100 border-gray-300 rounded focus:ring-green-500 dark:focus:ring-green-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                                    </div>
+                                </td>
+
+                            </tr>
+
+
+                            <tr>
+                                <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                    Stocks
+                                </th>
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center me-4">
+                                        <input name="show_stock" type="checkbox" value="show.stock" class="child-checkbox-edit checkbox-edit w-4 h-4 text-green-600 bg-gray-100 border-gray-300 rounded focus:ring-green-500 dark:focus:ring-green-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center me-4">
+                                        <input name="create_stock" type="checkbox" value="create.stock" class="child-checkbox-edit checkbox-edit w-4 h-4 text-green-600 bg-gray-100 border-gray-300 rounded focus:ring-green-500 dark:focus:ring-green-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center me-4">
+                                        <input name="edit_stock" type="checkbox" value="edit.stock" class="child-checkbox-edit checkbox-edit w-4 h-4 text-green-600 bg-gray-100 border-gray-300 rounded focus:ring-green-500 dark:focus:ring-green-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center me-4">
+                                        <input name="delete_stock" type="checkbox" value="delete.stock" class="child-checkbox child-checkbox-edit checkbox-edit w-4 h-4 text-green-600 bg-gray-100 border-gray-300 rounded focus:ring-green-500 dark:focus:ring-green-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                                    </div>
+                                </td>
+
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center me-4">
+                                        <input name="out_stock" type="checkbox" value="out.stock" class="child-checkbox-edit checkbox-edit w-4 h-4 text-green-600 bg-gray-100 border-gray-300 rounded focus:ring-green-500 dark:focus:ring-green-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center me-4">
+                                        <input name="in_stock" type="checkbox" value="in.stock" class="child-checkbox-edit checkbox-edit w-4 h-4 text-green-600 bg-gray-100 border-gray-300 rounded focus:ring-green-500 dark:focus:ring-green-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                                    </div>
+                                </td>
+
+                            </tr>
+
+                            <tr>
+                                <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                    Unitées
+                                </th>
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center me-4">
+                                        <input name="show_unit" type="checkbox" value="show.unit" class="child-checkbox-edit checkbox-edit w-4 h-4 text-green-600 bg-gray-100 border-gray-300 rounded focus:ring-green-500 dark:focus:ring-green-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center me-4">
+                                        <input name="create_unit" type="checkbox" value="create.unit" class="child-checkbox-edit checkbox-edit w-4 h-4 text-green-600 bg-gray-100 border-gray-300 rounded focus:ring-green-500 dark:focus:ring-green-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center me-4">
+                                        <input name="edit_unit" type="checkbox" value="edit.unit" class="child-checkbox-edit checkbox-edit w-4 h-4 text-green-600 bg-gray-100 border-gray-300 rounded focus:ring-green-500 dark:focus:ring-green-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center me-4">
+                                        <input name="delete_unit" type="checkbox" value="delete.unit" class="child-checkbox-edit checkbox-edit w-4 h-4 text-green-600 bg-gray-100 border-gray-300 rounded focus:ring-green-500 dark:focus:ring-green-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                                    </div>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                    Boutiques
+                                </th>
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center me-4">
+                                        <input name="show_shop" type="checkbox" value="show.shop" class="child-checkbox-edit checkbox-edit w-4 h-4 text-green-600 bg-gray-100 border-gray-300 rounded focus:ring-green-500 dark:focus:ring-green-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center me-4">
+                                        <input name="create_shop" type="checkbox" value="create.shop" class="child-checkbox-edit checkbox-edit w-4 h-4 text-green-600 bg-gray-100 border-gray-300 rounded focus:ring-green-500 dark:focus:ring-green-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center me-4">
+                                        <input name="edit_shop" type="checkbox" value="edit.shop" class="child-checkbox-edit checkbox-edit w-4 h-4 text-green-600 bg-gray-100 border-gray-300 rounded focus:ring-green-500 dark:focus:ring-green-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center me-4">
+                                        <input name="delete_shop" type="checkbox" value="delete.shop" class="child-checkbox-edit checkbox-edit w-4 h-4 text-green-600 bg-gray-100 border-gray-300 rounded focus:ring-green-500 dark:focus:ring-green-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr class="border-b dark:border-gray-700">
+                                <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                    Rapports
+                                </th>
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center me-4">
+                                        <input name="show_report" type="checkbox" value="show.report" class="child-checkbox-edit checkbox-edit w-4 h-4 text-green-600 bg-gray-100 border-gray-300 rounded focus:ring-green-500 dark:focus:ring-green-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center me-4">
+                                        <input name="create_report" type="checkbox" value="create.report" class="child-checkbox-edit checkbox-edit w-4 h-4 text-green-600 bg-gray-100 border-gray-300 rounded focus:ring-green-500 dark:focus:ring-green-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center me-4">
+                                        <input name="edit_report" type="checkbox" value="edit.report" class="child-checkbox-edit checkbox-edit w-4 h-4 text-green-600 bg-gray-100 border-gray-300 rounded focus:ring-green-500 dark:focus:ring-green-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center me-4">
+                                        <input name="delete_report" type="checkbox" value="delete.report" class="child-checkbox-edit checkbox-edit w-4 h-4 text-green-600 bg-gray-100 border-gray-300 rounded focus:ring-green-500 dark:focus:ring-green-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                                    </div>
+                                </td>
+                            </tr>
+
+                            <tr class="bg-white dark:bg-gray-800">
+                                <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                    Prémètre
+                                </th>
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center me-4">
+                                        <input name="show_role" type="checkbox" value="show.role" class="checkbox-edit w-4 h-4 text-green-600 bg-gray-100 border-gray-300 rounded focus:ring-green-500 dark:focus:ring-green-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center me-4">
+                                        <input name="create_role" type="checkbox" value="create.role" class="checkbox-edit w-4 h-4 text-green-600 bg-gray-100 border-gray-300 rounded focus:ring-green-500 dark:focus:ring-green-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center me-4">
+                                        <input name="edit_role" type="checkbox" value="edit.role" class="checkbox-edit w-4 h-4 text-green-600 bg-gray-100 border-gray-300 rounded focus:ring-green-500 dark:focus:ring-green-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center me-4">
+                                        <input name="delete_role" type="checkbox" value="delete.role" class="checkbox-edit w-4 h-4 text-green-600 bg-gray-100 border-gray-300 rounded focus:ring-green-500 dark:focus:ring-green-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="items-center p-6 border-t border-gray-200 rounded-b dark:border-gray-700">
+                <button data-modal-toggle="edit-permission-modal" type="submit" class="text-white bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">Appliquer</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- add-permission-modal -->
+<div class="fixed left-0 right-0 z-50 items-center justify-center hidden overflow-x-hidden overflow-y-auto top-4 md:inset-0 h-modal sm:h-full" id="add-permission-modal">
+    <div class="relative w-full h-full max-w-2xl px-4 md:h-auto">
+        <div class="relative bg-white rounded-lg shadow dark:bg-gray-800">
+            <div class="flex items-start justify-between p-5 border-b rounded-t dark:border-gray-700">
+                <h3 class="text-xl font-semibold dark:text-white">Autorisation Utilisateur</h3>
+                <button type="button" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-700 dark:hover:text-white" data-modal-toggle="add-permission-modal">
+                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>  
+                </button>
+            </div>
+                <div class="p-6 space-y-6">
+            <div class="relative overflow-x-auto">
+                    <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+                        <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                            <tr>
+                                <th scope="col" class="px-6 py-3">
+                                    Module Page
+                                </th>
+                                <th scope="col" class="px-6 py-3">
+                                    Afficher
+                                </th>
+                                <th scope="col" class="px-6 py-3">
+                                    Creer
+                                </th>
+                                <th scope="col" class="px-6 py-3">
+                                    Modifier
+                                </th>
+                                <th scope="col" class="px-6 py-3">
+                                    Supprimer
+                                </th>
+                                <th scope="col" class="px-6 py-3">
+                                    Sortie
+                                </th>
+                                <th scope="col" class="px-6 py-3">
+                                    Entree
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="bg-white dark:bg-gray-800">
+                                <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                    <div class="flex items-center gap-2">
+                                        <label for="green-checkbox" class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Management</label>
+                                        <input id="main-checkbox-add" name="" type="checkbox" value="" class="w-4 h-4 text-green-600 bg-gray-100 border-gray-300 rounded focus:ring-green-500 dark:focus:ring-green-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                                    </div>
+                                </th>
+                            </tr>
+
+                            <tr>
+                                <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                    Produits
+                                </th>
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center me-4">
+                                        <input name="show_product" type="checkbox" value="show.product" class="child-checkbox-add checkbox-add w-4 h-4 text-green-600 bg-gray-100 border-gray-300 rounded focus:ring-green-500 dark:focus:ring-green-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center me-4">
+                                        <input name="create_product" type="checkbox" value="create.product" class="child-checkbox-add checkbox-add w-4 h-4 text-green-600 bg-gray-100 border-gray-300 rounded focus:ring-green-500 dark:focus:ring-green-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center me-4">
+                                        <input name="edit_product" type="checkbox" value="edit.product" class="child-checkbox-add checkbox-add w-4 h-4 text-green-600 bg-gray-100 border-gray-300 rounded focus:ring-green-500 dark:focus:ring-green-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center me-4">
+                                        <input name="delete_product" type="checkbox" value="delete.product" class="child-checkbox-add checkbox-add w-4 h-4 text-green-600 bg-gray-100 border-gray-300 rounded focus:ring-green-500 dark:focus:ring-green-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                                    </div>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                    Utilisateurs
+                                </th>
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center me-4">
+                                        <input name="show_user" type="checkbox" value="show.user" class="child-checkbox-add checkbox-add w-4 h-4 text-green-600 bg-gray-100 border-gray-300 rounded focus:ring-green-500 dark:focus:ring-green-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center me-4">
+                                        <input name="create_user" type="checkbox" value="create.user" class="child-checkbox-add checkbox-add w-4 h-4 text-green-600 bg-gray-100 border-gray-300 rounded focus:ring-green-500 dark:focus:ring-green-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center me-4">
+                                        <input name="edit_user" type="checkbox" value="edit.user" class="child-checkbox-add checkbox-add w-4 h-4 text-green-600 bg-gray-100 border-gray-300 rounded focus:ring-green-500 dark:focus:ring-green-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center me-4">
+                                        <input name="delete_user" type="checkbox" value="delete.user" class="child-checkbox-add checkbox-add w-4 h-4 text-green-600 bg-gray-100 border-gray-300 rounded focus:ring-green-500 dark:focus:ring-green-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                                    </div>
+                                </td>
+
+                            </tr>
+
+
+                            <tr>
+                                <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                    Stocks
+                                </th>
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center me-4">
+                                        <input name="show_stock" type="checkbox" value="show.stock" class="child-checkbox-add checkbox-add w-4 h-4 text-green-600 bg-gray-100 border-gray-300 rounded focus:ring-green-500 dark:focus:ring-green-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center me-4">
+                                        <input name="create_stock" type="checkbox" value="create.stock" class="child-checkbox-add checkbox-add w-4 h-4 text-green-600 bg-gray-100 border-gray-300 rounded focus:ring-green-500 dark:focus:ring-green-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center me-4">
+                                        <input name="edit_stock" type="checkbox" value="edit.stock" class="child-checkbox-add checkbox-add w-4 h-4 text-green-600 bg-gray-100 border-gray-300 rounded focus:ring-green-500 dark:focus:ring-green-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center me-4">
+                                        <input name="delete_stock" type="checkbox" value="delete.stock" class="child-checkbox-add checkbox-add w-4 h-4 text-green-600 bg-gray-100 border-gray-300 rounded focus:ring-green-500 dark:focus:ring-green-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                                    </div>
+                                </td>
+
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center me-4">
+                                        <input name="out_stock" type="checkbox" value="out.stock" class="child-checkbox-add checkbox-add w-4 h-4 text-green-600 bg-gray-100 border-gray-300 rounded focus:ring-green-500 dark:focus:ring-green-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center me-4">
+                                        <input name="in_stock" type="checkbox" value="in.stock" class="child-checkbox-add checkbox-add w-4 h-4 text-green-600 bg-gray-100 border-gray-300 rounded focus:ring-green-500 dark:focus:ring-green-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                                    </div>
+                                </td>
+
+                            </tr>
+
+                            <tr>
+                                <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                    Unitées
+                                </th>
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center me-4">
+                                        <input name="show_unit" type="checkbox" value="show.unit" class="child-checkbox-add checkbox-add w-4 h-4 text-green-600 bg-gray-100 border-gray-300 rounded focus:ring-green-500 dark:focus:ring-green-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center me-4">
+                                        <input name="create_unit" type="checkbox" value="create.unit" class="child-checkbox-add checkbox-add w-4 h-4 text-green-600 bg-gray-100 border-gray-300 rounded focus:ring-green-500 dark:focus:ring-green-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center me-4">
+                                        <input name="edit_unit" type="checkbox" value="edit.unit" class="child-checkbox-add checkbox-add w-4 h-4 text-green-600 bg-gray-100 border-gray-300 rounded focus:ring-green-500 dark:focus:ring-green-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center me-4">
+                                        <input name="delete_unit" type="checkbox" value="delete.unit" class="child-checkbox-add checkbox-add w-4 h-4 text-green-600 bg-gray-100 border-gray-300 rounded focus:ring-green-500 dark:focus:ring-green-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                                    </div>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                    Boutiques
+                                </th>
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center me-4">
+                                        <input name="show_shop" type="checkbox" value="show.shop" class="child-checkbox-add checkbox-add w-4 h-4 text-green-600 bg-gray-100 border-gray-300 rounded focus:ring-green-500 dark:focus:ring-green-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center me-4">
+                                        <input name="create_shop" type="checkbox" value="create.shop" class="child-checkbox-add checkbox-add w-4 h-4 text-green-600 bg-gray-100 border-gray-300 rounded focus:ring-green-500 dark:focus:ring-green-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center me-4">
+                                        <input name="edit_shop" type="checkbox" value="edit.shop" class="child-checkbox-add checkbox-add w-4 h-4 text-green-600 bg-gray-100 border-gray-300 rounded focus:ring-green-500 dark:focus:ring-green-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center me-4">
+                                        <input name="delete_shop" type="checkbox" value="delete.shop" class="child-checkbox-add checkbox-add w-4 h-4 text-green-600 bg-gray-100 border-gray-300 rounded focus:ring-green-500 dark:focus:ring-green-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr class="border-b dark:border-gray-700">
+                                <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                    Rapports
+                                </th>
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center me-4">
+                                        <input name="show_report" type="checkbox" value="show.report" class="child-checkbox-add checkbox-add w-4 h-4 text-green-600 bg-gray-100 border-gray-300 rounded focus:ring-green-500 dark:focus:ring-green-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center me-4">
+                                        <input name="create_report" type="checkbox" value="create.report" class="child-checkbox-add checkbox-add w-4 h-4 text-green-600 bg-gray-100 border-gray-300 rounded focus:ring-green-500 dark:focus:ring-green-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center me-4">
+                                        <input name="edit_report" type="checkbox" value="edit.report" class="child-checkbox-add checkbox-add w-4 h-4 text-green-600 bg-gray-100 border-gray-300 rounded focus:ring-green-500 dark:focus:ring-green-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center me-4">
+                                        <input name="delete_report" type="checkbox" value="delete.report" class="child-checkbox-add checkbox-add w-4 h-4 text-green-600 bg-gray-100 border-gray-300 rounded focus:ring-green-500 dark:focus:ring-green-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                                    </div>
+                                </td>
+                            </tr>
+
+                            <tr class="bg-white dark:bg-gray-800">
+                                <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                    Prémètre
+                                </th>
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center me-4">
+                                        <input name="show_role" type="checkbox" value="show.role" class="checkbox-add w-4 h-4 text-green-600 bg-gray-100 border-gray-300 rounded focus:ring-green-500 dark:focus:ring-green-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center me-4">
+                                        <input name="create_role" type="checkbox" value="create.role" class="checkbox-add w-4 h-4 text-green-600 bg-gray-100 border-gray-300 rounded focus:ring-green-500 dark:focus:ring-green-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center me-4">
+                                        <input name="edit_role" type="checkbox" value="edit.role" class="checkbox-add w-4 h-4 text-green-600 bg-gray-100 border-gray-300 rounded focus:ring-green-500 dark:focus:ring-green-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center me-4">
+                                        <input name="delete_role" type="checkbox" value="delete.role" class="checkbox-add w-4 h-4 text-green-600 bg-gray-100 border-gray-300 rounded focus:ring-green-500 dark:focus:ring-green-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="items-center p-6 border-t border-gray-200 rounded-b dark:border-gray-700">
+                    <button data-modal-toggle="add-permission-modal" type="submit" class="text-white bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">Appliquer</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
 <script>
+
+document.addEventListener('DOMContentLoaded', function () {
+    // Sélectionner tous les boutons d'édition de rôle
+    const editPermissionButtons = document.querySelectorAll('#updateRoleButton');
+
+    editPermissionButtons.forEach(button => {
+        button.addEventListener('click', function () {
+            const permissions = JSON.parse(this.getAttribute('data-permissions'));
+
+            // Décocher toutes les cases au départ
+            document.querySelectorAll('#edit-permission-modal input[type="checkbox"]').forEach(checkbox => {
+                checkbox.checked = false;
+            });
+
+            // Cocher les permissions existantes pour le rôle
+            permissions.forEach(permission => {
+
+                console.error(permission.name);
+                
+                const checkbox = document.querySelector(`#edit-permission-modal input[value="${permission.name}"]`);
+                if (checkbox) {
+                    checkbox.checked = true;
+                }
+            });
+        });
+    });
+});
+
 
 document.addEventListener('DOMContentLoaded', function () {
     document.querySelectorAll('#updateRoleButton').forEach(button => {
@@ -400,7 +937,6 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 
-
 document.addEventListener('DOMContentLoaded', function () {
     const deleteButtons = document.querySelectorAll('#deleteRoleButton');
 
@@ -413,6 +949,67 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 });
+
+
+ // Récupérer la case principale
+const mainCheckboxEdit = document.getElementById("main-checkbox-edit");
+
+const childCheckboxesEdit = document.querySelectorAll(".child-checkbox-edit");
+
+// Ajouter un événement pour cocher/décocher toutes les cases enfant en fonction de la case principale
+mainCheckboxEdit.addEventListener("change", function() {
+    childCheckboxesEdit.forEach(checkbox => {
+        checkbox.checked = mainCheckboxEdit.checked;
+    });
+});
+
+
+const mainCheckboxAdd = document.getElementById("main-checkbox-add");
+
+const childCheckboxesAdd = document.querySelectorAll(".child-checkbox-add");
+
+// Ajouter un événement pour cocher/décocher toutes les cases enfant en fonction de la case principale
+mainCheckboxAdd.addEventListener("change", function() {
+    childCheckboxesAdd.forEach(checkbox => {
+        checkbox.checked = mainCheckboxAdd.checked;
+    });
+});
+
+
+document.addEventListener('DOMContentLoaded', function () {
+    // Bouton "Appliquer" dans le modal
+    document.querySelector('#edit-permission-modal button[type="submit"]').addEventListener('click', function (e) {
+        e.preventDefault();
+
+        // Récupérer toutes les cases à cocher sélectionnées
+        const selectedPermissions = Array.from(document.querySelectorAll('#edit-permission-modal input.checkbox-edit:checked'))
+            .map(checkbox => checkbox.value);
+
+        // Ajouter les autorisations sélectionnées au champ caché du drawer
+        document.getElementById('selectedPermissionsEdit').value = selectedPermissions.join(',');
+
+        // Fermer le modal
+        document.getElementById('edit-permission-modal').classList.add('hidden');
+    });
+});
+
+document.addEventListener('DOMContentLoaded', function () {
+    // Bouton "Appliquer" dans le modal
+    document.querySelector('#add-permission-modal button[type="submit"]').addEventListener('click', function (e) {
+        e.preventDefault();
+
+        // Récupérer toutes les cases à cocher sélectionnées
+        const selectedPermissionsAdd = Array.from(document.querySelectorAll('#add-permission-modal input.checkbox-add:checked'))
+            .map(checkbox => checkbox.value);
+
+        // Ajouter les autorisations sélectionnées au champ caché du drawer
+        document.getElementById('selectedPermissionsAdd').value = selectedPermissionsAdd.join(',');
+
+        // Fermer le modal
+        document.getElementById('add-permission-modal').classList.add('hidden');
+    });
+});
+
 
 </script>
 

@@ -96,5 +96,22 @@ class Role extends Model
         // Réinitialiser les clés numériques pour avoir un tableau simple d'éléments
         return array_values($rolesWithPermissions);
     }
+
+
+    public function getPermissions($groupId)
+    {
+        // Charger la table de liaison
+        $db = \Config\Database::connect();
+        $builder = $db->table('group_permissions');
+
+        // Sélectionner les permissions associées
+        $builder->select('permissions.id, permissions.name, permissions.description');
+        $builder->join('permissions', 'group_permissions.permission_id = permissions.id');
+        $builder->where('group_permissions.group_id', $groupId);
+
+        // Exécuter la requête et obtenir les résultats
+        $query = $builder->get();
+        return $query->getResultArray();
+    }
     
 }

@@ -1,5 +1,8 @@
 
 
+<?php 
+  $user = auth()->user();
+?>
 <aside id="sidebar" class="fixed top-0 left-0 z-20 flex flex-col flex-shrink-0 hidden w-64 h-full pt-16 font-normal duration-75 lg:flex transition-width" aria-label="Sidebar">
   <div class="relative flex flex-col flex-1 min-h-0 pt-0 bg-white border-r border-gray-200 dark:bg-gray-800 dark:border-gray-700">
     <div class="flex flex-col flex-1 pt-5 pb-4 overflow-y-auto">
@@ -51,29 +54,39 @@
                 <svg sidebar-toggle-item class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
             </button>
             <ul id="dropdown-crud" class="space-y-2 py-2 {{ if not (eq .Params.group "crud") }}hidden {{ end }}">
-              <li>
-                <a href="<?= base_url('product') ?>" class="text-base text-gray-900 rounded-lg flex items-center p-2 group hover:bg-gray-100 transition duration-75 pl-11 dark:text-gray-200 dark:hover:bg-gray-700 {{ if eq $page_slug "products" }} bg-gray-100 dark:bg-gray-700 {{ end }}">Produits</a>
-              </li>
-              <li>
-                <a href="<?= base_url('user') ?>" class="text-base text-gray-900 rounded-lg flex items-center p-2 group hover:bg-gray-100 transition duration-75 pl-11 dark:text-gray-200 dark:hover:bg-gray-700 {{ if eq $page_slug "users" }} bg-gray-100 dark:bg-gray-700 {{ end }}">Utisateurs</a>
-              </li>
-              <li>
-                <a href="<?= base_url('stock') ?>" class="text-base text-gray-900 rounded-lg flex items-center p-2 group hover:bg-gray-100 transition duration-75 pl-11 dark:text-gray-200 dark:hover:bg-gray-700 {{ if eq $page_slug "stocks" }} bg-gray-100 dark:bg-gray-700 {{ end }}">Stocks</a>
-              </li>
-              <li>
-                <a href="<?= base_url('unit') ?>" class="text-base text-gray-900 rounded-lg flex items-center p-2 group hover:bg-gray-100 transition duration-75 pl-11 dark:text-gray-200 dark:hover:bg-gray-700 {{ if eq $page_slug "units" }} bg-gray-100 dark:bg-gray-700 {{ end }}">Unitées</a>
-              </li>
-              <li>
-                <a href="<?= base_url('shop') ?>" class="text-base text-gray-900 rounded-lg flex items-center p-2 group hover:bg-gray-100 transition duration-75 pl-11 dark:text-gray-200 dark:hover:bg-gray-700 {{ if eq $page_slug "shop" }} bg-gray-100 dark:bg-gray-700 {{ end }}">Boutiques</a>
-              </li>
-              <li>
-                <a href="<?= base_url('reports') ?>" class="text-base text-gray-900 rounded-lg flex items-center p-2 group hover:bg-gray-100 transition duration-75 pl-11 dark:text-gray-200 dark:hover:bg-gray-700 {{ if eq $page_slug "reports" }} bg-gray-100 dark:bg-gray-700 {{ end }}">Raports</a>
-              </li>
+              <?php if ($user->can('show.user')) :?>
+                <li>
+                  <a href="<?= base_url('product') ?>" class="text-base text-gray-900 rounded-lg flex items-center p-2 group hover:bg-gray-100 transition duration-75 pl-11 dark:text-gray-200 dark:hover:bg-gray-700 {{ if eq $page_slug "products" }} bg-gray-100 dark:bg-gray-700 {{ end }}">Produits</a>
+                </li>
+              <?php endif?>
+              <?php if ($user->can('show.user')) :?>
+                <li>
+                  <a href="<?= base_url('user') ?>" class="text-base text-gray-900 rounded-lg flex items-center p-2 group hover:bg-gray-100 transition duration-75 pl-11 dark:text-gray-200 dark:hover:bg-gray-700 {{ if eq $page_slug "users" }} bg-gray-100 dark:bg-gray-700 {{ end }}">Utisateurs</a>
+                </li>
+              <?php endif?>
+              <?php if ($user->can('show.stock')) :?>
+                <li>
+                  <a href="<?= base_url('stock') ?>" class="text-base text-gray-900 rounded-lg flex items-center p-2 group hover:bg-gray-100 transition duration-75 pl-11 dark:text-gray-200 dark:hover:bg-gray-700 {{ if eq $page_slug "stocks" }} bg-gray-100 dark:bg-gray-700 {{ end }}">Stocks</a>
+                </li>
+              <?php endif?>
+              <?php if ($user->can('show.unit')) :?>
+                <li>
+                  <a href="<?= base_url('unit') ?>" class="text-base text-gray-900 rounded-lg flex items-center p-2 group hover:bg-gray-100 transition duration-75 pl-11 dark:text-gray-200 dark:hover:bg-gray-700 {{ if eq $page_slug "units" }} bg-gray-100 dark:bg-gray-700 {{ end }}">Unitées</a>
+                </li>
+              <?php endif?>
+              <?php if ($user->can('show.shop')) :?>
+                <li>
+                  <a href="<?= base_url('shop') ?>" class="text-base text-gray-900 rounded-lg flex items-center p-2 group hover:bg-gray-100 transition duration-75 pl-11 dark:text-gray-200 dark:hover:bg-gray-700 {{ if eq $page_slug "shop" }} bg-gray-100 dark:bg-gray-700 {{ end }}">Boutiques</a>
+                </li>
+              <?php endif?>
+              <?php if ($user->can('show.report')) :?>
+                <li>
+                  <a href="<?= base_url('reports') ?>" class="text-base text-gray-900 rounded-lg flex items-center p-2 group hover:bg-gray-100 transition duration-75 pl-11 dark:text-gray-200 dark:hover:bg-gray-700 {{ if eq $page_slug "reports" }} bg-gray-100 dark:bg-gray-700 {{ end }}">Raports</a>
+                </li>
+              <?php endif?>
             </ul>
           </li>
           
-           
-  
           <li>
             <button type="button" class="flex items-center w-full p-2 text-base text-gray-900 transition duration-75 rounded-lg group hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-700" aria-controls="dropdown-pages" data-collapse-toggle="dropdown-pages">
                 <svg class="w-6 h-6 text-gray-500 transition duration-75 group-hover:text-gray-900 dark:text-gray-400 dark:group-hover:text-white" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
@@ -83,13 +96,14 @@
                 <svg sidebar-toggle-item class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
             </button>
             <ul id="dropdown-pages" class="hidden py-2 space-y-2">
-              <li>
-                <a href="<?= base_url('roles') ?>" class="flex items-center p-2 text-base text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-700">Rôles</a>
-              </li>
-              <li>
-                <a href="<?= base_url('permissions') ?>" class="flex items-center p-2 text-base text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-700">Permissions</a>
-              </li>
-              
+              <?php if ($user->can('show.role')) :?>
+                <li>
+                  <a href="<?= base_url('roles') ?>" class="flex items-center p-2 text-base text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-700">Rôles</a>
+                </li>
+                <li>
+                  <a href="<?= base_url('permissions') ?>" class="flex items-center p-2 text-base text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-700">Permissions</a>
+                </li>
+              <?php endif?>
             </ul>
           </li>
           <!--

@@ -53,50 +53,99 @@ class RoleController extends Controller
         return view('content/crud/create');
     }
 
+    // public function store()
+    // {
+    //     $permissions = $this->request->getPost('permissions'); 
+    //     $permissionsArray = is_string($permissions) ? explode(',', $permissions) : $permissions;
+        
+    //     dd($permissionsArray);
+    //     $groupData = [
+    //         'name' => $this->request->getPost('name'),
+    //         'title' => $this->request->getPost('name'),
+    //         'description' => $this->request->getPost('description'), // Peut être null
+    //     ];
+
+    //     // Sauvegarde du groupe
+    //     if ($this->role->save($groupData)) {
+    //         $groupId = $this->role->insertID();
+
+    //         if (!empty($permissionsArray)) {
+    //             // Vérification des permissions valides
+    //             $validPermissionIds = $this->db->table('permissions')->select('id')->get()->getResultArray();
+    //             $validPermissionIds = array_column($validPermissionIds, 'id');
+
+    //             foreach ($permissionsArray as $permissionId) {
+    //                 if (!in_array($permissionId, $validPermissionIds)) {
+    //                     return redirect()->back()->with('error', "Permission ID $permissionId est invalide.");
+    //                 }
+    //             }
+
+    //             // Préparation des données de permissions
+    //             $groupPermissionsData = [];
+    //             foreach ($permissionsArray as $permissionId) {
+    //                 $groupPermissionsData[] = [
+    //                     'group_id' => $groupId,
+    //                     'permission_id' => $permissionId,
+    //                 ];
+    //             }
+
+    //             // Insertion des permissions
+    //             $this->db->table('group_permissions')->insertBatch($groupPermissionsData);
+    //         }
+
+    //         return redirect()->to('/roles')->with('success', 'Le groupe a été ajouté avec succès.');
+    //     }
+
+    //     return redirect()->back()->with('error', 'Erreur lors de la création du groupe.');
+    // }
+
+
     public function store()
     {
-        $permissions = $this->request->getPost('permissions'); 
+        $permissions = $this->request->getPost('permissionsAdd'); 
         $permissionsArray = is_string($permissions) ? explode(',', $permissions) : $permissions;
-
+        // Filtrer les valeurs vides
+        $permissionsArray = array_filter($permissionsArray, fn($value) => !empty($value));
+        
         $groupData = [
             'name' => $this->request->getPost('name'),
             'title' => $this->request->getPost('name'),
             'description' => $this->request->getPost('description'), // Peut être null
         ];
-
+    
         // Sauvegarde du groupe
         if ($this->role->save($groupData)) {
             $groupId = $this->role->insertID();
-
+    
             if (!empty($permissionsArray)) {
-                // Vérification des permissions valides
-                $validPermissionIds = $this->db->table('permissions')->select('id')->get()->getResultArray();
-                $validPermissionIds = array_column($validPermissionIds, 'id');
-
-                foreach ($permissionsArray as $permissionId) {
-                    if (!in_array($permissionId, $validPermissionIds)) {
-                        return redirect()->back()->with('error', "Permission ID $permissionId est invalide.");
-                    }
-                }
-
-                // Préparation des données de permissions
+                // Récupération des noms et IDs de permissions
+                $permissionsList = $this->db->table('permissions')->select('id, name')->get()->getResultArray();
+                $permissionMap = array_column($permissionsList, 'id', 'name'); // Crée un tableau [name => id]
+    
+                // Conversion des noms de permissions en IDs
                 $groupPermissionsData = [];
-                foreach ($permissionsArray as $permissionId) {
+                foreach ($permissionsArray as $permissionName) {
+                    if (!isset($permissionMap[$permissionName])) {
+                        return redirect()->back()->with('error', "Permission '$permissionName' est invalide.");
+                    }
+    
                     $groupPermissionsData[] = [
                         'group_id' => $groupId,
-                        'permission_id' => $permissionId,
+                        'permission_id' => $permissionMap[$permissionName],
                     ];
                 }
-
+    
                 // Insertion des permissions
                 $this->db->table('group_permissions')->insertBatch($groupPermissionsData);
             }
-
+    
             return redirect()->to('/roles')->with('success', 'Le groupe a été ajouté avec succès.');
         }
-
+    
         return redirect()->back()->with('error', 'Erreur lors de la création du groupe.');
     }
+    
+
 
 
     
@@ -112,6 +161,7 @@ class RoleController extends Controller
         // Récupération des permissions
         $permissions = $this->request->getPost('permissions'); 
         $permissionsArray = is_string($permissions) ? explode(',', $permissions) : $permissions;
+        $permissionsArray = array_filter($permissionsArray, fn($value) => !empty($value));
     
         // Préparation des données de groupe
         $groupData = [
@@ -125,24 +175,26 @@ class RoleController extends Controller
             // Suppression des permissions existantes pour ce groupe
             $this->db->table('group_permissions')->where('group_id', $id)->delete();
     
-            // Vérification des permissions valides
             if (!empty($permissionsArray)) {
-                // Récupération des IDs de permissions valides
-                $validPermissionIds = $this->db->table('permissions')->select('id')->get()->getResultArray();
-                $validPermissionIds = array_column($validPermissionIds, 'id');
+                // Récupération des IDs en fonction des noms de permissions
+                $validPermissions = $this->db->table('permissions')
+                    ->select('id, name')
+                    ->whereIn('name', $permissionsArray)
+                    ->get()
+                    ->getResultArray();
     
-                foreach ($permissionsArray as $permissionId) {
-                    if (!in_array($permissionId, $validPermissionIds)) {
-                        return redirect()->back()->with('error', "Permission ID $permissionId est invalide.");
-                    }
-                }
+                // Transformation des résultats en un tableau associatif [name => id]
+                $validPermissionMap = array_column($validPermissions, 'id', 'name');
     
-                // Préparation des nouvelles données de permissions
                 $groupPermissionsData = [];
-                foreach ($permissionsArray as $permissionId) {
+                foreach ($permissionsArray as $permissionName) {
+                    if (!isset($validPermissionMap[$permissionName])) {
+                        return redirect()->back()->with('error', "Permission '$permissionName' est invalide.");
+                    }
+    
                     $groupPermissionsData[] = [
                         'group_id' => $id,
-                        'permission_id' => $permissionId,
+                        'permission_id' => $validPermissionMap[$permissionName],
                     ];
                 }
     
@@ -155,6 +207,7 @@ class RoleController extends Controller
     
         return redirect()->back()->with('error', 'Erreur lors de la mise à jour du groupe.');
     }
+    
     
     
     

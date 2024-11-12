@@ -107,7 +107,7 @@
     <div class="overflow-x-auto">
         <div class="inline-block min-w-full align-middle">
             <div class="overflow-hidden shadow">
-                <table id="default-table" class="min-w-full divide-y divide-gray-200 table-fixed dark:divide-gray-600">
+                <table class="min-w-full divide-y divide-gray-200 table-fixed dark:divide-gray-600">
                     <thead class="bg-gray-100 dark:bg-gray-700">
                         <tr>
                             <th scope="col" class="p-4">

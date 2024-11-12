@@ -173,7 +173,7 @@
                                  <div id="<?= esc($value->id) ?>dropdownDots" class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700 dark:divide-gray-600">
                                     <ul class="flex flex-col items-center gap-4 py-2 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="<?= esc($value->id) ?>dropdownMenuIconButton">
                                     <li>
-                                        <button type="button" data-modal-target="edit-user-modal" data-modal-toggle="edit-user-modal" class="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white rounded-lg bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
+                                        <button type="button" data-modal-target="edit-permission-modal" data-modal-toggle="edit-permission-modal" class="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white rounded-lg bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
                                                 data-id="<?= $value->id ?>"
                                                 data-username="<?= $value->username ?>"
                                                 data-email="<?= $value->email ?>"
@@ -186,8 +186,29 @@
                                                 <path d="M17.414 2.586a2 2 0 00-2.828 0L7 10.172V13h2.828l7.586-7.586a2 2 0 000-2.828z"></path>
                                                 <path fill-rule="evenodd" d="M2 6a2 2 0 012-2h4a1 1 0 010 2H4v10h10v-4a1 1 0 112 0v4a2 2 0 01-2 2H4a2 2 0 01-2-2V6z" clip-rule="evenodd"></path>
                                             </svg>
+                                            Autorisation
+                                        </button>
+                                    </li>
+                                    <li>
+                                        <button type="button" 
+                                            data-modal-target="edit-user-modal" 
+                                            data-modal-toggle="edit-user-modal"
+                                            data-id="<?= $value->id ?>"
+                                            data-username="<?= $value->username ?>"
+                                            data-email="<?= $value->email ?>"
+                                            data-firstname="<?= $value->firstname ?>"
+                                            data-lastname="<?= $value->lastname ?>"
+                                            data-phone="<?= $value->phone ?>"
+                                            data-role="<?= esc($value->role) ?>"
+                                            class="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white rounded-lg bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">
+                                            <!-- Icône et texte du bouton -->
+                                            <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                                <path d="M17.414 2.586a2 2 0 00-2.828 0L7 10.172V13h2.828l7.586-7.586a2 2 0 000-2.828z"></path>
+                                                <path fill-rule="evenodd" d="M2 6a2 2 0 012-2h4a1 1 0 010 2H4v10h10v-4a1 1 0 112 0v4a2 2 0 01-2 2H4a2 2 0 01-2-2V6z" clip-rule="evenodd"></path>
+                                            </svg>
                                             Modifier
                                         </button>
+
                                     </li>
                                     <li>
                                         <button  data-idD="<?= $value->id ?>" type="button" id="deleteunitButton" data-modal-target="delete-user-modal" data-modal-toggle="delete-user-modal" class="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-red-600 rounded-lg hover:bg-red-800 focus:ring-4 focus:ring-red-300 dark:focus:ring-red-900">
@@ -294,30 +315,8 @@
                         </div>
                     </div>
 
-                    <!--<div  class="col-span-6 sm:col-span-3">
-                        <label for="roles" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Role</label>
-                        <div id="multi-select2" class="relative inline-block w-full">
-                            <div id="selected-items2" class="flex flex-wrap gap-1 border border-gray-300 bg-gray-50 p-2 rounded-lg cursor-pointer dark:bg-gray-800 dark:border-gray-600">
-                                <span id="placeholder2" class="text-gray-400 dark:text-gray-400">Sélectionnez des options...</span>
-                            </div>
-                            
-                            <ul id="dropdown2" class="absolute w-full bg-white border border-gray-300 mt-2 rounded-lg max-h-40 overflow-y-auto hidden dark:bg-gray-800 dark:border-gray-600">
-                                <?php foreach ($roles as $role): ?>
-                                    <li class="px-4 py-2 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-white" data-value="<?= esc($role['name']) ?>"><?= esc($role['name']) ?></li>
-                                <?php endforeach ?>
-                            </ul>
-                        </div>
-
-                        <input type="hidden" name="roles" id="usersInput2" value="">
-                        
-                        <?php if (session('errors.roles')): ?>
-                            <span class="text-red-500 text-xs"><?= session('errors.roles') ?></span>
-                        <?php endif ?>
-                    </div> -->
-
-
                     <div class="col-span-6 sm:col-span-3">
-                            <label class="block text-gray-700 dark:text-gray-400 text-md font-bold mb-2" for="pair">
+                            <!--<label class="block text-gray-700 dark:text-gray-400 text-md font-bold mb-2" for="pair">
                                Role:
                             </label>
                             <select id="selectUserUpdate"
@@ -330,19 +329,27 @@
                                 <?php foreach ($roles as $role): ?>
                                     <option value="<?= esc($role['name']) ?>"><?= esc($role['name']) ?></option>
                                 <?php endforeach ?>
+                            </select>-->
+
+
+                            <label for="large" class="block mb-2 text-base font-medium text-gray-900 dark:text-white">Role: </label>
+                            <select  name="roleU" class="block w-full px-4 py-3 text-base text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                                <?php foreach ($roles as $role): ?>
+                                    <option value="<?= esc($role['name']) ?>"><?= esc($role['name']) ?></option>
+                                <?php endforeach ?>
                             </select>
+
                         </div>
 
                     <!-- Modal footer -->
                     <div class="items-center p-6 border-t border-gray-200 rounded-b dark:border-gray-700">
-                        <button type="submit" class="text-white bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">Save all</button>
+                        <button type="submit" class="text-white bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">Modifier</button>
                     </div>
                 </form>
             </div>
         </div>
     </div>
 </div>
-
 
 <!-- Add User Modal -->
 <div class="fixed left-0 right-0 z-50 items-center justify-center hidden overflow-x-hidden overflow-y-auto top-4 md:inset-0 h-modal sm:h-full" id="add-user-modal">
@@ -407,16 +414,8 @@
                         </div>
 
                         <div class="col-span-6 sm:col-span-3">
-                            <label class="block text-gray-700 dark:text-gray-400 text-md font-bold mb-2" for="pair">
-                               Role:
-                            </label>
-                            <select
-                                name="roles[]"
-                                class="js-example-basic-multiple bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"  
-                                data-placeholder="Select one or more cities..."
-                                data-allow-clear="false"
-                                multiple="multiple"
-                                title="Select city..." style="width: 100%;">
+                            <label for="large" class="block mb-2 text-base font-medium text-gray-900 dark:text-white">Role: </label>
+                            <select name="role" id="large" class="block w-full px-4 py-3 text-base text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
                                 <?php foreach ($roles as $role): ?>
                                     <option value="<?= esc($role['name']) ?>"><?= esc($role['name']) ?></option>
                                 <?php endforeach ?>
@@ -428,6 +427,7 @@
                     <button class="text-white bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800" type="submit">Add user</button>
                 </div>
             </form>
+        </div>
         </div>
     </div>
 </div>
@@ -460,6 +460,9 @@
     </div>
 </div>
 
+
+
+
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         // Check if there are validation errors
@@ -475,34 +478,27 @@
         button.addEventListener('click', function () {
             const modal = document.getElementById('edit-user-modal');
             const form = document.getElementById('edit-user-form');
-            
-            // Update form action
+
+            // Mettre à jour l'action du formulaire
             form.action = `<?=base_url('user/update/')?>${this.dataset.id}`;
-            
-            // Set default values in input fields
+
+            // Remplir les champs avec les valeurs actuelles de l'utilisateur
             form.querySelector('input[name="username"]').value = this.dataset.username;
             form.querySelector('input[name="email"]').value = this.dataset.email;
             form.querySelector('input[name="firstname"]').value = this.dataset.firstname;
             form.querySelector('input[name="lastname"]').value = this.dataset.lastname;
             form.querySelector('input[name="phone"]').value = this.dataset.phone;
-            const roles = button.getAttribute('data-roles');
 
-            const rolesArray = roles.split(',');
+            // Définir le rôle par défaut dans le select
+            const roleSelect = form.querySelector('select[name="roleU"]');
+            const currentRole = this.dataset.role; // Récupérer le rôle actuel
+            if (currentRole) {
+                roleSelect.value = currentRole; // Définit la valeur du select au rôle actuel
+            }
 
-            var s2 = $("#selectUserUpdate").select2({
-            });
-
-            rolesArray.forEach(function(e){
-            if(!s2.find('option:contains(' + e + ')').length) 
-            s2.append($('<option>').text(e));
-            });
-
-            s2.val(rolesArray).trigger("change"); 
-
-                
-             modal.classList.remove('hidden');
-            });
+            modal.classList.remove('hidden');
         });
+    });
 
 
 
@@ -523,3 +519,6 @@
 </script>
 
 <?= $this->endSection() ?>
+
+
+                                        

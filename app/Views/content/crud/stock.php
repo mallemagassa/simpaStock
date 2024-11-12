@@ -702,11 +702,26 @@
                             
                             <div class="w-1/2">
                                 <label for="stock_id-create" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Produit:</label>
-                                <select id="stock_id-create" name="waybill[0][stock_id]" class="bg-gray-50 border <?= session('errors.stock_id') ? 'border-red-500' : 'border-gray-300' ?> text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 product-select">
-                                    <?php foreach ($stocks as $stock): ?>product_name
+                                
+
+                                <select 
+                                        id="product-select" name="waybill[0][stock_id]" class="bg-gray-50 border <?= session('errors.stock_id') ? 'border-red-500' : 'border-gray-300' ?> text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 product-select" style="width: 100%" 
+                                        data-placeholder="Selectionner les produits"
+                                        data-allow-clear="false"
+                                        title="Selectionner produit...">
+                                        <?php $first = true;?>
+                                        <?php foreach ($stocks as $stock): ?>
+                                            <option value="<?= $stock['id'] ?>" data-product_name="<?= $stock['product_name'] ?>" data-purchase_price="<?= $stock['purchase_price'] ?>"  data-sale_price="<?= $stock['sale_price'] ?>"><?= $stock['product_name'] ?></option>
+                                            <?php $first = false; ?>
+                                        <?php endforeach ?>
+                                    </select>
+                                
+                                
+                               <!-- <select id="stock_id-create" name="waybill[0][stock_id]" class="bg-gray-50 border <?= session('errors.stock_id') ? 'border-red-500' : 'border-gray-300' ?> text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 product-select">
+                                    <?php foreach ($stocks as $stock): ?>
                                         <option value="<?= $stock['id'] ?>" data-product_name="<?= $stock['product_name'] ?>" data-purchase_price="<?= $stock['purchase_price'] ?>"  data-sale_price="<?= $stock['sale_price'] ?>"><?= $stock['product_name'] ?></option>
                                     <?php endforeach ?>
-                                </select>
+                                </select>-->
                                 <?php if (session('errors.stock_id')): ?>
                                     <span class="text-red-500 text-xs"><?= session('errors.stock_id') ?></span>
                                 <?php endif ?>
@@ -950,8 +965,85 @@ $('#repeaterForm').on('submit', function() {
 
 
 
+// $(document).ready(function() {
+//     let memberIndex = 1;
+
+//     $('.product-select').select2();
+
+//     $('#add-member').click(function() {
+//         const newMember = $('#repeater-container .member-group:first').clone();
+
+//         // Réinitialiser les valeurs des nouveaux champs
+//         newMember.find('input[type="number"]').val('');
+//         newMember.find('select').val('');
+
+//         // Mettre à jour les attributs "name" pour rendre chaque champ unique
+//         newMember.find('input, select').each(function() {
+//             const nameAttr = $(this).attr('name');
+//             if (nameAttr) {
+//                 const updatedName = nameAttr.replace(/\[0\]/, `[${memberIndex}]`);
+//                 $(this).attr('name', updatedName);
+//             }
+//         });
+
+//         $('#repeater-container').append(newMember);
+
+//         $('.product-select').select2();
+
+//         $('.product-select').last().next().next().remove()
+//         memberIndex++;
+//     });
+
+//     // Écoute les changements sur les sélecteurs de produits et les champs de quantité
+//     $(document).on('input', 'input[name^="waybill["][name$="[quantity]"], .product-select', function() {
+//         calculateAmounts();
+//     });
+
+//     function calculateAmounts() {
+//         let totalSale = 0;
+//         let totalPurchase = 0;
+
+//         $('#repeater-container .member-group').each(function() {
+//             const quantity = $(this).find('input[name$="[quantity]"]').val();
+//             const salePrice = $(this).find('.product-select option:selected').data('sale_price');
+//             const purchasePrice = $(this).find('.product-select option:selected').data('purchase_price');
+//             const productName = $(this).find('.product-select option:selected').data('product_name');
+
+//             if (quantity && salePrice) {
+//                 const amountTotal = quantity * salePrice;
+//                 $(this).find('input[name$="[amount_total]"]').val(amountTotal);
+//                 $(this).find('input[name$="[Pprofit]"]').val((salePrice - purchasePrice) * quantity);
+//                 $(this).find('input[name$="[product_name]"]').val(productName);
+//                 totalSale += amountTotal;
+//             }
+
+//             if (quantity && purchasePrice) {
+//                 const amountTotalPurchase = quantity * purchasePrice;
+//                 totalPurchase += amountTotalPurchase;
+//             }
+//         });
+
+//         $('#amout_total_sale').val(totalSale);
+//         $('#amout_total_purchase').val(totalPurchase);
+//         $('#profit').val(totalSale - totalPurchase);
+//     }
+
+//     $(document).on('click', '.remove-item', function() {
+//         if ($('#repeater-container .member-group').length > 1) {
+//             $(this).closest('.member-group').remove();
+//             calculateAmounts(); // Recalculer les montants après suppression
+//         } else {
+//             alert("Vous devez avoir au moins un membre.");
+//         }
+//     });
+// });
+
+
 $(document).ready(function() {
     let memberIndex = 1;
+
+    // Initialisation de select2 pour les sélecteurs existants
+    $('#product-select').select2();
 
     $('#add-member').click(function() {
         const newMember = $('#repeater-container .member-group:first').clone();
@@ -960,16 +1052,26 @@ $(document).ready(function() {
         newMember.find('input[type="number"]').val('');
         newMember.find('select').val('');
 
-        // Mettre à jour les attributs "name" pour rendre chaque champ unique
+        // Mettre à jour les attributs "name" et "id" pour rendre chaque champ unique
         newMember.find('input, select').each(function() {
             const nameAttr = $(this).attr('name');
             if (nameAttr) {
                 const updatedName = nameAttr.replace(/\[0\]/, `[${memberIndex}]`);
                 $(this).attr('name', updatedName);
             }
+            // Mettre à jour l'ID du select pour le rendre unique
+            if ($(this).hasClass('product-select')) {
+                $(this).attr('id', `product-select-${memberIndex}`);
+            }
         });
 
         $('#repeater-container').append(newMember);
+
+        // Réinitialiser select2 pour tous les selects (nouveau et existant)
+        $(`#product-select-${memberIndex}`).select2();
+
+       $(`#product-select-${memberIndex}`).last().next().next().remove()
+
         memberIndex++;
     });
 
@@ -1016,6 +1118,7 @@ $(document).ready(function() {
         }
     });
 });
+
 
 
 document.addEventListener('DOMContentLoaded', function () {

@@ -28,7 +28,7 @@ class StockController extends BaseController
         $data['stocks'] = $model->getAllStocksWithProducts();
         $data['products'] = $modelProduct->findAll();
         $data['shops'] = $modelShop->findAll();
-        $data['outs'] = $outModel->findAll();
+        $data['outs'] = $outModel->orderBy('id', 'DESC')->findAll();
 
         return view('content/crud/stock', $data);
     }

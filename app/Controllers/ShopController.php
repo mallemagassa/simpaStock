@@ -331,8 +331,6 @@ class ShopController extends BaseController
         
         $dompdf = new Dompdf();
         
-        $options = new Options();
-        $options->set('isRemoteEnabled', true);
         $dompdf->loadHtml($html);
 
         $dompdf->setPaper('A4', 'portrait');

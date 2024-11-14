@@ -3,10 +3,17 @@
 <?= $this->section('content') ?>
 <div class="px-4 pt-6">
 
+<?php  
+
+$user = auth()->user();
+if ($user->inGroup('boutiquier'))
+?>
+
 
     <div class="grid w-full grid-cols-1 gap-4 mt-4 xl:grid-cols-2 2xl:grid-cols-3">
+      <?php  if ($user->inGroup('admin', 'gestionnaire')) :?>
       <div class="items-center justify-between p-4 bg-white border border-gray-200 rounded-lg shadow-sm sm:flex dark:border-gray-700 sm:p-6 dark:bg-gray-800">
-        <div class="w-full">
+      <div class="w-full">
           <h3 class="text-base font-normal text-gray-500 dark:text-gray-400">Produits</h3>
           <span class="text-2xl font-bold leading-none text-gray-900 sm:text-3xl dark:text-white"><?= sizeof($products) ?></span>
           <!--<p class="flex items-center text-base font-normal text-gray-500 dark:text-gray-400">
@@ -21,7 +28,7 @@
         </div>
         <div class="w-full" id="new-products-chart"></div>
       </div>
-
+      
       <div class="items-center justify-between p-4 bg-white border border-gray-200 rounded-lg shadow-sm sm:flex dark:border-gray-700 sm:p-6 dark:bg-gray-800">
         <div class="w-full">
           <h3 class="text-base font-normal text-gray-500 dark:text-gray-400">Montant</h3>
@@ -63,7 +70,7 @@
         </div>
         <div class="w-full" id="week-signups-chart2"></div>
       </div>
-
+      <?php  endif?>
 
       <!--<div class="p-4 bg-white border border-gray-200 rounded-lg shadow-sm dark:border-gray-700 sm:p-6 dark:bg-gray-800">
         <div class="w-full">
@@ -104,6 +111,7 @@
    
 </div>
 <div class="px-4 pt-6 pb-6">
+  <?php  if ($user->inGroup('admin', 'gestionnaire', 'boutiquier')) :?>
 <div class="grid w-full grid-cols-1 gap-4 mt-4 xl:grid-cols-2 2xl:grid-cols-3">
   <?php foreach ($shops as $value) : ?>
     <a href="<?= base_url('shop/show/'.esc($value['id'])) ?>" class="flex items-center justify-center p-4 bg-white border border-gray-200 rounded-lg shadow-sm dark:border-gray-700 dark:bg-gray-800 transition-transform transform hover:scale-105">
@@ -119,7 +127,7 @@
     </a>
   <?php endforeach  ?>  
 </div>
-
+<?php  endif?>
 </div>
 
 <?= $this->endSection() ?>

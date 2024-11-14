@@ -46,12 +46,12 @@ class UserController extends BaseController
     {
 
         $role = $this->request->getPost('role');
-        //dd($role);
+
         $validationRules = [
-            'username' => 'alpha_dash|min_length[3]|max_length[30]|is_unique[users.username]',
+            'username' => 'min_length[3]|max_length[30]|is_unique[users.username]',
             'email'    => 'required|valid_email|is_unique[auth_identities.secret]',
-            'firstname' => 'required|alpha|min_length[2]|max_length[50]',
-            'lastname' => 'required|alpha|min_length[2]|max_length[50]',
+            'firstname' => 'required|min_length[2]|max_length[50]',
+            'lastname' => 'required|min_length[2]|max_length[50]',
             'phone'    => 'required|numeric|min_length[8]|max_length[11]',
             'password' => 'required|min_length[8]',
         ];
@@ -122,90 +122,6 @@ class UserController extends BaseController
         return redirect()->to('/user')->with('success', 'Utilisateur créé avec succès');
     }
 
-    // public function update($id)
-    // {
-    //     $users = new UserModel();
-    //     $user = $users->find($id);
-    
-    //     $role = $this->request->getPost('role');
-    //     dd($role);
-    //     if (!$user) {
-    //         return redirect()->back()->with('error', 'Utilisateur non trouvé.');
-    //     }
-    
-    //     // Validation des champs de l'utilisateur
-    //     $db = \Config\Database::connect();
-    //     $authIdentity = $db->table('auth_identities')
-    //                        ->select('id')
-    //                        ->where('secret', $user->email) // Chercher par email
-    //                        ->get()
-    //                        ->getRowArray();
-        
-    //     $authIdentityId = $authIdentity ? $authIdentity['id'] : null;
-    
-    //     $validationRules = [
-    //         'username' => "alpha_dash|min_length[3]|max_length[30]|is_unique[users.username,id,{$id}]",
-    //         'email'    => "required|valid_email|is_unique[auth_identities.secret,id,{$authIdentityId}]",
-    //         'firstname' => 'required|alpha|min_length[2]|max_length[50]',
-    //         'lastname'  => 'required|alpha|min_length[2]|max_length[50]',
-    //         'phone'     => 'required|numeric|min_length[8]|max_length[11]',
-    //         'password'  => 'permit_empty|min_length[8]',
-    //     ];
-    
-    //     $validationMessages = [
-    //         'username' => [
-    //             'is_unique' => 'Ce nom d\'utilisateur est déjà pris.',
-    //         ],
-    //         'email' => [
-    //             'is_unique' => 'Cet email est déjà utilisé.',
-    //         ],
-    //     ];
-    
-    //     if (!$this->validate($validationRules, $validationMessages)) {
-    //         return redirect()->back()->withInput()->with('errors', $this->validator->getErrors());
-    //     }
-    
-    //     // Mise à jour de l'utilisateur
-    //     $user = new User([
-    //         'id' => $id,
-    //         'username' => $this->request->getPost('username'),
-    //         'email'    => $this->request->getPost('email'),
-    //         'firstname' => $this->request->getPost('firstname'),
-    //         'lastname' => $this->request->getPost('lastname'),
-    //         'phone'    => $this->request->getPost('phone'),
-    //     ]);
-    
-    //     // Mise à jour du mot de passe si nécessaire
-    //     $password = $this->request->getPost('password');
-    //     if ($password) {
-    //         $user->password = $password;
-    //     }
-    
-    //     // Mise à jour des informations utilisateur
-    //     if ($users->update($id, $user)) {
-    //         // Récupération de l'utilisateur à jour avec ses groupes
-    //         $usersG = auth()->getProvider();
-    //         $userG = $usersG->findById($id);
-
-
-    //         $groupExists = $this->db->table('groups')->where('name', $role)->countAllResults();
-
-    //         if ($groupExists > 0) {
-    //             $userG->addGroup($role);
-    //         } else {
-    //             return redirect()->back()->with('error', 'Erreur : Le rôle avec nom ' . $role . ' n\'existe pas.');
-    //         }
-
-    //         $userG->removeGroup($role);
-
-    
-    //         return redirect()->to('/user')->with('success', 'Utilisateur mis à jour avec succès.');
-    //     }
-    
-    //     return redirect()->back()->with('error', 'Erreur lors de la mise à jour de l\'utilisateur.');
-    // }
-    
-
     public function update($id)
     {
         $users = new UserModel();
@@ -225,10 +141,10 @@ class UserController extends BaseController
         $authIdentityId = $authIdentity ? $authIdentity['id'] : null;
     
         $validationRules = [
-            'username' => "alpha_dash|min_length[3]|max_length[30]|is_unique[users.username,id,{$id}]",
+            'username' => "min_length[3]|max_length[30]|is_unique[users.username,id,{$id}]",
             'email'    => "required|valid_email|is_unique[auth_identities.secret,id,{$authIdentityId}]",
-            'firstname' => 'required|alpha|min_length[2]|max_length[50]',
-            'lastname'  => 'required|alpha|min_length[2]|max_length[50]',
+            'firstname' => 'required|min_length[2]|max_length[50]',
+            'lastname'  => 'required|min_length[2]|max_length[50]',
             'phone'     => 'required|numeric|min_length[8]|max_length[11]',
             'password'  => 'permit_empty|min_length[8]',
         ];

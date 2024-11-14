@@ -4,13 +4,14 @@ namespace App\Controllers;
 
 use DateTime;
 use Exception;
+use Dompdf\Dompdf;
 use App\Models\Out;
 use App\Models\Shop;
 use App\Models\Stock;
 use App\Models\Report;
 use App\Models\Product;
-use App\Models\Notification;
 use App\Models\Waybill;
+use App\Models\Notification;
 use PhpOffice\PhpSpreadsheet\Reader\Xlsx;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use CodeIgniter\Exceptions\PageNotFoundException;
@@ -18,20 +19,42 @@ use PhpOffice\PhpSpreadsheet\Writer\Xlsx as WriterXlsx;
 
 class StockController extends BaseController
 {
+    // public function index()
+    // {
+    //     $model = new Stock();
+    //     $modelProduct = new Product();
+    //     $modelShop = new Shop();
+    //     $outModel = new Out(); 
+
+    //     $data['stocks'] = $model->getAllStocksWithProducts();
+    //     $data['products'] = $modelProduct->findAll();
+    //     $data['shops'] = $modelShop->findAll();
+    //     $data['outs'] = $outModel->orderBy('id', 'DESC')->findAll();
+
+    //     return view('content/crud/stock', $data);
+    // }
+
     public function index()
     {
         $model = new Stock();
         $modelProduct = new Product();
         $modelShop = new Shop();
-        $outModel = new Out(); 
-
-        $data['stocks'] = $model->getAllStocksWithProducts();
+        $outModel = new Out();
+    
+        $search = $this->request->getVar('search'); // Récupérer le terme de recherche
+        $perPage = 10; // Nombre d'éléments par page
+    
+        $data['stocks'] = $model->getAllStocksWithProducts($search, $perPage); // Passer la recherche et pagination
+        $data['pager'] = $model->pager; // Pager pour afficher les liens de pagination
         $data['products'] = $modelProduct->findAll();
         $data['shops'] = $modelShop->findAll();
-        $data['outs'] = $outModel->orderBy('id', 'DESC')->findAll();
-
+        $data['outs'] = $outModel->orderBy('id', 'DESC')->paginate(10, 'outs');
+        $data['search'] = $search; // Garder la valeur de recherche pour la vue
+    
         return view('content/crud/stock', $data);
     }
+    
+
 
     public function create()
     {
@@ -41,19 +64,41 @@ class StockController extends BaseController
         return view('stock/create', $data);
     }
 
+    // public function store()
+    // {
+    //     $model = new Stock();
+
+
+    //     if ($this->request->getMethod() === 'post' && $this->validate($model->validationRulesAdd, $model->validationMessagesAdd)) {
+    //         $data = [
+    //             'purchase_price' => $this->request->getPost('purchase_price'),
+    //             'sale_price'     => $this->request->getPost('sale_price'),
+    //             'quantity' => $this->request->getPost('quantity'),
+    //             'critique' => $this->request->getPost('critique'),
+    //             'product_id' => $this->request->getPost('product_id'),
+    //             'created_at'     => $this->request->getPost('created_at')
+    //         ];
+
+    //         $model->save($data);
+
+    //         return redirect()->to('/stock')->with('success', 'Stock créé avec succès');
+    //     }
+
+    //     return redirect()->back()->withInput()->with('errors', $this->validator->getErrors());
+    // }
+
     public function store()
     {
         $model = new Stock();
-
 
         if ($this->request->getMethod() === 'post' && $this->validate($model->validationRulesAdd, $model->validationMessagesAdd)) {
             $data = [
                 'purchase_price' => $this->request->getPost('purchase_price'),
                 'sale_price'     => $this->request->getPost('sale_price'),
-                'quantity' => $this->request->getPost('quantity'),
-                'critique' => $this->request->getPost('critique'),
-                'product_id' => $this->request->getPost('product_id'),
-                'created_at'     => $this->request->getPost('created_at')
+                'quantity'       => $this->request->getPost('quantity'),
+                'critique'       => $this->request->getPost('critique'),
+                'product_id'     => $this->request->getPost('product_id'),
+                'created_at'     => $this->request->getPost('created_at') ?: date('Y-m-d H:i:s'), // Date actuelle si null
             ];
 
             $model->save($data);
@@ -63,6 +108,7 @@ class StockController extends BaseController
 
         return redirect()->back()->withInput()->with('errors', $this->validator->getErrors());
     }
+
 
     public function show($id)
     {
@@ -91,49 +137,36 @@ class StockController extends BaseController
     }
 
     public function update()
-{
-    $model = new Stock();
-    
-    if ($this->request->getMethod() === 'post') {
-        $product_id = $this->request->getPost('product_id');
-        $stock_id = $this->request->getPost('stock_id');
+    {
+        $model = new Stock();
         
-        // Vérifier si un autre enregistrement avec le même product_id existe
-        // $existingStock = $model->where('product_id', $product_id)
-        //                        ->where('id !=', $stock_id)
-        //                        ->first();
-        // if ($existingStock) {
-        //     return redirect()->back()->with('error', 'Ce produit existe déjà dans le stock avec un autre identifiant.')->withInput();
-        // }
-        
-        // Récupérer les données pour la mise à jour
-        $data = [
-            'purchase_price' => $this->request->getPost('purchase_price'),
-            'sale_price'     => $this->request->getPost('sale_price'),
-            'quantity'       => $this->request->getPost('quantity'),
-            'critique'       => $this->request->getPost('critique'),
-            //'product_id'     => $product_id,
-            'created_at'     => $this->request->getPost('created_at')
-        ];
+        if ($this->request->getMethod() === 'post') {
+            $product_id = $this->request->getPost('product_id');
+            $stock_id = $this->request->getPost('stock_id');
+            
+            $data = [
+                'purchase_price' => $this->request->getPost('purchase_price'),
+                'sale_price'     => $this->request->getPost('sale_price'),
+                'quantity'       => $this->request->getPost('quantity'),
+                'critique'       => $this->request->getPost('critique'),
+                'created_at'     => $this->request->getPost('created_at')
+            ];
 
-        // Valider les données
-        if ($this->validate($model->validationRulesUpdate, $model->validationMessagesUpdate)) {
-            // Utiliser la méthode d'update du modèle
-            $updated = $model->update($stock_id, $data);
+            if ($this->validate($model->validationRulesUpdate, $model->validationMessagesUpdate)) {
+                $updated = $model->update($stock_id, $data);
 
-            if ($updated) {
-                return redirect()->to('/stock')->with('success', 'Stock mis à jour avec succès');
-            } else {
-                return redirect()->back()->with('error', 'La mise à jour du stock a échoué.')->withInput();
+                if ($updated) {
+                    return redirect()->to('/stock')->with('success', 'Stock mis à jour avec succès');
+                } else {
+                    return redirect()->back()->with('error', 'La mise à jour du stock a échoué.')->withInput();
+                }
             }
+
+            return redirect()->back()->withInput()->with('errors', $this->validator->getErrors());
         }
 
-        // Récupérer les erreurs de validation
-        return redirect()->back()->withInput()->with('errors', $this->validator->getErrors());
+        return redirect()->back()->with('error', 'Méthode non autorisée');
     }
-
-    return redirect()->back()->with('error', 'Méthode non autorisée');
-}
 
     
     
@@ -203,12 +236,16 @@ class StockController extends BaseController
 
         return redirect()->to('/stock')->with('error', 'Stock introuvable.');
     }
+
+
     public function out()
     {
         $model = new Stock();
         $shopModel = new Shop();
         $outModel = new Out();
         $reportModel = new Report();
+
+        //dd($this->request->getPost());
     
         if ($this->request->getMethod() === 'post') {
             
@@ -292,31 +329,6 @@ class StockController extends BaseController
     }
     
     
-    
-    private function insertStockHistory($outModel, $reportModel, $stock, $shopId, $quantity, $profit, $amountTotal, $newQuantity, $created_at, $waybillId)
-    {
-        $outData = [
-            'profit' => $profit,
-            'amount_total_sale' => $amountTotal,
-            'amount_total_purchase' => $quantity,
-            'product_out' => $stock['product_id'],
-            'shop_id' => $shopId,
-            'created_at' => $created_at,
-        ];
-    
-        $reportData = array_merge($outData, [
-            'quantity_before' => $stock['quantity'],
-            'quantity_after' => $newQuantity,
-            'user_id' => auth()->id(),
-            'ops' => 's',
-        ]);
-    
-        return $outModel->insert($outData) && $reportModel->insert($reportData);
-    }
-    
-
-
-
     public function exports()
     {
         $stock = new Stock();
@@ -370,107 +382,88 @@ class StockController extends BaseController
     {
         $stock = new Stock();
         $stocks = $stock->getAllStocksWithProducts();
-    
-        $spreadSheet = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
-        $sheet = $spreadSheet->getActiveSheet();
-    
-        $headers = ['Produit', 'Quantité', 'Prix Achat', 'Montant Inv', 'Prix Vente', 'Montant Vte', 'Niveau Critique', 'Date Creation'];
-        $columnLetter = 'A';
-    
-        foreach ($headers as $header) {
-            $sheet->setCellValue($columnLetter . '1', $header);
-            $sheet->getStyle($columnLetter . '1')->getFont()->setBold(true);
-            $sheet->getStyle($columnLetter . '1')->getAlignment()->setHorizontal('center');
-            $sheet->getStyle($columnLetter . '1')->getBorders()->getAllBorders()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
-            $columnLetter++;
-        }
-    
-        foreach ($stocks as $i => $value) {
-            $row = $i + 2;
-            $sheet->setCellValue('A' . $row, $value['product_name']);
-            $sheet->setCellValue('B' . $row, $value['quantity']);
-            $sheet->setCellValue('C' . $row, $value['purchase_price']);
-            $sheet->setCellValue('D' . $row, number_format($value['purchase_price'] * $value['quantity'], 0, '.', ' ') . ' F CFA');
-            $sheet->setCellValue('E' . $row, $value['sale_price']);
-            $sheet->setCellValue('F' . $row, number_format($value['sale_price'] * $value['quantity'], 0, '.', ' ') . ' F CFA');
-            $sheet->setCellValue('G' . $row, $value['critique']);
-            $sheet->setCellValue('H' . $row, date('d/m/Y', strtotime($value['created_at'])));
-            
-            foreach (range('A', 'H') as $columnLetter) {
-                $sheet->getStyle($columnLetter . $row)->getBorders()->getAllBorders()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
-                $sheet->getStyle($columnLetter . $row)->getAlignment()->setHorizontal('center');
-            }
-        }
-    
-        $writer = \PhpOffice\PhpSpreadsheet\IOFactory::createWriter($spreadSheet, 'Mpdf');
-    
-        $fileName = 'stock.pdf';
-        $filePath = FCPATH . $fileName;
-    
-        $writer->save($filePath);
-    
-        header("Content-Type: application/pdf");
-        header("Content-Disposition: attachment; filename=\"" . basename($filePath) . "\"");
-        header("Content-Length: " . filesize($filePath));
-    
-        ob_clean();
-        flush();
-        readfile($filePath);
-        unlink($filePath);
-        exit;
-    }
-    
 
-    
+        $data = [
+            'stocks' => $stocks,
+            'logo_path' => FCPATH . 'assets/images/logo/logo.png',
+        ];
+
+        $html = view('pdf/stock_list', $data);
+
+        $dompdf = new Dompdf();
+        $dompdf->loadHtml($html);
+
+        $dompdf->setPaper('A4', 'portrait');
+
+        $dompdf->render();
+        $fileName = 'stock_list.pdf';
+        $dompdf->stream($fileName, ["Attachment" => true]);
+    }
+
     public function filterByDate()
     {
         $request = service('request');
         $startDate = $request->getPost('start_date');
-        
-        $produitModel = new Out();
-        $productModel = new Product();
-        $stockModel = new Stock();
+        $shop_id = $request->getPost('shop_id');
 
-        $outs = $produitModel->findAll();
-        $products = $productModel->findAll();
-        $stocks = $stockModel->findAll();
+        $produitModel = new Out();
+        $outModel = new Out(); 
+        $productModel = new Product(); 
+        $stockModel = new Stock(); 
+        $model = new Stock();
+        $modelProduct = new Product();
+        $modelShop = new Shop();
+        $outModel = new Out(); 
+
+        $data['stocksOuts'] = $model->getAllStocksWithProducts();
+        $data['products'] = $modelProduct->findAll();
+        $data['shops'] = $modelShop->findAll();
+        $data['outs'] = $outModel->orderBy('id', 'DESC')->paginate(10, 'outs');
+        $data['pager'] = $outModel->pager;
+
+        $data['shop'] = $modelShop->getShopWithUserById($shop_id);
+        $data['products'] = $productModel->findAll();
+        $data['search'] = '';
+
+
+        $data['stocks'] = $model->getAllStocksWithProducts('', 10);
 
         if ($startDate) {
             $startDate = new DateTime($startDate);
-            $filteredOuts = array_filter($outs, function($out) use ($startDate) {
-                $createdAt = new DateTime($out['created_at']);
-                return $createdAt->format('Y-m-d') === $startDate->format('Y-m-d');
-            });
+            $outs = $produitModel->where('DATE(created_at)', $startDate->format('Y-m-d'))->findAll();
         } else {
-            $filteredOuts = $outs;
+            $outs = $produitModel->findAll();
         }
-
-        $response = [];
-        foreach ($filteredOuts as $out) {
-            $product = current(array_filter($products, fn($prod) => $prod['id'] === $out['product_id']));
-            $stock = current(array_filter($stocks, fn($stk) => $stk['product_id'] === $out['product_id']));
-
-            if ($product && $stock) {
-                $out['name'] = $product['name'];
-                $out['purchase_price'] = $stock['purchase_price'];
-                $out['sale_price'] = $stock['sale_price'];
-            }
-            
-            $response[] = $out;
-        }
-
-        return $this->response->setJSON($response);
+        $data['outs'] = $outs;
+        // Retourner la vue avec les résultats filtrés
+        return view('content/crud/stock',  $data);
     }
 
-    
     public function filterOuts() {
         $filterType = $this->request->getPost('filter');
-    
+
+        $shop_id = $this->request->getPost('shop_id');
+
+        $outModel = new Out(); 
+        $productModel = new Product(); 
+        $stockModel = new Stock(); 
+        $model = new Stock();
+        $modelProduct = new Product();
+        $modelShop = new Shop();
+        $outModel = new Out(); 
+
+        $data['stocksOuts'] = $model->getAllStocksWithProducts();
+        $data['products'] = $modelProduct->findAll();
+        $data['shops'] = $modelShop->findAll();
+        $data['outs'] = $outModel->orderBy('id', 'DESC')->paginate(10, 'outs');
+        $data['pager'] = $outModel->pager;
+
+        $data['shop'] = $modelShop->getShopWithUserById($shop_id);
+        $data['search'] = '';
+
+        $data['stocks'] = $model->getAllStocksWithProducts('', 10);
+        
         $outModel = new Out();
-        $productModel = new Product();
-        $stockModel = new Stock();
-    
-        // Appliquer les filtres en fonction de la date
         switch ($filterType) {
             case 'today':
                 $dateFilter = date('Y-m-d');
@@ -491,70 +484,12 @@ class StockController extends BaseController
             default:
                 $outs = [];
         }
-    
-        $products = $productModel->findAll();
-        $stocks = $stockModel->findAll();
-    
-        // Récupération des informations complètes pour chaque `out`
-        $data = array_map(function($out) use ($products, $stocks) {
-            $product = current(array_filter($products, fn($prod) => $prod['id'] === $out['product_id']));
-            $stock = current(array_filter($stocks, fn($stk) => $stk['product_id'] === $out['product_id']));
-    
-            return [
-                'id' => $out['id'],
-                'product_name' => $product['name'] ?? '',
-                'purchase_price' => number_format($stock['purchase_price'] ?? 0, 0, '.', ' '),
-                'sale_price' => number_format($stock['sale_price'] ?? 0, 0, '.', ' '),
-                'quantity' => $out['quantity'],
-                'amount_total' => number_format($out['amount_total'], 0, '.', ' '),
-                'profit' => number_format($out['profit'], 0, '.', ' '),
-                'created_at' => $out['created_at']
-            ];
-        }, $outs);
-    
-        return $this->response->setJSON($data);
+
+        $data['outs'] = $outs;
+
+        // Retourner la vue avec les résultats filtrés
+        return view('content/crud/stock', $data);
     }
+
     
 }
-
-
-   // if (!$this->validate([
-            //     'quantity' => 'required|integer|greater_than[0]',
-            //     'shop_id' => 'required|integer|greater_than[0]',
-            //     'created_at_out' => 'required|date|'
-            // ])) {
-            //     return view('content/crud/stock', [
-            //         'stock' => $stock,
-            //         'validation' => $this->validator,
-            //         'modal' => 'out-stock-modal'
-            //     ]);
-            // }
-
-            // $quantityToRemove = (int)$this->request->getPost('quantity');
-            // $created_at = $this->request->getPost('created_at_out');
-
-            // if ($quantityToRemove > $stock['quantity']) {
-            //     return view('content/crud/stock', [
-            //         'stock' => $stock,
-            //         'validation' => $this->validator,
-            //         'modal' => 'out-stock-modal', 
-            //         'error' => 'Quantité insuffisante en stock.'
-            //     ]);
-            // }
-
-            // $newQuantity = $stock['quantity'] - $quantityToRemove;
-            // $profit = intval((abs($stock['sale_price']) - abs($stock['purchase_price'])) * abs($quantityToRemove));
-            // $amountTotal = intval($stock['sale_price'] * $quantityToRemove);
-
-            // $model->update(1, ['quantity' => $newQuantity]);
-
-            // if (!$this->insertStockHistory($outModel, $reportModel, $stock, $shop['id'], $quantityToRemove, $profit, $amountTotal, $newQuantity, $created_at, $waybillModel, $waybilId, $amount_total_sale, $amount_total_purchase)) {
-            //     return redirect()->back()->withInput()->with('error', 'Erreur lors de l\'insertion de l\'historique.');
-            // }
-
-            // if ($newQuantity <= $stock['critique']) {
-            //     \CodeIgniter\Events\Events::trigger('stockUpdated', [
-            //         'user_id' => auth()->id(),
-            //         'message' => "Attention, le niveau critique de produit est atteint."
-            //     ]);
-            // }

@@ -25,7 +25,8 @@ $routes->group('', ['namespace' => 'App\Controllers'], function($routes) {
         $routes->post('update', 'ProductController::update');
         $routes->get('delete/(:num)', 'ProductController::delete/$1');
 
-
+        $routes->get('exports', 'ProductController::exports');
+        $routes->get('exportToPDF', 'ProductController::exportToPDF');
     });
 
     
@@ -70,8 +71,6 @@ $routes->group('', ['namespace' => 'App\Controllers'], function($routes) {
         $routes->get('show/(:num)', 'ShopController::show/$1');
         $routes->get('delete/(:num)', 'ShopController::delete/$1');
         $routes->post('tmpUpload', 'ShopController::tmpUpload');
-        $routes->get('exports/(:num)', 'ShopController::exportToPDF/$1');
-
     });
 
 
@@ -91,25 +90,27 @@ $routes->group('', ['namespace' => 'App\Controllers'], function($routes) {
         $routes->get('delete/(:segment)', 'RoleController::delete/$1');
     });
     
-    $routes->group('permissions', function($routes) {
-        $routes->get('/', 'PermissionController::index');
-        $routes->get('create', 'PermissionController::create');
-        $routes->post('store', 'PermissionController::store');
-        $routes->get('edit/(:segment)', 'PermissionController::edit/$1');
-        $routes->post('update/(:segment)', 'PermissionController::update/$1');
-        $routes->get('delete/(:segment)', 'PermissionController::delete/$1');
-    });
 
     $routes->group('reports', function($routes) {
         $routes->get('/', 'ReportController::index');
         $routes->get('delete/(:num)', 'ShopController::delete/$1');
     });
+
+    $routes->group('outs', function($routes) {
+        $routes->post('update/(:num)', 'OutController::update/$1');
+        $routes->get('delete/(:num)', 'OutController::delete/$1');
+        $routes->get('exports/(:num)', 'OutController::exportWaybill/$1');
+    });
     
-    $routes->post('/filterOut', 'StockController::filterByDate');
-    $routes->post('/filterOuts', 'StockController::filterOuts');
+
+    $routes->post('/filterOut', 'OutController::filterByDate');
+    $routes->post('/filterOuts', 'OutController::filterOuts');
+
+    $routes->post('/filterStock', 'StockController::filterByDate');
+    $routes->post('/filterStocks', 'StockController::filterOuts');
+
 });
 
 
 
 service('auth')->routes($routes);
-$routes->get('(:segment)', [PagesController::class, 'view']);

@@ -39,6 +39,10 @@ class PermissionSeeder extends Seeder
             ['name' => 'create.role', 'description' => 'Créer des roles'],
             ['name' => 'edit.role', 'description' => 'Modifier les roles'],
             ['name' => 'delete.role', 'description' => 'Supprimer les roles'],
+            ['name' => 'show.out', 'description' => 'Afficher les sorties'],
+            ['name' => 'create.out', 'description' => 'Créer des sorties'],
+            ['name' => 'edit.out', 'description' => 'Modifier les sorties'],
+            ['name' => 'delete.out', 'description' => 'Supprimer les sorties'],
         ];
 
         foreach ($data as $permission) {

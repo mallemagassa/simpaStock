@@ -53,52 +53,6 @@ class RoleController extends Controller
         return view('content/crud/create');
     }
 
-    // public function store()
-    // {
-    //     $permissions = $this->request->getPost('permissions'); 
-    //     $permissionsArray = is_string($permissions) ? explode(',', $permissions) : $permissions;
-        
-    //     dd($permissionsArray);
-    //     $groupData = [
-    //         'name' => $this->request->getPost('name'),
-    //         'title' => $this->request->getPost('name'),
-    //         'description' => $this->request->getPost('description'), // Peut être null
-    //     ];
-
-    //     // Sauvegarde du groupe
-    //     if ($this->role->save($groupData)) {
-    //         $groupId = $this->role->insertID();
-
-    //         if (!empty($permissionsArray)) {
-    //             // Vérification des permissions valides
-    //             $validPermissionIds = $this->db->table('permissions')->select('id')->get()->getResultArray();
-    //             $validPermissionIds = array_column($validPermissionIds, 'id');
-
-    //             foreach ($permissionsArray as $permissionId) {
-    //                 if (!in_array($permissionId, $validPermissionIds)) {
-    //                     return redirect()->back()->with('error', "Permission ID $permissionId est invalide.");
-    //                 }
-    //             }
-
-    //             // Préparation des données de permissions
-    //             $groupPermissionsData = [];
-    //             foreach ($permissionsArray as $permissionId) {
-    //                 $groupPermissionsData[] = [
-    //                     'group_id' => $groupId,
-    //                     'permission_id' => $permissionId,
-    //                 ];
-    //             }
-
-    //             // Insertion des permissions
-    //             $this->db->table('group_permissions')->insertBatch($groupPermissionsData);
-    //         }
-
-    //         return redirect()->to('/roles')->with('success', 'Le groupe a été ajouté avec succès.');
-    //     }
-
-    //     return redirect()->back()->with('error', 'Erreur lors de la création du groupe.');
-    // }
-
 
     public function store()
     {

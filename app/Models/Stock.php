@@ -25,7 +25,7 @@ class Stock extends Model
         'quantity'       => 'required|integer',
         'critique'       => 'required|integer',
         'product_id'     => 'required|integer|is_unique[stocks.product_id]',
-        'created_at'     => 'required|valid_date[Y-m-d]' // Validation du type date
+        //'created_at'     => 'required|valid_date[Y-m-d]' // Validation du type date
     ];
     
     protected $validationRulesUpdate = [
@@ -34,7 +34,7 @@ class Stock extends Model
         'quantity'       => 'required|integer',
         'critique'       => 'required|integer',
         'product_id'     => 'required|integer',
-        'created_at'     => 'required|valid_date[Y-m-d]' // Validation du type date
+        //'created_at'     => 'required|valid_date[Y-m-d]' // Validation du type date
     ];
     
     protected $validationMessagesAdd = [
@@ -59,10 +59,10 @@ class Stock extends Model
             'integer'   => 'L\'ID du produit doit être un entier valide',
             'is_unique' => 'Ce produit est déjà associé à un stock existant'
         ],
-        'created_at' => [
-            'required'    => 'La date de création est requise',
-            'valid_date'  => 'La date de création doit être au format valide : AAAA-MM-JJ'
-        ]
+        // 'created_at' => [
+        //     'required'    => 'La date de création est requise',
+        //     'valid_date'  => 'La date de création doit être au format valide : AAAA-MM-JJ'
+        // ]
     ];
     
     protected $validationMessagesUpdate = [
@@ -86,10 +86,10 @@ class Stock extends Model
             'required'  => 'Le produit associé est requis',
             'integer'   => 'L\'ID du produit doit être un entier valide',
         ],
-        'created_at' => [
-            'required'    => 'La date de création est requise',
-            'valid_date'  => 'La date de création doit être au format valide : AAAA-MM-JJ'
-        ]
+        // 'created_at' => [
+        //     'required'    => 'La date de création est requise',
+        //     'valid_date'  => 'La date de création doit être au format valide : AAAA-MM-JJ'
+        // ]
     ];
     
     /**
@@ -103,13 +103,18 @@ class Stock extends Model
                     ->first();
     }
 
-    /**
-     * Obtenir tous les stocks avec les produits associés
-     */
-    public function getAllStocksWithProducts()
+
+    public function getAllStocksWithProducts($search = null, $perPage = 10)
     {
-        return $this->select('stocks.*, products.name as product_name')
-                    ->join('products', 'products.id = stocks.product_id')
-                    ->findAll();
+        $builder = $this->select('stocks.*, products.name as product_name')
+                        ->join('products', 'products.id = stocks.product_id');
+
+        // Appliquer la recherche si un terme est fourni
+        if ($search) {
+            $builder->like('products.name', $search); // Recherche par nom de produit
+        }
+
+        return $builder->paginate($perPage, 'stocks'); // Utiliser paginate pour la pagination
     }
+
 }

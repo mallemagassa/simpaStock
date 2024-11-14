@@ -1,6 +1,7 @@
 <?php
 namespace App\Controllers;
 
+use Dompdf\Dompdf;
 use App\Models\Unit;
 use App\Models\Product;
 use CodeIgniter\Controller;
@@ -8,14 +9,18 @@ use App\Models\Notification;
 
 class ProductController extends BaseController
 {
-    // Afficher la liste des produits
     public function index()
     {
         $model = new Product();
         $modelUnit = new Unit();
-        $data['products'] = $model->getAllProductsWithUnits();
-        $data['units'] = $modelUnit->findAll();
 
+        $search = $this->request->getVar('search');
+        $perPage = 10;
+
+        $data['products'] = $model->getAllProductsWithUnits($search, $perPage);
+        $data['units'] = $modelUnit->findAll();
+        $data['pager'] = $model->pager;
+        $data['search'] = $search;
 
         return view('content/crud/products', $data);
     }
@@ -114,5 +119,74 @@ class ProductController extends BaseController
             return redirect()->to('/product')->with('error', 'Produit introuvable.');
         }
     }
+
+
+    public function exports()
+    {
+        $stock = new Product();
+        $stocks = $stock->getAllProductsWithUnits();
+    
+        $file = FCPATH . 'stock.xlsx';
+    
+        $spreadSheet = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
+        $sheet = $spreadSheet->getActiveSheet();
+    
+        $sheet->setCellValue('A1', 'Nom');
+        $sheet->setCellValue('B1', 'Description');
+        $sheet->setCellValue('C1', 'Code');
+        $sheet->setCellValue('D1', 'Unitee');
+        $sheet->setCellValue('H1', 'Date Creation');
+    
+        foreach ($stocks as $i => $value) {
+            $row = $i + 2;
+            $sheet->setCellValue('A' . $row, $value['name']);
+            $sheet->setCellValue('B' . $row, $value['description']);
+            $sheet->setCellValue('C' . $row, $value['code']);
+            $sheet->setCellValue('D' . $row, $value['unit_name']);
+            $sheet->setCellValue('E' . $row, date('d/m/Y', strtotime($value['created_at'])));
+        }
+    
+        $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xlsx($spreadSheet);
+        $writer->save($file);
+    
+        header("Content-Description: File Transfer");
+        header("Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+        header("Content-Disposition: attachment; filename=\"" . basename($file) . "\"");
+        header("Expires: 0");
+        header("Cache-Control: must-revalidate");
+        header("Pragma: public");
+        header("Content-Length: " . filesize($file));
+    
+        ob_clean();
+        flush();
+        readfile($file);
+        unlink($file);
+        exit;
+    }
+
+
+    public function exportToPDF()
+    {
+        $product = new Product();
+        $stocks = $product->getAllProductsWithUnits();
+
+        $data = [
+            'stocks' => $stocks,
+            'logo_path' => FCPATH . 'assets/images/logo/logo.png' // Mettez le chemin vers votre logo
+        ];
+
+        $html = view('pdf/product_list', $data);
+
+        $dompdf = new Dompdf();
+        $dompdf->loadHtml($html);
+
+        $dompdf->setPaper('A4', 'portrait');
+
+        $dompdf->render();
+
+        $fileName = 'product_list.pdf';
+        $dompdf->stream($fileName, ["Attachment" => true]);
+    }
+
     
 }

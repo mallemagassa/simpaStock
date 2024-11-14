@@ -66,12 +66,25 @@ class Shop extends Model
     protected $beforeDelete   = [];
     protected $afterDelete    = [];
 
-    public function getShopsWithUsers()
+    // public function getShopsWithUsers()
+    // {
+    //     return $this->select('shops.*, users.firstname, users.lastname')
+    //                 ->join('users', 'users.id = shops.user_id')
+    //                 ->findAll();
+    // }
+
+    public function getShopsWithUsers($userId = null)
     {
-        return $this->select('shops.*, users.firstname, users.lastname')
-                    ->join('users', 'users.id = shops.user_id')
-                    ->findAll();
+        $this->select('shops.*, users.firstname, users.lastname')
+            ->join('users', 'users.id = shops.user_id');
+        
+        if ($userId !== null) {
+            $this->where('shops.user_id', $userId);
+        }
+        
+        return $this->findAll();
     }
+
 
 
     public function getShopWithUserById($id)

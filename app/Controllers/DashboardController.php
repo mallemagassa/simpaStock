@@ -14,9 +14,19 @@ class DashboardController extends BaseController
         $product = new Product();
         $out = new Out();
 
-        $data['shops'] = $model->findAll();
+        //$data['shops'] = $model->findAll();
         $data['products'] = $product->findAll();
         $data['outs'] = $out->findAll();
+
+        $user = auth()->user();
+
+        if ($user->inGroup('boutiquier')) {
+            
+            $data['shops'] = $model->getShopsWithUsers($user->id);
+        }
+        else{
+            $data['shops'] = $model->getShopsWithUsers();
+        }
 
         return view('content/index', $data);
     }

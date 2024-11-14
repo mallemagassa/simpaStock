@@ -47,10 +47,24 @@ class Product extends Model
                     ->first();
     }
 
-    public function getAllProductsWithUnits()
+    // public function getAllProductsWithUnits()
+    // {
+    //     return $this->select('products.*, units.name as unit_name')
+    //                 ->join('units', 'units.id = products.unit_id')
+    //                 ->findAll();
+    // }
+
+
+    public function getAllProductsWithUnits($search = null, $perPage = 10)
     {
-        return $this->select('products.*, units.name as unit_name')
-                    ->join('units', 'units.id = products.unit_id')
-                    ->findAll();
+        $builder = $this->select('products.*, units.name as unit_name')
+                        ->join('units', 'units.id = products.unit_id');
+
+        // Appliquer la recherche si un terme est fourni
+        if ($search) {
+            $builder->like('products.name', $search); // Recherche par nom de produit
+        }
+
+        return $builder->paginate($perPage, 'products'); // Utiliser paginate pour la pagination
     }
 }

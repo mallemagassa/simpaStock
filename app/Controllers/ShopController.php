@@ -17,8 +17,18 @@ class ShopController extends BaseController
         $model = new Shop();
         $userModel = new UserModel();
         
-        $data['shops'] = $model->getShopsWithUsers();
+        
         $data['users'] = $userModel->findAll();
+
+        $user = auth()->user();
+
+        if ($user->inGroup('boutiquier')) {
+            
+            $data['shops'] = $model->getShopsWithUsers($user->id);
+        }
+        else{
+            $data['shops'] = $model->getShopsWithUsers();
+        }
 
         return view('content/crud/shop', $data);
     }
@@ -100,31 +110,98 @@ class ShopController extends BaseController
     }
 
     
+    // public function show($id)
+    // {
+
+    //     $shopModel = new Shop(); 
+    //     $outModel = new Out(); 
+    //     $productModel = new Product(); 
+    //     $stockModel = new Stock(); 
+    //     $model = new Stock();
+    //     $modelProduct = new Product();
+    //     $modelShop = new Shop();
+    //     $outModel = new Out(); 
+
+    //     $data['stocksOuts'] = $model->getAllStocksWithProducts();
+    //     $data['products'] = $modelProduct->findAll();
+    //     $data['outs'] = $outModel->orderBy('id', 'DESC')->paginate(10, 'outs');
+    //     $data['pager'] = $outModel->pager;
+        
+    //     $user = auth()->user();
+        
+    //     if ($user->inGroup('boutiquier')) {
+            
+    //         //$data['shops'] = $modelShop->findAll();
+    //         //if ($modelShop->getShopsWithUsers($user->id)) {
+    //             # code...
+    //             $data['shops'] = $modelShop->getShopsWithUsers($user->id);
+    //             $data['shop'] = $shopModel->getShopWithUserById($id);
+    //         //}
+    //         //redirect()->to('/shop')->with('success', 'Vous n\'etes pas permit');
+    //     }
+    //     else{
+    //         $data['shops'] = $model->getShopsWithUsers();
+    //         $data['shop'] = $shopModel->getShopWithUserById($id);
+    //     }
+
+    //     $data['products'] = $productModel->findAll();
+    //     $data['stocks'] = $stockModel->findAll();
+    
+    //     if (!$data['shop']) {
+    //         throw new \CodeIgniter\Exceptions\PageNotFoundException('Boutique non trouvée');
+    //     }
+
+    //     $data['outs'] = $outModel->where('shop_id', $id)->findAll();
+    
+    //     return view('content/crud/shop/shop_detail', $data);
+    // }
+
+
     public function show($id)
     {
-        $shopModel = new Shop(); 
-        $outModel = new Out(); 
-        $productModel = new Product(); 
-        $stockModel = new Stock(); 
-    
-        $data['shop'] = $shopModel->getShopWithUserById($id);
+        $shopModel = new Shop();
+        $outModel = new Out();
+        $productModel = new Product();
+        $stockModel = new Stock();
+        $user = auth()->user();
+
+        // Vérifie si le rôle est "boutiquier"
+        if ($user->inGroup('boutiquier')) {
+            // Récupère les boutiques spécifiques à l'utilisateur
+            $data['shops'] = $shopModel->getShopsWithUsers($user->id);
+            $data['shop'] = $shopModel->getShopWithUserById($id);
+
+            // Si la boutique ne fait pas partie des boutiques de l'utilisateur
+            if (!$data['shop'] || $data['shop']['user_id'] != $user->id) {
+                return redirect()->to('/shop')->with('error', 'Vous n\'avez pas accès à cette boutique.');
+            }
+        } else {
+            // Récupère toutes les boutiques pour les autres rôles
+            $data['shops'] = $shopModel->getShopsWithUsers();
+            $data['shop'] = $shopModel->getShopWithUserById($id);
+        }
+
+        // Récupère les autres données
+        $data['stocksOuts'] = $stockModel->getAllStocksWithProducts();
         $data['products'] = $productModel->findAll();
+        $data['outs'] = $outModel->where('shop_id', $id)->orderBy('id', 'DESC')->paginate(10, 'outs');
+        $data['pager'] = $outModel->pager;
         $data['stocks'] = $stockModel->findAll();
-    
+
         if (!$data['shop']) {
             throw new \CodeIgniter\Exceptions\PageNotFoundException('Boutique non trouvée');
         }
 
-        $data['outs'] = $outModel->where('shop_id', $id)->findAll();
-    
         return view('content/crud/shop/shop_detail', $data);
     }
+
     
 
     public function edit($id)
     {
         $model = new Shop();
         $data['shop'] = $model->find($id);
+        
 
         if (!$data['shop']) {
             throw new \CodeIgniter\Exceptions\PageNotFoundException('Produit non trouvé');
@@ -200,193 +277,6 @@ class ShopController extends BaseController
         json_decode($string);
         return (json_last_error() === JSON_ERROR_NONE);
     }
-
-
-    // public function exportToPDF($id)
-    // {
-    //     $outI = new Out();
-    //     $out = $outI->find($id);
-    //     $outP = json_decode($out['product_out']);
-    
-    //     $spreadSheet = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
-    //     $sheet = $spreadSheet->getActiveSheet();
-    
-    //     // Ajouter le logo dans l'en-tête à gauche
-    //     $logoPath = FCPATH . '/assets/images/logo/logo.png'; // Chemin de votre logo
-    //     $drawing = new \PhpOffice\PhpSpreadsheet\Worksheet\Drawing();
-    //     $drawing->setName('Logo');
-    //     $drawing->setDescription('Logo');
-    //     $drawing->setPath($logoPath);
-    //     $drawing->setHeight(50);
-    //     $drawing->setCoordinates('A1');
-    //     $drawing->setWorksheet($sheet);
-    
-    //     // Créer un espace pour le logo
-    //     $sheet->mergeCells('A1:B1'); // Fusionner A1 et B1 pour le logo
-    
-    //     // Titre à droite, avec soulignement
-    //     $sheet->setCellValue('C1', 'Bordereau de Sortie'); // Titre
-    //     $sheet->getStyle('C1')->getFont()->setBold(true)->setSize(16)->setUnderline(true);
-    //     $sheet->getStyle('C1')->getAlignment()->setHorizontal('right');
-    
-    //     // Récupérer et afficher la date de sortie
-    //     $date = DateTime::createFromFormat('Y-m-d H:i:s', $out['created_at']);
-    //     if ($date) {
-    //         $formattedDate = $date->format('d/m/Y');
-    //         $sheet->setCellValue('A3', 'Date de sortie : ' . $formattedDate);
-    //         $sheet->mergeCells('A3:C3');
-    //         $sheet->getStyle('A3')->getAlignment()->setHorizontal('center');
-    //     }
-    
-    //     // Définir les en-têtes des colonnes
-    //     $headers = ['Quantité', 'Produit', 'Montant'];
-    //     $columnLetter = 'A';
-    //     foreach ($headers as $header) {
-    //         $sheet->setCellValue($columnLetter . '4', $header);
-    //         $sheet->getStyle($columnLetter . '4')->getFont()->setBold(true);
-    //         $sheet->getStyle($columnLetter . '4')->getAlignment()->setHorizontal('center');
-    //         $sheet->getStyle($columnLetter . '4')->getBorders()->getAllBorders()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
-    //         $columnLetter++;
-    //     }
-    
-    //     $totalAmount = 0;
-    //     // Remplir les données
-    //     foreach ($outP as $i => $value) {
-    //         $row = $i + 5;
-    //         $sheet->setCellValue('A' . $row, $value->quantity);
-    //         $sheet->setCellValue('B' . $row, $value->product_name);
-            
-    //         $amount = $value->amount_total;
-    //         $sheet->setCellValue('C' . $row, number_format($amount, 0, '.', ' ') . ' F CFA');
-    //         $totalAmount += $amount;
-    
-    //         foreach (range('A', 'C') as $columnLetter) {
-    //             $sheet->getStyle($columnLetter . $row)->getAlignment()->setHorizontal('center');
-    //             $sheet->getStyle($columnLetter . $row)->getBorders()->getAllBorders()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
-    //         }
-    //     }
-    
-    //     // Ajouter une ligne pour le pied de tableau
-    //     $footerRow = count($outP) + 5;
-    //     $sheet->setCellValue('A' . $footerRow, 'Total');
-    //     $sheet->setCellValue('C' . $footerRow, number_format($totalAmount, 0, '.', ' ') . ' F CFA');
-    //     $sheet->mergeCells('A' . $footerRow . ':B' . $footerRow);
-    //     $sheet->getStyle('A' . $footerRow)->getFont()->setBold(true);
-    //     $sheet->getStyle('A' . $footerRow)->getAlignment()->setHorizontal('center');
-    //     $sheet->getStyle('C' . $footerRow)->getFont()->setBold(true);
-    //     $sheet->getStyle('C' . $footerRow)->getAlignment()->setHorizontal('center');
-    
-    //     // Ajuster la largeur des colonnes
-    //     $sheet->getColumnDimension('A')->setWidth(25);
-    //     $sheet->getColumnDimension('B')->setWidth(35);
-    //     $sheet->getColumnDimension('C')->setWidth(25);
-    
-    //     // Générer le fichier PDF
-    //     try {
-    //         // Utiliser explicitement le writer PDF avec Mpdf
-    //         $writer = new \PhpOffice\PhpSpreadsheet\Writer\Pdf\Mpdf($spreadSheet);
-            
-    //         $fileName = 'bordereau.pdf';
-    //         $filePath = FCPATH . $fileName;
-    //         $writer->save($filePath);
-    
-    //         // Forcer le téléchargement du fichier PDF
-    //         header("Content-Type: application/pdf");
-    //         header("Content-Disposition: attachment; filename=\"" . basename($filePath) . "\"");
-    //         header("Content-Length: " . filesize($filePath));
-    
-    //         ob_clean();
-    //         flush();
-    //         readfile($filePath);
-    //         unlink($filePath);
-    //         exit;
-    //     } catch (\Exception $e) {
-    //         echo 'Erreur lors de la génération du PDF : ', $e->getMessage();
-    //     }
-    // }
-
-
-
-    public function exportToPDF($id)
-    {
-        $outI = new Out();
-        $out = $outI->find($id);
-        $outP = json_decode($out['product_out']);
-
-        $date = DateTime::createFromFormat('Y-m-d H:i:s', $out['created_at']);
-        $formattedDate = $date ? $date->format('d/m/Y') : '';
-
-        $totalAmount = array_sum(array_column($outP, 'amount_total'));
-
-        $data = [
-            'formatted_date' => $formattedDate,
-            'products' => $outP,
-            'total_amount' => $totalAmount,
-            'ref' => $out['ref'],
-            'logo_path' => FCPATH . 'assets/images/logo/logo.png'//base_url('assets/images/logo/logo.png')
-        ];
-
-        $html = view('pdf/waybill', $data);
-
-        
-        $dompdf = new Dompdf();
-        
-        $dompdf->loadHtml($html);
-
-        $dompdf->setPaper('A4', 'portrait');
-
-        $dompdf->render();
-
-        $fileName = 'bordereau.pdf';
-        $dompdf->stream($fileName, array("Attachment" => true));
-    }
-
-        // public function exportToPDF($id)
-        // {
-        //     $outI = new Out();
-        //     $out = $outI->find($id);
-        //     $outP = json_decode($out['product_out']);
-    
-        //     // Récupérer la date formatée
-        //     $date = DateTime::createFromFormat('Y-m-d H:i:s', $out['created_at']);
-        //     $formattedDate = $date ? $date->format('d/m/Y') : '';
-    
-        //     // Calculer le montant total
-        //     $totalAmount = array_sum(array_column($outP, 'amount_total'));
-    
-        //     // Charger la vue et passer les données
-        //     $data = [
-        //         'formatted_date' => $formattedDate,
-        //         'products' => $outP,
-        //         'total_amount' => $totalAmount,
-        //         'logo_path' => base_url('assets/images/logo/logo.png') // Chemin du logo
-        //     ];
-    
-        //     // Charger la vue HTML
-        //     $html = view('pdf/waybill', $data);
-    
-        //     // Charger Dompdf
-        //     $dompdf = new Dompdf();
-        //     $dompdf->set_option('isRemoteEnabled', true); // Permettre le chargement d'images à distance
-    
-        //     // Charger le HTML
-        //     $dompdf->loadHtml($html);
-    
-        //     // (Facultatif) Configurer le format et la taille de la page
-        //     $dompdf->setPaper('A4', 'portrait');
-    
-        //     // Rendre le PDF
-        //     $dompdf->render();
-    
-        //     // Envoyer le fichier PDF au navigateur
-        //     $fileName = 'bordereau.pdf';
-        //     $dompdf->stream($fileName, array("Attachment" => true));
-        // }
-    
-    
-    
-    
-
     
     
     public function delete($id)
